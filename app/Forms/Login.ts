@@ -3,7 +3,7 @@ import Helpers from "../Core/Helpers";
 export default function Login() {
 	return {
 		config: {
-			action: Helpers.getPath("test_login"),
+			action: Helpers.getPath("security_login"),
 			method: "POST",
 			submit: "Se connecter",
 			actionName: "login",

@@ -1,6 +1,6 @@
 {
-  "redirect_not_connected": "test_login",
-  "redirect_not_permission": "test_register",
+  "redirect_not_connected": "security_login",
+  "redirect_not_permission": "index",
   "permissions": [
       {
         "path": "^/test/exemplaires",

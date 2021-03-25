@@ -1,19 +1,8 @@
 {
-  "TestController":{
-    "prefix": "test_",
-    "prefix_route": "/test",
+  "SecurityController":{
+    "prefix": "security_",
 
     "routes": {
-
-      "exemplaires": {
-        "action": "getExemplaires",
-        "route": "/exemplaires",
-        "methods": ["GET"]
-      },
-
-      "coucou": {
-        "route": "/coucou/:prenom"
-      },
 
       "register": {
         "route": "/register",
@@ -27,6 +16,16 @@
 
       "logout": {
         "route": "/logout"
+      }
+
+    }
+  },
+  "FrontController": {
+
+    "routes": {
+
+      "index": {
+        "route": "/"
       }
 
     }

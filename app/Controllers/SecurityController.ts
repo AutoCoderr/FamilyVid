@@ -1,55 +1,11 @@
 import User from "../Entities/User";
-import Produit from "../Entities/Produit";
-import Exemplaire from "../Entities/Exemplaire";
-import ExemplaireRepository from "../Repositories/ExemplaireRepository";
 import Controller from "../Core/Controller";
 import Register from "../Forms/Register";
 import Validator from "../Core/Validator";
 import Login from "../Forms/Login";
 import UserRepository from "../Repositories/UserRepository";
 
-export default class TestController extends Controller {
-
-    getExemplaires = async () => {
-        let produits: Array<{name: string, entity: any}> = [
-            {name: "Rubik's cube", entity: null},
-            {name: "PC gamer", entity: null},
-            {name: "Iphone 18", entity: null},
-            {name: "Machine à café", entity: null}]
-
-        for (let produit of produits) {
-            produit.entity = new Produit();
-            produit.entity.setName(produit.name);
-            produit.entity.setUnits(rand(1,15));
-            await produit.entity.save();
-
-            console.log("produit => ");
-            console.log(produit.entity);
-        }
-
-        let user = await this.getUser();
-        for (let produit of produits) {
-            let exemplaire = new Exemplaire();
-            exemplaire.setProduit(produit.entity);
-            exemplaire.setUser(user);
-            exemplaire.setUnits(rand(1,5));
-
-            await exemplaire.save();
-        }
-
-        //let newUser: User = await UserRepository.findOne(user.getId());
-        const exemplaires = await ExemplaireRepository.findByUserId(user.id);
-        console.log(exemplaires);
-
-        this.render("test/exemplaires.html.twig", {
-            exemplaires
-        });
-    }
-
-    coucou = async () => {
-        const prenom = this.req.params.prenom
-        this.render("test/coucou.html.twig", {prenom});
-    }
+export default class SecurityController extends Controller {
 
     register = async () => {
         const formRegister = Register();
@@ -69,12 +25,12 @@ export default class TestController extends Controller {
                 await user.save();
                 this.loginAndRedirect(user);
             } else {
-                this.redirectToRoute("test_register");
+                this.redirectToRoute("security_register");
             }
             return;
         }
 
-        this.render("test/register.html.twig", {formRegister});
+        this.render("security/register.html.twig", {formRegister});
     }
 
     login = async () => {
@@ -91,27 +47,27 @@ export default class TestController extends Controller {
                         this.req.session.errors = {};
                     }
                     this.req.session.errors[formLogin.config.actionName] = [formLogin.config.msgError];
-                    this.redirectToRoute("test_login");
+                    this.redirectToRoute("security_login");
                 } else {
                     this.loginAndRedirect(user);
                 }
             } else {
-                this.redirectToRoute("test_login");
+                this.redirectToRoute("security_login");
             }
             return;
         }
 
-        this.render("test/login.html.twig", {formLogin});
+        this.render("security/login.html.twig", {formLogin});
     }
 
     logout = async () => {
         delete this.req.session.user;
-        this.redirectToRoute("test_coucou", {prenom: "toto"});
+        this.redirectToRoute("index");
     }
 
     async loginAndRedirect(user: User) {
         this.req.session.user = await user.serialize();
-        this.redirectToRoute("test_coucou", {prenom: "toto"});
+        this.redirectToRoute("index");
     }
 }
 

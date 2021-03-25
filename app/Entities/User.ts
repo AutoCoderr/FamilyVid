@@ -1,6 +1,5 @@
 import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
-import Exemplaire from "./Exemplaire";
 import UserModel from "../Models/User";
 
 export default class User extends EntityManager {
@@ -12,8 +11,6 @@ export default class User extends EntityManager {
     lastname: null|string = null;
     roles: null|string = null;
     password: null|string = null;
-
-    Exemplaires: null|Array<Exemplaire> = null;
 
     setEmail(email: string) {
         this.email = email;
@@ -65,10 +62,6 @@ export default class User extends EntityManager {
     }
     getPassword() {
         return this.password;
-    }
-
-    getExemplaires() {
-        return this.Exemplaires;
     }
 
 }
