@@ -1,0 +1,34 @@
+{
+  "TestController":{
+    "prefix": "test_",
+    "prefix_route": "/test",
+
+    "routes": {
+
+      "exemplaires": {
+        "action": "getExemplaires",
+        "route": "/exemplaires",
+        "methods": ["GET"]
+      },
+
+      "coucou": {
+        "route": "/coucou/:prenom"
+      },
+
+      "register": {
+        "route": "/register",
+        "methods": ["GET","POST"]
+      },
+
+      "login": {
+        "route": "/login",
+        "methods": ["GET","POST"]
+      },
+
+      "logout": {
+        "route": "/logout"
+      }
+
+    }
+  }
+}

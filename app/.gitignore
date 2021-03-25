@@ -1,0 +1,10 @@
+package-lock.json
+/*.js
+/Repositories/*.js
+/Controllers/*.js
+/Models/*.js
+/Entities/*.js
+/Core/*.js
+/Forms/*.js
+!/Core/env.js
+/node_modules

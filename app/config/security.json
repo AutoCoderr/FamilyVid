@@ -1,0 +1,11 @@
+{
+  "redirect_not_connected": "test_login",
+  "redirect_not_permission": "test_register",
+  "permissions": [
+      {
+        "path": "^/test/exemplaires",
+        "methods": "GET",
+        "roles": "connected"
+      }
+    ]
+}
