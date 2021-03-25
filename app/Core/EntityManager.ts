@@ -2,7 +2,8 @@ import {Model} from "sequelize";
 import Helpers from "./Helpers";
 
 export default class EntityManager {
-    ModelInstance: null|typeof Model = null;
+    Model: null|typeof Model = null;
+    ModelInstance: null|Model = null;
     id: null|number = null;
 
     setId(id) {
@@ -15,12 +16,13 @@ export default class EntityManager {
     constructor() {
     }
 
-    hydrate(entry: Object) {// @ts-ignore
-        for (let attr in entry.dataValues) {// @ts-ignore
-            if (typeof(this[attr]) != "undefined") {// @ts-ignore
+    hydrate(entry: any) {
+        for (let attr in entry.dataValues) {
+            if (typeof(this[attr]) != "undefined") {
                 this[attr] = entry.dataValues[attr];
             }
         }
+        this.ModelInstance = entry;
         return this;
     }
 
@@ -31,16 +33,17 @@ export default class EntityManager {
         if (this.id == null) {
             let entry;
             try {// @ts-ignore
-                entry = await this.ModelInstance.create(entryObject);
+                entry = await this.Model.create(entryObject);
             } catch(e) {
                 throw e;
             }
             this.id = entry.dataValues.id;
+            this.ModelInstance = entry;
             return this;
         } else {
             let entry
             try {// @ts-ignore
-                entry = await this.ModelInstance.findOne({where: {id: this.id}});
+                entry = await this.Model.findOne({where: {id: this.id}});
             } catch(e) {
                 throw e;
             }
@@ -48,13 +51,14 @@ export default class EntityManager {
                 entry[attr] = this[attr];
             }
             entry.save();
+            this.ModelInstance = entry;
             return this;
         }
     }
 
     async delete() {
         try { // @ts-ignore
-            await this.modelInstance.destroy({
+            await this.Model.destroy({
                 where: {
                     id: this.id
                 }
@@ -68,7 +72,7 @@ export default class EntityManager {
     async serialize(forSaving = false) {
         let entryObject: any = {};
         for (let attr in this) {
-            if (typeof(this[attr]) != "function" && attr != "modelInstance" && (!forSaving || (forSaving && attr != "id"))) {
+            if (typeof(this[attr]) != "function" && attr != "Model" && attr != "ModelInstance" && (!forSaving || (forSaving && attr != "id"))) {
                 let elem;
                 if (typeof(this["get"+Helpers.ucFirst(attr)]) == "function" && !forSaving) {
                     elem = await this["get"+Helpers.ucFirst(attr)]();
