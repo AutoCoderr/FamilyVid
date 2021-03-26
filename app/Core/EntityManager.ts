@@ -84,14 +84,14 @@ export default class EntityManager {
                     entryObject[attr] = [];
                     for (let subElem of elem) {
                         if (subElem instanceof EntityManager) {
-                            entryObject[attr].push(await subElem.serialize());
+                            entryObject[attr].push(await subElem.serialize(forSaving));
                         } else if (typeof(subElem.dataValues) != "undefined") {
                             entryObject[attr].push(await subElem.dataValues);
                         }
                     }
                 } else if(!(elem instanceof Array) || attr == "roles") {
                     if (elem instanceof EntityManager) {
-                        entryObject[attr] = await elem.serialize();
+                        entryObject[attr] = await elem.serialize(forSaving);
                     } else if (typeof(elem) == "object" && elem != null && typeof(elem.dataValues) != "undefined") {
                         entryObject[attr] = elem.dataValues;
                     } else {

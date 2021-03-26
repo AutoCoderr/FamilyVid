@@ -16,7 +16,7 @@ User_Families.init(
     {
         visible: {
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         }
     },
     {

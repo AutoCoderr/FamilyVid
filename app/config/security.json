@@ -5,6 +5,10 @@
       {
         "path": "^/family",
         "roles": "connected"
+      },
+      {
+        "path": "^/users",
+        "roles": "connected"
       }
     ]
 }

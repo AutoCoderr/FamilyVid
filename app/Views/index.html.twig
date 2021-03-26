@@ -6,7 +6,7 @@
         {% if session.user %}
             {% if session.user.Families|length == 0 %}
                 <h2>Vous n'avez aucune famille</h2>
-                <a href="#">Rejoignez en une!</a><br/>
+                <a href="{{ path('user_list') }}">Rejoignez en une!</a><br/>
                 <a href="{{ path('family_new') }}">Créer en une!</a>
             {% else %}
                 <h2>Voici vos familles</h2>
@@ -16,7 +16,7 @@
                     {% endfor %}
                 </ul>
                 <h2>Vous pouvez aussi rejoindre de nouvelles familles</h2>
-                <a href="#">Rejoignez en une!</a><br/>
+                <a href="{{ path('user_list') }}">Rejoignez en une!</a><br/>
                 <a href="{{ path('family_new') }}">Créer en une!</a>
             {% endif %}
         {% else %}
