@@ -28,9 +28,13 @@ export default class Family extends EntityManager {
         return this.Users;
     }
 
-    async addUser(user: User) {
+    async addUser(user: User, visible = true) {
         if (this.ModelInstance != null && user.ModelInstance != null) { // @ts-ignore
-            await this.ModelInstance.addUser(user.ModelInstance)
+            await this.ModelInstance.addUser(user.ModelInstance, {through: { visible }});
+            if (this.Users == null) {
+                this.Users = [];
+            }
+            this.Users.push(user);
         }
     }
 

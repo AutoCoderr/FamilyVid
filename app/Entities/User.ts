@@ -75,13 +75,20 @@ export default class User extends EntityManager {
                     this.Families[i] = (new Family()).hydrate(this.Families[i]);
                 }
             }
+            this.Families.sort((A,B) => {
+               return <string>A.getName() > <string>B.getName() ? 1 : -1;
+            });
         }
         return this.Families;
     }
 
-    async addFamily(family: Family) {
+    async addFamily(family: Family, visible = true) {
         if (this.ModelInstance != null && family.ModelInstance != null) { // @ts-ignore
-            await this.ModelInstance.addFamily(family.ModelInstance)
+            await this.ModelInstance.addFamily(family.ModelInstance, {through: { visible }});
+            if (this.Families == null) {
+                this.Families = [];
+            }
+            this.Families.push(family);
         }
     }
 

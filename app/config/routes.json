@@ -29,5 +29,18 @@
       }
 
     }
+  },
+  "FamilyController": {
+    "prefix": "family_",
+    "prefix_route": "/family",
+
+    "routes":{
+
+      "new": {
+        "route": "/new",
+        "methods": ["GET","POST"]
+      }
+
+    }
   }
 }

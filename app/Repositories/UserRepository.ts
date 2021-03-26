@@ -9,7 +9,13 @@ export default class UserRepository extends RepositoryManager {
     static entity = User;
 
     static findOneByEmailAndPassword(email,password) {
-        return super.findOneByParams({where: {email, password: Helpers.hashPassword(password)}});
+        return super.findOneByParams({
+            where: {
+                email,
+                password: Helpers.hashPassword(password)
+            },
+            include: FamilyModel
+        });
     }
 
     static findOne(id) {
