@@ -1,10 +1,10 @@
-{% if session is defined %}
-	{% if session.errors is defined and session.errors[form.config.actionName] is defined %}
-		{% set errors = session.errors[form.config.actionName] %}
+{% if flash is defined %}
+	{% if flash.errors is defined and flash.errors[form.config.actionName] is defined %}
+		{% set errors = flash.errors[form.config.actionName] %}
 	{% endif %}
 
-	{% if session.datas[form.config.actionName] is defined and session.datas[form.config.actionName]|keys|length > 0 %}
-		{% set datas = session.datas[form.config.actionName] %}
+	{% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+		{% set datas = flash.datas[form.config.actionName] %}
 	{% endif %}
 {% endif %}
 
@@ -45,5 +45,3 @@
 	{% endfor %}
 	</ul>
 {% endif %}
-
-{{ destroySessionForm(form.config.actionName,session) }}

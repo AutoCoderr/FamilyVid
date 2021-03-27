@@ -6,6 +6,7 @@ import UserRepository from "../Repositories/UserRepository";
 import FamilyDemandForm from "../Forms/FamilyDemand";
 import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
+import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 
 export default class FamilyController extends Controller {
     new = async () => {
@@ -55,17 +56,33 @@ export default class FamilyController extends Controller {
         const { userId, familyId } = this.req.params;
         let datas = this.getDatas();
 
-        let applicant = await UserRepository.findOne(userId);
+        let applicant = await this.getUser();
+        let user = await UserRepository.findOne(userId);
         let family = await FamilyRepository.findOne(familyId);
+
+        if (user == null || family == null) {
+            this.setFlash("family_demand_failed","L'utilisateur ou la famille spécifiée n'existent pas");
+            this.redirect(this.req.header('Referer'));
+            return;
+        }
+
+        let demand = await FamilyDemandRepository.findByApplicantIdUserIdAndFamilyId(applicant.getId(),userId,familyId);
+        if (demand != null) {
+            this.setFlash("family_demand_failed","Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de rentrer dans la famille "+family.getName());
+            this.redirect(this.req.header('Referer'));
+            return;
+        }
 
         let familyDemand = new FamilyDemand();
         familyDemand.setApplicant(applicant);
         familyDemand.setFamily(family);
-        familyDemand.setUser(await this.getUser());
+        familyDemand.setUser(user);
         familyDemand.setVisible(datas.visible != undefined);
         await familyDemand.save();
 
-        this.res.send("COUCOU ; userId => "+userId+" ; familyId => "+familyId);
+        this.setFlash("family_demand_success","Votre demande a été envoyée!");
+
+        this.redirect(this.req.header('Referer'));
     }
 
 

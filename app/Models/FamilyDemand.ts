@@ -7,10 +7,12 @@ import Family from "./Family";
 const {DB_PREFIX} = env;
 
 export interface IFamilyDemand {
+    visible: boolean;
 }
 
 export default class FamilyDemand extends Model {
     public id!: number;
+    public visible!: boolean;
 }
 
 FamilyDemand.init(

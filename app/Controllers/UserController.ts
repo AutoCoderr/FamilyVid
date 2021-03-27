@@ -3,7 +3,7 @@ import UserRepository from "../Repositories/UserRepository";
 import Helpers from "../Core/Helpers";
 
 export default class UserController extends Controller {
-    list = async () => {
+    all = async () => {
         let users = await UserRepository.findAllExceptOne(this.req.session.user.id);
 
         users = await Helpers.serializeEntityArray(users);
