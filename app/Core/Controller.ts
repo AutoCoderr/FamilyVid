@@ -1,6 +1,7 @@
 import EntityManager from "./EntityManager";
 import Helpers from "./Helpers";
 import UserRepository from "../Repositories/UserRepository";
+import User from "../Entities/User";
 const fs = require("fs-extra");
 
 export default class Controller {
@@ -70,7 +71,7 @@ export default class Controller {
         return true;
     }
 
-    async getUser() {
+    async getUser(): Promise<null|User> {
         if (typeof(this.req.session.user) == "undefined") return null;
         return await UserRepository.findOne(this.req.session.user.id);
     }

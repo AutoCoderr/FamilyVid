@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes familles{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/family-list.css">
+{% endblock %}
+{% block javascripts %}
+    <script src="/js/family-list.js"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>Mes familles</h1>
+
+    {% if flash.change_display_family_failed is defined %}
+        <p style="color: red">{{ flash.change_display_family_failed }}</p>
+    {% endif %}
+    {% if flash.change_display_family_success is defined %}
+        <p style="color: green">{{ flash.change_display_family_success }}</p>
+    {% endif %}
+
+    {% if session.user.Families|length > 0 %}
+    <ul>
+        {% for family in session.user.Families %}
+            <li class="family" id="family-{{ family.id }}">
+                <span>{{ family.name }}</span><a href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
+                <div>
+                    <form id="form-family-change-display-{{ family.id }}" action="{{ path('family_change_display', {'id': family.id}) }}" method="post">
+                        <label>
+                            Visible pour les autres
+                        </label>
+                        <input type="checkbox" name="visible" {% if family.visible %}checked{% endif %}>
+                        <a href="javascript:document.getElementById('form-family-change-display-{{ family.id }}').submit()">Valider</a>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <h2>Cet utilisateur n'a aucune famille visible</h2>
+    {% endif %}
+{% endblock %}

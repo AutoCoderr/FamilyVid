@@ -2,6 +2,7 @@ import Controller from "../Core/Controller";
 import UserRepository from "../Repositories/UserRepository";
 import Helpers from "../Core/Helpers";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
+import User from "../Entities/User";
 
 export default class UserController extends Controller {
     all = async () => {
@@ -17,6 +18,7 @@ export default class UserController extends Controller {
     }
 
     me = async () => {
+        this.req.session.user = await (await <Promise<User>>this.getUser()).serialize();
         let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id,false);
 
         this.render("user/me.html.twig", {demands});

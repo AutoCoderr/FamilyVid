@@ -23,7 +23,7 @@ export default class FamilyController extends Controller {
 
                 await family.save();
 
-                const user = await this.getUser();
+                const user = await <Promise<User>>this.getUser();
                 await user.addFamily(family, datas.visible != undefined);
 
                 this.req.session.user = await user.serialize();
@@ -53,6 +53,27 @@ export default class FamilyController extends Controller {
         this.render("family/list.html.twig", {user, forms})
     }
 
+    list_mines = async () => {
+        this.req.session.user = await (await <Promise<User>>this.getUser()).serialize();
+        this.render("family/list_mines.html.twig");
+    }
+
+    change_display = async () => {
+        const {id} = this.req.params;
+        const me = await <Promise<User>>this.getUser();
+        for (const family of <Array<Family>>me.getFamilies()) {
+            if (family.getId() == id) {
+                const datas = this.getDatas();
+                await family.setVisible(datas.visible != undefined);
+                this.setFlash("change_display_family_success", "La famille "+family.getName()+" sera "+(datas.visible != undefined ? "visible" : "invisible")+" pour les autres");
+                this.redirect(this.req.header('Referer'));
+                return;
+            }
+        }
+        this.setFlash("change_display_family_failed", "Cette famille est introuvable");
+        this.redirect(this.req.header('Referer'));
+    }
+
     demand = async () => {
         let datas = this.getDatas();
         if (datas.user == undefined || datas.family == undefined) {
@@ -64,7 +85,7 @@ export default class FamilyController extends Controller {
         let validator = new Validator(this.req,familyDemandForm);
         if (validator.isSubmitted()) {
             if (await validator.isValid()) {
-                let applicant: User = await this.getUser();
+                let applicant: User = await <Promise<User>>this.getUser();
                 let user: User = await UserRepository.findOne(datas.user);
                 let family: Family = await FamilyRepository.findOne(datas.family);
 
