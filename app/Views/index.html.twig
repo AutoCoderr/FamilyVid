@@ -6,8 +6,8 @@
         {% if session.user %}
             {% if session.user.Families|length == 0 %}
                 <h2>Vous n'avez aucune famille</h2>
-                <a href="{{ path('user_all') }}">Rejoignez en une!</a><br/>
-                <a href="{{ path('family_new') }}">Créer en une!</a>
+                <a class="btn-custom" href="{{ path('user_all') }}">Rejoignez en une!</a><br/>
+                <a class="btn-custom" href="{{ path('family_new') }}">Créer en une!</a>
             {% else %}
                 <h2>Voici vos familles</h2>
                 <ul>
@@ -16,12 +16,12 @@
                     {% endfor %}
                 </ul>
                 <h2>Vous pouvez aussi rejoindre de nouvelles familles</h2>
-                <a href="{{ path('user_all') }}">Rejoignez en une!</a><br/>
-                <a href="{{ path('family_new') }}">Créer en une!</a>
+                <a class="btn-custom" href="{{ path('user_all') }}">Rejoignez en une!</a><br/>
+                <a class="btn-custom" href="{{ path('family_new') }}">Créer en une!</a>
             {% endif %}
         {% else %}
             <h2>Connectez vous pour accéder à votre compte!</h2>
-            <a href="{{ path('security_login') }}">Se connecter</a>
+            <a class="btn-custom" href="{{ path('security_login') }}">Se connecter</a>
         {% endif %}
     </div>
 {% endblock %}
