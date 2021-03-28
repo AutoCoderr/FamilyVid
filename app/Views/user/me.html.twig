@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes informations{% endblock %}
+
+{% block body %}
+    <h1>Vous informations personnelles</h1>
+    <div>
+        <a href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
+        <a href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
+    </div>
+{% endblock %}

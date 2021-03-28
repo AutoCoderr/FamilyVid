@@ -3,8 +3,11 @@
   "redirect_not_permission": "index",
   "permissions": [
       {
-        "path": "^/test/exemplaires",
-        "methods": "GET",
+        "path": "^/family",
+        "roles": "connected"
+      },
+      {
+        "path": "^/user",
         "roles": "connected"
       }
     ]

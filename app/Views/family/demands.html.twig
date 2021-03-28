@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes reçues{% endblock %}
+
+{% block body %}
+    <h1>Les demandes reçues</h1>
+
+    {% if flash.demand_error is defined %}
+        <span style="color: red">{{ flash.demand_error }}</span>
+    {% endif %}
+    {% if flash.demand_success is defined %}
+        <span style="color: green">{{ flash.demand_success }}</span>
+    {% endif %}
+
+    {% if demands|length > 0 %}
+        <ul>
+            {% for demand in demands %}
+                <li>
+                    <span>
+                        {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} souhaite rejoindre la famille {{ demand.Family.name }}
+                    </span>
+                    <form id="form-accept-demand-{{ demand.id }}" action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
+                        <a href="javascript:document.getElementById('form-accept-demand-{{ demand.id }}').submit()">Accepter</a>
+                    </form>
+                    <form id="form-deny-demand-{{ demand.id }}" action="{{ path('family_deny_demand', {'id': demand.id}) }}" method="post">
+                        <a href="javascript:document.getElementById('form-deny-demand-{{ demand.id }}').submit()">Refuser</a>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Aucune demande de cooptation</h2>
+    {% endif %}
+{% endblock %}

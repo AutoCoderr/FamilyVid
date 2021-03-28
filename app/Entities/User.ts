@@ -1,16 +1,20 @@
 import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
 import UserModel from "../Models/User";
+import Family from "./Family";
 
 export default class User extends EntityManager {
 
-    ModelInstance = UserModel;
+    Model = UserModel;
 
     email: null|string = null;
     firstname: null|string = null;
     lastname: null|string = null;
     roles: null|string = null;
     password: null|string = null;
+
+    Families: null|Array<Family> = [];
+
 
     setEmail(email: string) {
         this.email = email;
@@ -62,6 +66,30 @@ export default class User extends EntityManager {
     }
     getPassword() {
         return this.password;
+    }
+
+    getFamilies() {
+        if (this.Families instanceof Array) {
+            for (let i=0;i<this.Families.length;i++) {
+                if (!(this.Families[i] instanceof Family)) {
+                    this.Families[i] = (new Family()).hydrate(this.Families[i]);
+                }
+            }
+            this.Families.sort((A,B) => {
+               return <string>A.getName() > <string>B.getName() ? 1 : -1;
+            });
+        }
+        return this.Families;
+    }
+
+    async addFamily(family: Family, visible = true) {
+        if (this.ModelInstance != null && family.ModelInstance != null) { // @ts-ignore
+            await this.ModelInstance.addFamily(family.ModelInstance, {through: { visible }});
+            if (this.Families == null) {
+                this.Families = [];
+            }
+            this.Families.push(family);
+        }
     }
 
 }

@@ -29,5 +29,65 @@
       }
 
     }
+  },
+  "FamilyController": {
+    "prefix": "family_",
+    "prefix_route": "/family",
+
+    "routes":{
+
+      "new": {
+        "route": "/new",
+        "methods": ["GET","POST"]
+      },
+
+      "list": {
+        "route": "/list/:userId"
+      },
+
+      "list_mines": {
+        "route": "/list"
+      },
+
+      "change_display": {
+        "route": "/change_display/:id",
+        "method": "POST"
+      },
+
+      "demand": {
+        "route": "/demand/send",
+        "methods": "POST"
+      },
+
+      "demands": {
+        "route": "/demands"
+      },
+
+      "accept_demand": {
+        "route": "/demand/accept/:id",
+        "method": "POST"
+      },
+
+      "deny_demand": {
+        "route": "/demand/deny/:id",
+        "method": "POST"
+      }
+
+    }
+  },
+  "UserController": {
+    "prefix": "user_",
+    "prefix_route": "/user",
+
+    "routes": {
+
+      "all": {
+        "route": "/all"
+      },
+      "me": {
+        "route": "/me"
+      }
+
+    }
   }
 }

@@ -25,7 +25,7 @@ export default class SecurityController extends Controller {
                 await user.save();
                 this.loginAndRedirect(user);
             } else {
-                this.redirectToRoute("security_register");
+                this.redirect(this.req.header('Referer'));
             }
             return;
         }
@@ -43,16 +43,19 @@ export default class SecurityController extends Controller {
 
                 const user: User = await UserRepository.findOneByEmailAndPassword(datas.email,datas.password);
                 if (user == null) {
-                    if(typeof(this.req.session.errors) == "undefined") {
-                        this.req.session.errors = {};
+                    if(typeof(this.req.session.flash) == "undefined") {
+                        this.req.session.flash = {};
                     }
-                    this.req.session.errors[formLogin.config.actionName] = [formLogin.config.msgError];
-                    this.redirectToRoute("security_login");
+                    if(typeof(this.req.session.flash.errors) == "undefined") {
+                        this.req.session.flash.errors = {};
+                    }
+                    this.req.session.flash.errors[formLogin.config.actionName] = [formLogin.config.msgError];
+                    this.redirect(this.req.header('Referer'));
                 } else {
                     this.loginAndRedirect(user);
                 }
             } else {
-                this.redirectToRoute("security_login");
+                this.redirect(this.req.header('Referer'));
             }
             return;
         }
