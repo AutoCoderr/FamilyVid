@@ -39,8 +39,8 @@ export default class FamilyController extends Controller {
     }
 
     list = async () => {
-        let id = this.req.params.id;
-        let user = await UserRepository.findOne(id);
+        let userId = this.req.params.userId;
+        let user = await UserRepository.findOne(userId);
 
         user = await user.serialize();
         user.Families = user.Families.filter((family) => family.visible);
@@ -54,42 +54,48 @@ export default class FamilyController extends Controller {
     }
 
     demand = async () => {
-        const { userId, familyId } = this.req.params;
         let datas = this.getDatas();
-
-        let applicant: User = await this.getUser();
-        let user: User = await UserRepository.findOne(userId);
-        let family: Family = await FamilyRepository.findOne(familyId);
-
-        if (user == null || family == null) {
-            this.setFlash("family_demand_failed","L'utilisateur ou la famille spécifiée n'existent pas");
+        if (datas.user == undefined || datas.family == undefined) {
+            this.setFlash("family_demand_failed",["La famille ou l'utilisateur à qui faire la demande n'ont pas été spécifiés"]);
             this.redirect(this.req.header('Referer'));
             return;
         }
+        let familyDemandForm = FamilyDemandForm(datas.user,datas.family);
+        let validator = new Validator(this.req,familyDemandForm);
+        if (validator.isSubmitted()) {
+            if (await validator.isValid()) {
+                let applicant: User = await this.getUser();
+                let user: User = await UserRepository.findOne(datas.user);
+                let family: Family = await FamilyRepository.findOne(datas.family);
 
-        for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
-            if (eachFamily.getId() == family.getId()) {
-                this.setFlash("family_demand_failed","Vous vous trouvez déjà dans la famille "+family.getName());
-                this.redirect(this.req.header('Referer'));
-                return;
+                for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
+                    if (eachFamily.getId() == family.getId()) {
+                        this.setFlash("family_demand_failed",["Vous vous trouvez déjà dans la famille "+family.getName()]);
+                        this.redirect(this.req.header('Referer'));
+                        return;
+                    }
+                }
+
+                let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user,datas.family);
+                if (demand != null) {
+                    this.setFlash("family_demand_failed",["Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName()]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+
+                let familyDemand = new FamilyDemand();
+                familyDemand.setApplicant(applicant);
+                familyDemand.setFamily(family);
+                familyDemand.setUser(user);
+                familyDemand.setVisible(datas.visible != undefined);
+                await familyDemand.save();
+
+                this.setFlash("family_demand_success",["Votre demande a été envoyée!"]);
+            } else {
+                this.setFlash("family_demand_failed", this.req.session.flash.errors[familyDemandForm.config.actionName]);
+                delete this.req.session.flash.errors[familyDemandForm.config.actionName];
             }
         }
-
-        let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),userId,familyId);
-        if (demand != null) {
-            this.setFlash("family_demand_failed","Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName());
-            this.redirect(this.req.header('Referer'));
-            return;
-        }
-
-        let familyDemand = new FamilyDemand();
-        familyDemand.setApplicant(applicant);
-        familyDemand.setFamily(family);
-        familyDemand.setUser(user);
-        familyDemand.setVisible(datas.visible != undefined);
-        await familyDemand.save();
-
-        this.setFlash("family_demand_success","Votre demande a été envoyée!");
 
         this.redirect(this.req.header('Referer'));
     }

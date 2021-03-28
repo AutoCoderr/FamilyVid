@@ -17,9 +17,7 @@ export default class Validator {
 	}
 	async isValid() {
 		delete this.datas.action;
-		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
-			return ["Tentative de hack!!"];
-		}
+		this.fillCheckboxs();
 		const errors = await this.checkFields();
 		if (errors.length == 0) return true;
 		if(typeof(this.req.session.flash) == "undefined") {
@@ -42,7 +40,11 @@ export default class Validator {
 	async checkFields() {
 		let errors: Array<string> = [];
 
-		for (let name in this.form.fields) {
+		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
+			return ["Tentative de hack!!"];
+		}
+
+		for (const name in this.form.fields) {
 			const field = this.form.fields[name];
 
 			if (typeof(this.datas[name]) == "undefined") {
@@ -67,9 +69,9 @@ export default class Validator {
 					!this["check"+Helpers.ucFirst(field.type)](field,this.datas[name]))
 			) {
 				errors.push(field.msgError);
+				continue;
 
 			} else if (typeof(field.uniq) != "undefined") {
-				// @ts-ignore
 				let repository = require("../Repositories/"+field.uniq.table+"Repository").default;
 
 				let where = {};
@@ -78,9 +80,29 @@ export default class Validator {
 				if (elem != null) {
 					errors.push(field.uniq.msgError);
 				}
+				continue;
+			}
+
+			if (typeof(field.entity) != "undefined") {
+				let repository = require("../Repositories/"+field.entity+"Repository").default;
+
+				let id = this.datas[name]
+				const elem = await repository.findOne(id);
+				if (elem == null) {
+					errors.push(field.msgError);
+				}
 			}
 		}
 		return errors;
+	}
+
+	fillCheckboxs() {
+		for (const name in this.form.fields) {
+			const field = this.form.fields[name];
+			if (field.type == "checkbox") {
+				this.datas[name] = this.datas[name] != undefined;
+			}
+		}
 	}
 
 
