@@ -26,6 +26,8 @@ export default function Router(app) {
                     let methods: string|Array<string> = ["get"];
                     if (config.methods != undefined) {
                         methods = config.methods;
+                    } else if(config.method != undefined) {
+                        methods = config.method;
                     }
                     if (typeof(methods) === "string") {
                         methods = [methods];

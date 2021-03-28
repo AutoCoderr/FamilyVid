@@ -9,7 +9,13 @@ export default class FamilyDemandRepository extends RepositoryManager {
     static entity = FamilyDemand;
 
     static findOne(id) {
-        return super.findOne(id,[UserModel,FamilyModel]);
+        return super.findOne(id,[
+            UserModel,
+            FamilyModel,
+            {
+                model: UserModel, as: "Applicant"
+            }
+        ]);
     }
 
     static findOneByApplicantIdUserIdAndFamilyId(ApplicantId,UserId,FamilyId) {

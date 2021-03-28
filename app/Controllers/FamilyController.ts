@@ -7,6 +7,7 @@ import FamilyDemandForm from "../Forms/FamilyDemand";
 import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
+import User from "../Entities/User";
 
 export default class FamilyController extends Controller {
     new = async () => {
@@ -56,9 +57,9 @@ export default class FamilyController extends Controller {
         const { userId, familyId } = this.req.params;
         let datas = this.getDatas();
 
-        let applicant = await this.getUser();
-        let user = await UserRepository.findOne(userId);
-        let family = await FamilyRepository.findOne(familyId);
+        let applicant: User = await this.getUser();
+        let user: User = await UserRepository.findOne(userId);
+        let family: Family = await FamilyRepository.findOne(familyId);
 
         if (user == null || family == null) {
             this.setFlash("family_demand_failed","L'utilisateur ou la famille spécifiée n'existent pas");
@@ -66,9 +67,17 @@ export default class FamilyController extends Controller {
             return;
         }
 
+        for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
+            if (eachFamily.getId() == family.getId()) {
+                this.setFlash("family_demand_failed","Vous vous trouvez déjà dans la famille "+family.getName());
+                this.redirect(this.req.header('Referer'));
+                return;
+            }
+        }
+
         let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),userId,familyId);
         if (demand != null) {
-            this.setFlash("family_demand_failed","Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de rentrer dans la famille "+family.getName());
+            this.setFlash("family_demand_failed","Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName());
             this.redirect(this.req.header('Referer'));
             return;
         }
@@ -83,6 +92,60 @@ export default class FamilyController extends Controller {
         this.setFlash("family_demand_success","Votre demande a été envoyée!");
 
         this.redirect(this.req.header('Referer'));
+    }
+
+    demands = async () => {
+        let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id);
+
+        this.render("family/demands.html.twig", {demands});
+    }
+
+    accept_demand = async () => {
+        const {id} = this.req.params;
+
+        const demand: FamilyDemand = await FamilyDemandRepository.findOne(id);
+
+        if (this.checkDemand(demand)) {
+            await (<User>demand.getApplicant()).addFamily(<Family>demand.getFamily(), <boolean>demand.getVisible());
+            await demand.delete();
+
+            this.setFlash("demand_success", "La demandé a été acceptée avec succès!");
+            this.redirect(this.req.header('Referer'));
+        }
+    }
+
+    deny_demand = async () => {
+        const {id} = this.req.params;
+
+        const demand: FamilyDemand = await FamilyDemandRepository.findOne(id);
+
+        if (this.checkDemand(demand)) {
+            await demand.delete();
+
+            this.setFlash("demand_success", "La demandé a été refusée avec succès!");
+            this.redirect(this.req.header('Referer'));
+        }
+    }
+
+    checkDemand(demand: FamilyDemand) {
+        if (demand == null) {
+            this.setFlash("demand_error", "La demande en question n'existe pas");
+            this.redirect(this.req.header('Referer'));
+            return false;
+        }
+
+        if (demand.getApplicant() == null) {
+            this.setFlash("demand_error", "Le demandeur est introuvable");
+            this.redirect(this.req.header('Referer'));
+            return false;
+        }
+
+        if (demand.getFamily() == null) {
+            this.setFlash("demand_error", "Le famille en question n'existe pas");
+            this.redirect(this.req.header('Referer'));
+            return false;
+        }
+        return true;
     }
 
 
