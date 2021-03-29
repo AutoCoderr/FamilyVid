@@ -19,11 +19,11 @@
                     <span>
                         {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} souhaite rejoindre la famille {{ demand.Family.name }}
                     </span>
-                    <form id="form-accept-demand-{{ demand.id }}" action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
-                        <a href="javascript:document.getElementById('form-accept-demand-{{ demand.id }}').submit()">Accepter</a>
+                    <form action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
+                        <input class="btn-custom" type="submit" value="Accepter">
                     </form>
-                    <form id="form-deny-demand-{{ demand.id }}" action="{{ path('family_deny_demand', {'id': demand.id}) }}" method="post">
-                        <a href="javascript:document.getElementById('form-deny-demand-{{ demand.id }}').submit()">Refuser</a>
+                    <form action="{{ path('family_deny_demand', {'id': demand.id}) }}" method="post">
+                        <input class="btn-custom" type="submit" value="Refuser">
                     </form>
                 </li>
             {% endfor %}

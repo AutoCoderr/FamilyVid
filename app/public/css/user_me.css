@@ -1,0 +1,11 @@
+.families-link {
+	position: absolute;
+	left: 150px;
+	top: 150px;
+}
+
+.demands-link {
+	position: absolute;
+	right: 150px;
+	top: 150px;
+}
