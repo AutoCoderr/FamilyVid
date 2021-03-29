@@ -9,7 +9,7 @@
 {% block body %}
     <h1>Vous informations personnelles</h1>
     <div class="infos-container">
-        <a class="families-link btn-custom" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
-        <a class="demands-link btn-custom" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
+        <a class="families-link btn" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
+        <a class="demands-link btn" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
     </div>
 {% endblock %}
