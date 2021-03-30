@@ -23,7 +23,7 @@
     <ul>
         {% for family in user.Families %}
             <li class="family" id="family-{{ family.id }}">
-                <span>{{ family.name }}</span><a class="btn-custom" href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
+                <span>{{ family.name }}</span><a class="btn" href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
                 <div>
                     {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
                 </div>

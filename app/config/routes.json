@@ -75,6 +75,17 @@
 
     }
   },
+  "SectionController": {
+    "prefix": "section_",
+    "prefix_route": "/family/sections",
+
+    "routes": {
+
+      "index": {
+        "route": "/:familyId"
+      }
+    }
+  },
   "UserController": {
     "prefix": "user_",
     "prefix_route": "/user",
