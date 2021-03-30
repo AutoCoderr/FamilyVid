@@ -80,9 +80,12 @@
     "prefix_route": "/family/sections",
 
     "routes": {
-
       "index": {
         "route": "/:familyId"
+      },
+      "new": {
+        "route": "/:familyId/new",
+        "methods": ["GET","POST"]
       }
     }
   },
@@ -91,14 +94,12 @@
     "prefix_route": "/user",
 
     "routes": {
-
       "all": {
         "route": "/all"
       },
       "me": {
         "route": "/me"
       }
-
     }
   }
 }

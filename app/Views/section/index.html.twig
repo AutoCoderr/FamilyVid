@@ -5,6 +5,10 @@
 {% block body %}
     <h1>Famille {{ family.name }}</h1>
 
+    {% if flash.section_success is defined %}
+        <p style="color: green">{{ flash.section_success }}</p>
+    {% endif %}
+
     {% if family.Sections|length > 0 %}
         <h2>Les rubriques :</h2>
         <ul>
@@ -13,9 +17,9 @@
             {% endfor %}
         </ul>
         <h2>Vous pouvez aussi en créer une nouvelle</h2>
-        <a class="btn" href="#">Créer</a>
+        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créer</a>
     {% else %}
         <h2>Il n'y aucune rubrique dans cette famille</h2>
-        <a class="btn" href="#">Créez en une!</a>
+        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créez en une!</a>
     {% endif %}
 {% endblock %}
