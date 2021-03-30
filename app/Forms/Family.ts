@@ -16,7 +16,8 @@ export default function Family() {
                 required: true,
                 maxLength: 50,
                 minLength: 2,
-                msgError: "Le nom doit être compris entre 2 et 50 caractères"
+                msgError: "Le nom doit être compris entre 2 et 50 caractères",
+                uniq: {table: "Family", column: "name", msgError: "Une famille porte déjà ce nom"}
             },
             visible: {
                 type: "checkbox",

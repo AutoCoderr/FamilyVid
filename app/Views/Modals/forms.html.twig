@@ -9,10 +9,12 @@
 {% endif %}
 
 <form action="{{ form.config.action }}" method="{{ form.config.method }}">
+	<table class="form-table">
 	{% for name in form.fields|keys %}
 		{% set field = form.fields[name] %}
 		{% if field.type != "hidden" %}
-			<label>{{ field.label }} :</label>
+			<tr><td>
+			<label>{{ field.label }} :</label></td><td>
 		{% endif %}
 		<input
 			type="{{ field.type }}"
@@ -31,11 +33,12 @@
 			{% if field.required is defined and field.required %} required='required'{% endif %}
 		/>
 		{% if field.type != "hidden" %}
-			<br/>
+			</td></tr>
 		{% endif %}
 	{% endfor %}
+	</table>
 	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>
-	<input type="submit" value="{{ form.config.submit }}"/>
+	<input class="btn" type="submit" value="{{ form.config.submit }}"/>
 </form>
 
 {% if errors is defined %}

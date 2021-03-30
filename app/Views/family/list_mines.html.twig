@@ -3,10 +3,10 @@
 {% block title %}Mes familles{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/family-list.css">
+    <link rel="stylesheet" href="/css/family_list.css">
 {% endblock %}
 {% block javascripts %}
-    <script src="/js/family-list.js"></script>
+    <script async src="/js/family_list.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -23,14 +23,14 @@
     <ul>
         {% for family in session.user.Families %}
             <li class="family" id="family-{{ family.id }}">
-                <span>{{ family.name }}</span><a href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
+                <span>{{ family.name }}</span><a class="btn" href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
                 <div>
                     <form id="form-family-change-display-{{ family.id }}" action="{{ path('family_change_display', {'id': family.id}) }}" method="post">
                         <label>
                             Visible pour les autres
                         </label>
                         <input type="checkbox" name="visible" {% if family.visible %}checked{% endif %}>
-                        <a href="javascript:document.getElementById('form-family-change-display-{{ family.id }}').submit()">Valider</a>
+                        <a class="btn" href="javascript:document.getElementById('form-family-change-display-{{ family.id }}').submit()">Valider</a>
                     </form>
                 </div>
             </li>
