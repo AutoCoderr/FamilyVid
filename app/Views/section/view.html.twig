@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ section.name }}{% endblock %}
+
+{% block body %}
+    <h1>{{ section.name }}</h1>
+
+    {% if section.Medias|length > 0 %}
+        <h2>Les photos/videos :</h2>
+        <ul>
+            {% for media in section.Medias %}
+                <li>{{ media.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Il semblerait qu'il n'y ait pas de media dans cette rubrique</h2>
+        <a class="btn" href="#">Créer en une!</a>
+    {% endif %}
+{% endblock %}

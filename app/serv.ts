@@ -7,9 +7,9 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const session = require('express-session');
 
-Twig.extendFunction('path', function (pathName, params = {}) {
-    return Helpers.getPath(pathName, params);
-});
+Twig.extendFunction('path', (pathName, params = {}) =>
+    Helpers.getPath(pathName, params)
+);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
