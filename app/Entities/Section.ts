@@ -39,6 +39,9 @@ export default class Section extends EntityManager {
                     this.Medias[i] = (new Media()).hydrate(this.Medias[i]);
                 }
             }
+            this.Medias.sort((A,B) => {
+                return (<Date>A.getDate()).getTime() - (<Date>B.getDate()).getTime()
+            });
         }
         return this.Medias;
     }

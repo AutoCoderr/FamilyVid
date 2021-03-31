@@ -63,6 +63,9 @@ export default class Family extends EntityManager {
                     this.Sections[i] = (new Section()).hydrate(this.Sections[i]);
                 }
             }
+            this.Sections.sort((A,B) => {
+                return (<string>A.getName()).toLowerCase() > (<string>B.getName()).toLowerCase() ? 1 : -1;
+            });
         }
         return this.Sections;
     }

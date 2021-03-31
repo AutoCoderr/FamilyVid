@@ -45,5 +45,5 @@ Media.init(
     }
 );
 
-Media.belongsTo(Section);
-Section.hasMany(Media, {as: 'Medias'});
+Media.belongsTo(Section, {onDelete: 'CASCADE'});
+Section.hasMany(Media, {as: 'Medias', onDelete: 'CASCADE'});

@@ -86,6 +86,14 @@
       "new": {
         "route": "/new",
         "methods": ["GET","POST"]
+      },
+      "edit": {
+        "route": "/edit/:sectionId",
+        "methods": ["GET","POST"]
+      },
+      "delete": {
+        "route": "/delete/:sectionId",
+        "method": "POST"
       }
     }
   },
