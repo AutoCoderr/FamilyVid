@@ -31,6 +31,9 @@ export default class Section extends EntityManager {
         }
         return this.Family;
     }
+    getFamilyId() {
+        return this.FamilyId;
+    }
 
     getMedias() {
         if (this.Medias instanceof Array) {

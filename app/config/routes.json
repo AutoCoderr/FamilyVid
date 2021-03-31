@@ -108,6 +108,14 @@
       "new": {
         "route": "/new",
         "methods": ["GET","POST"]
+      },
+      "edit": {
+        "route": "/edit/:mediaId",
+        "methods": ["GET","POST"]
+      },
+      "delete": {
+        "route": "/delete/:mediaId",
+        "methods": "POST"
       }
     }
   },

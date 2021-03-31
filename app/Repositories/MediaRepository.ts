@@ -8,6 +8,6 @@ export default class MediaRepository extends RepositoryManager {
     static entity = Media;
 
     static findOne(id) {
-        return super.findOne(id,[SectionModel]);
+        return super.findOne(id,SectionModel);
     }
 }

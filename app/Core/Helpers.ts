@@ -89,7 +89,7 @@ export default class Helpers {
                 let value = entity["get"+this.ucFirst(name)]();
                 if (!(value instanceof Array) && !(value instanceof EntityManager)) {
                     if (value instanceof Date) {
-                        value = value.getFullYear() + "-" + this.addMissingZero(value.getMonth() + 1) + "-" + this.addMissingZero(value.getDate()) + " " + this.addMissingZero(value.getHours()) + ":" + this.addMissingZero(value.getMinutes()) + ":" + this.addMissingZero(value.getSeconds());
+                        value = value.getFullYear() + "-" + this.addMissingZero(value.getMonth() + 1) + "-" + this.addMissingZero(value.getDate());
                     }
                     form.fields[name].value = value;
                 }
