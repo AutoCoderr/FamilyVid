@@ -17,9 +17,9 @@
             {% endfor %}
         </ul>
         <h2>Vous pouvez aussi ajouter une nouvelle photo/video dans cette rubrique!</h2>
-        <a class="btn" href="{{ path('section_new_media', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer</a>
+        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer</a>
     {% else %}
         <h2>Il semblerait qu'il n'y ait pas de media dans cette rubrique</h2>
-        <a class="btn" href="{{ path('section_new_media', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer en une!</a>
+        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer en une!</a>
     {% endif %}
 {% endblock %}

@@ -3,7 +3,7 @@ import Helpers from "../Core/Helpers";
 export default function Media(familyId,sectionId) {
 	return {
 		config: {
-			action: Helpers.getPath("section_new_media", {familyId,sectionId}),
+			action: Helpers.getPath("media_new", {familyId,sectionId}),
 			method: "POST",
 			submit: "Ajouter",
 			actionName: "create_media",
