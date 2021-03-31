@@ -1,7 +1,6 @@
 import EntityManager from "../Core/EntityManager";
 import MediaModel from "../Models/Media";
 import Section from "./Section";
-import Helpers from "../Core/Helpers";
 
 export default class Media extends EntityManager {
 
@@ -21,8 +20,8 @@ export default class Media extends EntityManager {
         return this.name;
     }
 
-    setDate(date: Date) {
-        this.date = date;
+    setDate(date: string) {
+        this.date = new Date(date);
     }
     getDate(): null|Date {
         return this.date;
