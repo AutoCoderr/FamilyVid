@@ -75,19 +75,61 @@
 
     }
   },
+  "SectionController": {
+    "prefix": "section_",
+    "prefix_route": "/family/:familyId/sections",
+
+    "routes": {
+      "index": {
+        "route": "/"
+      },
+      "new": {
+        "route": "/new",
+        "methods": ["GET","POST"]
+      },
+      "edit": {
+        "route": "/edit/:sectionId",
+        "methods": ["GET","POST"]
+      },
+      "delete": {
+        "route": "/delete/:sectionId",
+        "method": "POST"
+      }
+    }
+  },
+  "MediaController": {
+    "prefix": "media_",
+    "prefix_route": "/family/:familyId/sections/:sectionId",
+
+    "routes": {
+      "index": {
+        "route": "/"
+      },
+      "new": {
+        "route": "/new",
+        "methods": ["GET","POST"]
+      },
+      "edit": {
+        "route": "/edit/:mediaId",
+        "methods": ["GET","POST"]
+      },
+      "delete": {
+        "route": "/delete/:mediaId",
+        "methods": "POST"
+      }
+    }
+  },
   "UserController": {
     "prefix": "user_",
     "prefix_route": "/user",
 
     "routes": {
-
       "all": {
         "route": "/all"
       },
       "me": {
         "route": "/me"
       }
-
     }
   }
 }

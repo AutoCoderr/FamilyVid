@@ -1,6 +1,7 @@
 import EntityManager from "../Core/EntityManager";
 import FamilyModel from "../Models/Family";
 import User from "./User";
+import Section from "./Section";
 
 export default class Family extends EntityManager {
 
@@ -11,6 +12,7 @@ export default class Family extends EntityManager {
     visible: null|boolean = null;
 
     Users: null|Array<User> = [];
+    Sections: null|Array<Section> = [];
 
     setName(name: string) {
         this.name = name;
@@ -52,6 +54,20 @@ export default class Family extends EntityManager {
             }
             this.Users.push(user);
         }
+    }
+
+    getSections() {
+        if (this.Sections instanceof Array) {
+            for (let i=0;i<this.Sections.length;i++) {
+                if (!(this.Sections[i] instanceof Section)) {
+                    this.Sections[i] = (new Section()).hydrate(this.Sections[i]);
+                }
+            }
+            this.Sections.sort((A,B) => {
+                return (<string>A.getName()).toLowerCase() > (<string>B.getName()).toLowerCase() ? 1 : -1;
+            });
+        }
+        return this.Sections;
     }
 
 }

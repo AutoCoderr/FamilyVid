@@ -74,9 +74,9 @@ export default class Validator {
 			} else if (typeof(field.uniq) != "undefined") {
 				let repository = require("../Repositories/"+field.uniq.table+"Repository").default;
 
-				let where = {};
+				let where = field.uniq.where ? field.uniq.where : {};
 				where[field.uniq.column] = this.datas[name];
-				const elem = await repository.findOneByParams({where});
+				const elem = await repository.findOneByParams({where: where});
 				if (elem != null) {
 					errors.push(field.uniq.msgError);
 				}
@@ -105,6 +105,15 @@ export default class Validator {
 		}
 	}
 
+	checkDate(field,value) {
+		const regexDate = new RegExp("^[0-9]{4}-(0[1-9])|(1[0-2])-((0[1-9])|([1-2][0-9])|(3[0-1]))$");
+		return regexDate.test(value);
+	}
+
+	checkSelect(field,value) {
+		return Object.keys(field.options).includes(value);
+	}
+
 
 	checkPassword(field,password) {
 		return !((typeof(field.confirmWith) != "undefined" &&
@@ -122,9 +131,8 @@ export default class Validator {
 	}
 
 	checkEmail(field,email) {
-		let regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
-		let res = regex.test(email);
-		return res;
+		const regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
+		return regex.test(email);
 	}
 
 	thereIsASpecialChar(str) {
