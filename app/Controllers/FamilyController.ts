@@ -35,7 +35,7 @@ export default class FamilyController extends Controller {
             return;
         }
 
-        this.render("family/new.html.twig", {formFamily});
+        this.render("family/new.html.twig", {formFamily, referer: this.req.header('Referer')});
     }
 
     list = async () => {
