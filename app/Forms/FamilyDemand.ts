@@ -20,13 +20,13 @@ export default function FamilyDemand(userId,familyId) {
             },
             user: {
                 type: "hidden",
-                default: userId,
+                value: userId,
                 entity: User.name,
                 msgError: "Cet utilisateur n'existe pas"
             },
             family: {
                 type: "hidden",
-                default: familyId,
+                value: familyId,
                 entity: Family.name,
                 msgError: "Cette famille n'existe pas"
             }
