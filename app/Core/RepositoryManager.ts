@@ -13,8 +13,8 @@ export default class RepositoryManager {
         return await this.findOneByParams(params);
     }
 
-    static findAll() {
-        return this.findAllByParams({});
+    static findAll(include: null|typeof Model|Array<typeof Model|{model: typeof Model, as: string}> = null) {
+        return this.findAllByParams({...(include != null ? {include} : {})});
     }
 
     static async findAllByParams(params): Promise<any> {// @ts-ignore
