@@ -3,7 +3,7 @@
 {% block title %}Créer une famille{% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ referer }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('index') }}">Accueil</a>
     <h1>Créer votre famille!</h1>
     {% include 'Modals/forms.html.twig' with {'form': formFamily} %}
 {% endblock %}

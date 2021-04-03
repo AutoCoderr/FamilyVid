@@ -14,7 +14,7 @@ export default class UserController extends Controller {
           return {...user, Families: user.Families.filter((family) => family.visible)};
         });
 
-        this.render("user/all.html.twig", {users, referer: this.req.header('Referer')});
+        this.render("user/all.html.twig", {users});
     }
 
     me = async () => {

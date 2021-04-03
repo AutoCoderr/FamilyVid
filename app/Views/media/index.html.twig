@@ -15,15 +15,28 @@
 
     {% if section.Medias|length > 0 %}
         <h2>Les photos/videos :</h2>
-        <ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for media in section.Medias %}
-                <li>
-                    <span>{{ media.name }}</span>
-                    <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Editer</a>
-                    {% include 'media/_delete_form.html.twig' with {'mediaId': media.id, 'sectionId': section.id, 'familyId': section.Family.id} %}
-                </li>
+                <tr>
+                    <td>{{ media.name }}</td>
+                    <td>{{ media.date|date('Y-m-d') }}</td>
+                    <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
+                    <td>
+                        <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Editer</a>
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
         <h2>Vous pouvez aussi ajouter une nouvelle photo/video dans cette rubrique!</h2>
         <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer</a>
     {% else %}
