@@ -17,7 +17,7 @@
             {% for demand in demands %}
                 <li>
                     <span>
-                        {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} souhaite rejoindre la famille {{ demand.Family.name }}
+                        {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} ({{ demand.Applicant.email }}) souhaite rejoindre la famille {{ demand.Family.name }}
                     </span>
                     <form action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
                         <input class="btn" type="submit" value="Accepter">
