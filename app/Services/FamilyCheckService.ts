@@ -3,23 +3,31 @@ import Controller from "../Core/Controller";
 import User from "../Entities/User";
 
 export default class FamilyCheckService {
-    static checkFamily(family: Family, controler: Controller) {
+    static checkFamily(family: Family, controller: Controller, json = false) {
         if (family == null) {
-            controler.setFlash("access_family_failed", "Cette famille n'existe pas");
-            controler.redirectToRoute("index");
+            if (json) {
+                controller.res.json({error: "Cette famille n'existe pas"});
+            } else {
+                controller.setFlash("access_family_failed", "Cette famille n'existe pas");
+                controller.redirectToRoute("index");
+            }
             return false;
         }
 
         let found = false;
         for (const user of <Array<User>>family.getUsers()) {
-            if (user.getId() == controler.req.session.user.id) {
+            if (user.getId() == controller.req.session.user.id) {
                 found = true;
                 break;
             }
         }
         if (!found) {
-            controler.setFlash("access_family_failed", "Vous ne faites pas partie de cette famille");
-            controler.redirectToRoute("index");
+            if (json) {
+                controller.res.json({error: "Vous ne faites pas partie de cette famille"});
+            } else {
+                controller.setFlash("access_family_failed", "Vous ne faites pas partie de cette famille");
+                controller.redirectToRoute("index");
+            }
             return false;
         }
         return true;

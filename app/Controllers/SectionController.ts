@@ -95,4 +95,20 @@ export default class SectionController extends Controller {
             }
         }
     }
+
+    search = async () => {
+        const {search} = this.req.body;
+        const {familyId} = this.req.params;
+
+        const family: Family = await FamilyRepository.findOne(familyId);
+
+        if (FamilyCheckService.checkFamily(family,this,true)) {
+            let sections = await SectionRepository.findAllByFamilyAndSearch(familyId,search);
+            sections = await Helpers.serializeEntityArray(sections);
+            sections = sections.map(section => {
+                return {id: section.id, name: section.name}
+            });
+            this.res.json(sections);
+        }
+    }
 }

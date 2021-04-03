@@ -94,6 +94,10 @@
       "delete": {
         "route": "/delete/:sectionId",
         "method": "POST"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
       }
     }
   },

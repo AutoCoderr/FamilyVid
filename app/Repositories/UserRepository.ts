@@ -26,13 +26,13 @@ export default class UserRepository extends RepositoryManager {
             where: {
                 [Op.or]: [
                     {
-                        firstname: { [Op.like]: search }
+                        firstname: { [Op.iLike]: search }
                     },
                     {
-                        lastname: { [Op.like]: search }
+                        lastname: { [Op.iLike]: search }
                     },
                     {
-                        email: { [Op.like]: search }
+                        email: { [Op.iLike]: search }
                     }
                 ],
                 id: {[Op.ne]: id}

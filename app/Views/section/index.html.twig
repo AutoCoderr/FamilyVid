@@ -2,6 +2,13 @@
 
 {% block title %}Famille {{ family.name }}{% endblock %}
 
+{% block javascripts %}
+    <script src="/js/search_section.js"></script>
+    <script>
+        familyId = {{ family.id }};
+    </script>
+{% endblock %}
+
 {% block body %}
     <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
     <h1>Famille {{ family.name }}</h1>
@@ -14,8 +21,9 @@
     {% endif %}
 
     {% if family.Sections|length > 0 %}
+        <input type="text" placeholder="Tapez un mot clé..." id="input_search">
         <h2>Les rubriques :</h2>
-        <ul>
+        <ul id="section_list">
             {% for section in family.Sections %}
                 <li>
                     <span>{{ section.name }}</span>
