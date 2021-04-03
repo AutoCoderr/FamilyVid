@@ -115,7 +115,7 @@
       },
       "delete": {
         "route": "/delete/:mediaId",
-        "methods": "POST"
+        "method": "POST"
       }
     }
   },
@@ -129,6 +129,10 @@
       },
       "me": {
         "route": "/me"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
       }
     }
   }
