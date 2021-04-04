@@ -11,6 +11,7 @@
 
 {% block body %}
     <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
+    <a class="btn right-top-button" href="{{ path('section_global', {'familyId': family.id}) }}">Rechercher dans toutes les rubriques</a>
     <h1>Famille {{ family.name }}</h1>
 
     {% if flash.section_success is defined %}
@@ -21,14 +22,14 @@
     {% endif %}
 
     {% if family.Sections|length > 0 %}
-        <input type="text" placeholder="Tapez un mot clé..." id="input_search">
+        <input type="text" placeholder="Rechercher une section" id="input_search">
         <h2>Les rubriques :</h2>
         <ul id="section_list">
             {% for section in family.Sections %}
                 <li>
                     <span>{{ section.name }}</span>
                     <a class="btn" href="{{ path('media_index', {'sectionId': section.id, 'familyId': family.id}) }}">Voir</a>
-                    <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familyId': family.id}) }}">Editer</a>
+                    <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familyId': family.id}) }}">Modifier</a>
                 </li>
             {% endfor %}
         </ul>

@@ -143,14 +143,13 @@ export default class MediaController extends Controller {
 
         if (FamilyCheckService.checkFamily(family,this,true)) {
             const {search,sort,sortBy,toDisplay} = this.req.body;
-            let medias: Array<any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
-            medias = await Helpers.serializeEntityArray(medias);
+            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
             medias = medias.map(media => {
                 return {
-                    id: media.id,
-                    name: media.name,
-                    date: Helpers.formatDate(media.date),
-                    type: media.type
+                    id: media.getId(),
+                    name: media.getName(),
+                    date: Helpers.formatDate(<Date>media.getDate()),
+                    type: media.getType()
                 }
             });
             this.res.json(medias);

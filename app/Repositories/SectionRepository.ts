@@ -3,7 +3,7 @@ import RepositoryManager from "../Core/RepositoryManager";
 import FamilyModel from "../Models/Family";
 import SectionModel from "../Models/Section";
 import MediaModel from "../Models/Media";
-import {Op} from "sequelize";
+import {col, fn, Op} from "sequelize";
 
 export default class SectionRepository extends RepositoryManager {
     static model = SectionModel;
@@ -23,7 +23,7 @@ export default class SectionRepository extends RepositoryManager {
                name: {[Op.iLike]: search},
                FamilyId: familyId
             },
-            order: ["name"],
+            order: [fn('lower', col("name"))],
         });
     }
 }

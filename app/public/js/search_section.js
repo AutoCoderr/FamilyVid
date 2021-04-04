@@ -35,7 +35,7 @@ function generateSectionList(sections) {
             const editButton = document.createElement("a");
             editButton.classList.add("btn");
             editButton.href = "/family/"+familyId+"/sections/edit/"+section.id;
-            editButton.innerText = "Editer";
+            editButton.innerText = "Modifier";
             li.appendChild(editButton);
 
             ul.appendChild(li);

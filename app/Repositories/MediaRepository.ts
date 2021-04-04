@@ -2,7 +2,7 @@ import RepositoryManager from "../Core/RepositoryManager";
 import SectionModel from "../Models/Section";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
-import {Op} from "sequelize";
+import {col, fn, Op} from "sequelize";
 
 export default class MediaRepository extends RepositoryManager {
     static model = MediaModel;
@@ -12,7 +12,10 @@ export default class MediaRepository extends RepositoryManager {
         return super.findOne(id,SectionModel);
     }
 
-    static findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay){
+    static findAllBySectionIdAndSearchFilters(sectionsId: Array<number>|number,search,sort,sortBy,toDisplay){
+        if (!(sectionsId instanceof Array)) {
+            sectionsId = [sectionsId];
+        }
         const searchDate = search.replace(/\//g,"-");
         search = "%"+search+"%";
         let date: Date = new Date(searchDate);
@@ -43,10 +46,16 @@ export default class MediaRepository extends RepositoryManager {
                             }
                         )
                 ],
-                SectionId: sectionId,
+                SectionId: {[Op.in]: sectionsId},
                 ...(toDisplay != "all" ? {type: toDisplay} : {})
             },
-            order: [[sortBy,sort]]
+            order: [
+                [
+                    sortBy == "name" ? fn('lower', col("Media."+sortBy)) : sortBy,
+                    sort
+                ]
+            ],
+            include: SectionModel
         })
     }
 }
