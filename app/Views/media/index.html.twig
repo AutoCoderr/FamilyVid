@@ -2,6 +2,17 @@
 
 {% block title %}{{ section.name }}{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/media_filters.css">
+{% endblock %}
+{% block javascripts %}
+    <script src="/js/media_search.js"></script>
+    <script>
+        familyId = {{ section.Family.id }};
+        sectionId = {{ section.id }};
+    </script>
+{% endblock %}
+
 {% block body %}
     <a class="btn back-btn" href="{{ path('section_index', {'familyId': section.Family.id}) }}">Retour</a>
     <h1>{{ section.name }}</h1>
@@ -14,6 +25,31 @@
     {% endif %}
 
     {% if section.Medias|length > 0 %}
+        <div id="search-headband">
+            <div>
+                <label for="sortBy_filter">Filtrer par</label>
+                <select id="sortBy_filter">
+                    <option value="date">Date</option>
+                    <option value="name">Nom</option>
+                </select>
+            </div>
+            <div>
+                <label for="toDisplay_filter">Afficher</label>
+                <select id="toDisplay_filter">
+                    <option value="all">Tous</option>
+                    <option value="video">Les vidéos</option>
+                    <option value="picture">Les photos</option>
+                </select>
+            </div>
+            <div>
+                <label for="sort_filter">Trier dans l'ordre</label>
+                <select id="sort_filter">
+                    <option value="ASC">Croissant</option>
+                    <option value="DESC">Décroissant</option>
+                </select>
+            </div>
+        </div>
+        <input type="text" placeholder="Tapez un mot clé..." id="input_search">
         <h2>Les photos/videos :</h2>
         <table>
             <thead>

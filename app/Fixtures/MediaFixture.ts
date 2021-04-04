@@ -23,7 +23,7 @@ export default class MediaFixture {
                         media.setName(randomString());
                     }
                     media.setDate(date);
-                    media.setType(Helpers.rand(0,1) == 1 ? "video": "photo");
+                    media.setType(Helpers.rand(0,1) == 1 ? "video": "picture");
                     media.setSection(section);
                     await media.save();
                 }
