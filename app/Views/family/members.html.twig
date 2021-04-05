@@ -2,6 +2,14 @@
 
 {% block title %}Membres de la famille {{ family.name }}{% endblock %}
 
+{% block javascripts %}
+    <script src="/js/search_user.js"></script>
+    <script>
+        allUser = false;
+        familyId = {{ family.id }};
+    </script>
+{% endblock %}
+
 {% block body %}
     <a class="btn back-btn" href="{{ path('section_index', {'familyId': family.id}) }}">Retour</a>
     <h1>Membres de la famille {{ family.name }}</h1>

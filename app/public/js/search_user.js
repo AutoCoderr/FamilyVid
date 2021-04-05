@@ -1,6 +1,9 @@
+let allUser;
+let familyId;
+
 function searchUsers(search) {
     const data = {search};
-    return fetch("/user/search", {
+    return fetch(allUser ? "/user/search": "/family/"+familyId+"/members/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -32,14 +35,16 @@ function generateUserList(users) {
             tdEmail.innerText = user.email;
             tr.appendChild(tdEmail)
 
-            const tdButton = document.createElement("td");
-            const AButton = document.createElement("a");
-            AButton.classList.add("btn")
-            AButton.href = "/family/list/"+user.id;
-            AButton.innerText = "Voir ses familles ("+user.nbFamily+")";
+            if (allUser) {
+                const tdButton = document.createElement("td");
+                const AButton = document.createElement("a");
+                AButton.classList.add("btn")
+                AButton.href = "/family/list/" + user.id;
+                AButton.innerText = "Voir ses familles (" + user.nbFamily + ")";
 
-            tdButton.appendChild(AButton)
-            tr.appendChild(tdButton);
+                tdButton.appendChild(AButton)
+                tr.appendChild(tdButton);
+            }
 
             tbody.appendChild(tr);
         }
@@ -56,6 +61,6 @@ function generateUserList(users) {
 
 window.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("input_search").addEventListener("input", async function() {
-        console.log(generateUserList(await searchUsers(this.value)));
+        generateUserList(await searchUsers(this.value));
     });
 });

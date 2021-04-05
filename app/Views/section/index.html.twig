@@ -13,7 +13,7 @@
     <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
     <div class="right-top-buttons">
         <a class="btn" href="{{ path('section_global', {'familyId': family.id}) }}">Rechercher dans toutes les rubriques</a>
-        <a class="btn" href="{{ path('family_members', {'id': family.id}) }}">Les membres</a>
+        <a class="btn" href="{{ path('family_members', {'id': family.id}) }}">Les membres ({{ family.Users|length }})</a>
     </div>
     <h1>Famille {{ family.name }}</h1>
 
