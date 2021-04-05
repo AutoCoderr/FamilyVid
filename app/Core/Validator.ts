@@ -20,20 +20,8 @@ export default class Validator {
 		this.fillCheckboxs();
 		const errors = await this.checkFields();
 		if (errors.length == 0) return true;
-		if(typeof(this.req.session.flash) == "undefined") {
-			this.req.session.flash = {};
-		}
 
-		if(typeof(this.req.session.flash.errors) == "undefined") {
-			this.req.session.flash.errors = {};
-		}
-		if (typeof(this.req.session.fields) == "undefined") {
-			this.req.session.flash.datas = {};
-		}
-
-		this.req.session.flash.errors[this.form.config.actionName] = errors;
-		this.req.session.flash.datas[this.form.config.actionName] = {...this.datas};
-
+		this.setFlashErrors(errors);
 		return false;
 	}
 
@@ -189,6 +177,22 @@ export default class Validator {
 					parseInt(num).toString() == num && num != "NaN"
 				)
 		)
+	}
+
+	setFlashErrors(errors: Array<string>) {
+		if(typeof(this.req.session.flash) == "undefined") {
+			this.req.session.flash = {};
+		}
+
+		if(typeof(this.req.session.flash.errors) == "undefined") {
+			this.req.session.flash.errors = {};
+		}
+		if (typeof(this.req.session.fields) == "undefined") {
+			this.req.session.flash.datas = {};
+		}
+
+		this.req.session.flash.errors[this.form.config.actionName] = errors;
+		this.req.session.flash.datas[this.form.config.actionName] = {...this.datas};
 	}
 
 }

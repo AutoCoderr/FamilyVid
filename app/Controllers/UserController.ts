@@ -5,6 +5,7 @@ import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
 import ChangeUserInfos from "../Forms/ChangeUserInfos";
 import Validator from "../Core/Validator";
+import ChangeUserPassword from "../Forms/ChangeUserPassword";
 
 export default class UserController extends Controller {
     all = async () => {
@@ -35,12 +36,31 @@ export default class UserController extends Controller {
                 await user.save();
                 this.setFlash("me_success", "Informations modifiées avec succès!");
             }
+
             this.redirect(this.req.header('Referer'));
             return;
         }
 
+        const userPasswordForm = ChangeUserPassword();
+        const userPasswordValidator = new Validator(this.req,userPasswordForm);
+        if (userPasswordValidator.isSubmitted()) {
+            if (await userPasswordValidator.isValid()) {
+                const datas = this.getDatas();
+                if (Helpers.hashPassword(datas.old_password) != user.getPassword()) {
+                    userPasswordValidator.setFlashErrors([userPasswordForm.fields.old_password.msgError]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+                user.setPassword(datas.password);
+
+                await user.save();
+                this.setFlash("me_success", "Mot de passe modifié avec succès!");
+            }
+            this.redirect(this.req.header('Referer'));
+            return;
+        }
         Helpers.hydrateForm(user,userInfosForm);
-        this.render("user/me.html.twig", {demands,userInfosForm});
+        this.render("user/me.html.twig", {demands,userInfosForm,userPasswordForm});
     }
 
     search = async () => {
