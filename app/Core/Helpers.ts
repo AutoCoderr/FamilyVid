@@ -83,13 +83,17 @@ export default class Helpers {
         return num;
     }
 
+    static formatDate(date: Date) {
+        return date.getFullYear() + "-" + this.addMissingZero(date.getMonth() + 1) + "-" + this.addMissingZero(date.getDate())
+    }
+
     static hydrateForm(entity: EntityManager, form) {
         for (const name in form.fields) {
             if (typeof(entity["get"+this.ucFirst(name)]) == "function") {
                 let value = entity["get"+this.ucFirst(name)]();
                 if (!(value instanceof Array) && !(value instanceof EntityManager)) {
                     if (value instanceof Date) {
-                        value = value.getFullYear() + "-" + this.addMissingZero(value.getMonth() + 1) + "-" + this.addMissingZero(value.getDate());
+                        value = this.formatDate(value);
                     }
                     form.fields[name].value = value;
                 }

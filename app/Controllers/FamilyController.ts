@@ -8,6 +8,7 @@ import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
+import FamilyCheckService from "../Services/FamilyCheckService";
 
 export default class FamilyController extends Controller {
     new = async () => {
@@ -175,5 +176,39 @@ export default class FamilyController extends Controller {
         return true;
     }
 
+    members = async () => {
+        const {id} = this.req.params;
 
+        let family: Family = await FamilyRepository.findOne(id);
+
+        if(FamilyCheckService.checkFamily(family,this)) {
+            this.render("family/members.html.twig", {family});
+        }
+    }
+
+    members_search = async () => {
+        const {id} = this.req.params;
+
+        let family: Family = await FamilyRepository.findOne(id);
+
+        if(FamilyCheckService.checkFamily(family,this, true)) {
+            const {search} = this.req.body;
+            let users = (<Array<User>>family.getUsers())
+                .filter(user => { // filter to get users which match with the search
+                    return search == "" ||
+                    (<string>user.getFirstname()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getFirstname()).toLowerCase() ||
+                    (<string>user.getLastname()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getLastname()).toLowerCase() ||
+                    (<string>user.getEmail()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getEmail()).toLowerCase()
+            })
+                .map(user => {
+                    return {
+                        id: user.getId(),
+                        firstname: user.getFirstname(),
+                        lastname: user.getLastname(),
+                        email: user.getEmail()
+                    }
+            });
+            this.res.json(users);
+        }
+    }
 }

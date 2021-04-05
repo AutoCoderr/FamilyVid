@@ -50,7 +50,7 @@
       },
 
       "change_display": {
-        "route": "/change_display/:id",
+        "route": "/:id/change_display",
         "method": "POST"
       },
 
@@ -64,12 +64,21 @@
       },
 
       "accept_demand": {
-        "route": "/demand/accept/:id",
+        "route": "/:id/demand/accept",
         "method": "POST"
       },
 
       "deny_demand": {
-        "route": "/demand/deny/:id",
+        "route": "/:id/demand/deny",
+        "method": "POST"
+      },
+
+      "members": {
+        "route": "/:id/members"
+      },
+
+      "members_search": {
+        "route": "/:id/members/search",
         "method": "POST"
       }
 
@@ -88,18 +97,29 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/edit/:sectionId",
+        "route": "/:sectionId/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/delete/:sectionId",
+        "route": "/:sectionId/delete",
+        "method": "POST"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
+      },
+      "global": {
+        "route": "/global"
+      },
+      "global_search": {
+        "route": "/global/search",
         "method": "POST"
       }
     }
   },
   "MediaController": {
     "prefix": "media_",
-    "prefix_route": "/family/:familyId/sections/:sectionId",
+    "prefix_route": "/family/:familyId/sections/:sectionId/medias",
 
     "routes": {
       "index": {
@@ -110,12 +130,16 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/edit/:mediaId",
+        "route": "/:mediaId/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/delete/:mediaId",
-        "methods": "POST"
+        "route": "/:mediaId/delete",
+        "method": "POST"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
       }
     }
   },
@@ -129,6 +153,10 @@
       },
       "me": {
         "route": "/me"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
       }
     }
   }

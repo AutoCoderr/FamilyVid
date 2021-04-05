@@ -20,13 +20,27 @@ export default class UserRepository extends RepositoryManager {
         });
     }
 
-    static findAllExceptOne(id) {
+    static findAllBySearchExceptOne(id, search = '') {
+        search = "%"+search+"%";
         return super.findAllByParams({
             where: {
+                [Op.or]: [
+                    {
+                        firstname: { [Op.iLike]: search }
+                    },
+                    {
+                        lastname: { [Op.iLike]: search }
+                    },
+                    {
+                        email: { [Op.iLike]: search }
+                    }
+                ],
                 id: {[Op.ne]: id}
             },
+            order: ["email"],
+            limit: 20,
             include: FamilyModel
-        })
+        });
     }
 
     static findOne(id) {

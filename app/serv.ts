@@ -13,6 +13,8 @@ Twig.extendFunction('path', (pathName, params = {}) =>
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
 app.use(session({
     secret: 'pVkEmEums7PD7kCuhkqF',
     resave: false,

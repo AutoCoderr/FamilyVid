@@ -8,24 +8,16 @@
 {% block javascripts %}
     <script src="/js/media_search.js"></script>
     <script>
-        familyId = {{ section.Family.id }};
-        sectionId = {{ section.id }};
-        globalSearch = false;
+        familyId = {{ family.id }};
+        globalSearch = true;
     </script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familyId': section.Family.id}) }}">Retour</a>
-    <h1>{{ section.name }}</h1>
+    <a class="btn back-btn" href="{{ path('section_index', {'familyId': family.id}) }}">Retour</a>
+    <h1>Recherche globale - {{ family.name }}</h1>
 
-    {% if flash.media_success %}
-        <p style="color: green">{{ flash.media_success }}</p>
-    {% endif %}
-    {% if flash.media_failed %}
-        <p style="color: red">{{ flash.media_failed }}</p>
-    {% endif %}
-
-    {% if section.Medias|length > 0 %}
+    {% if medias|length > 0 %}
         <div id="search-headband">
             <div>
                 <label for="sortBy_filter">Trier par</label>
@@ -58,26 +50,25 @@
                     <th>Nom</th>
                     <th>Date</th>
                     <th>Type</th>
+                    <th>Rubrique</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-            {% for media in section.Medias %}
+            {% for media in medias %}
                 <tr>
                     <td>{{ media.name }}</td>
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
+                    <td><a href="{{ path('media_index', {'familyId': family.id, 'sectionId': media.sectionId}) }}">{{ media.sectionName }}</a></td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Modifier</a>
+                        <a class="btn" href="{{ path('media_edit', {'familyId': family.id, 'sectionId': media.sectionId, 'mediaId': media.id}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        <h2>Vous pouvez aussi ajouter une nouvelle photo/video dans cette rubrique!</h2>
-        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer</a>
     {% else %}
-        <h2>Il semblerait qu'il n'y ait pas de photo/video dans cette rubrique</h2>
-        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer en une!</a>
+        <h2>Il semblerait qu'il n'y ait pas de photo/video dans toutes les rubriques réunies</h2>
     {% endif %}
 {% endblock %}
