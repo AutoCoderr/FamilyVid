@@ -3,6 +3,8 @@ import UserRepository from "../Repositories/UserRepository";
 import Helpers from "../Core/Helpers";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
+import ChangeUserInfos from "../Forms/ChangeUserInfos";
+import Validator from "../Core/Validator";
 
 export default class UserController extends Controller {
     all = async () => {
@@ -18,10 +20,27 @@ export default class UserController extends Controller {
     }
 
     me = async () => {
-        this.req.session.user = await (await <Promise<User>>this.getUser()).serialize();
+        const user = await <Promise<User>>this.getUser();
+        this.req.session.user = await user.serialize();
         let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id,false);
 
-        this.render("user/me.html.twig", {demands});
+        const userInfosForm = ChangeUserInfos();
+        const userInfosValidator = new Validator(this.req,userInfosForm);
+        if (userInfosValidator.isSubmitted()) {
+            if (await userInfosValidator.isValid()) {
+                const datas = this.getDatas();
+                user.setFirstname(datas.firstname);
+                user.setLastname(datas.lastname);
+
+                await user.save();
+                this.setFlash("me_success", "Informations modifiées avec succès!");
+            }
+            this.redirect(this.req.header('Referer'));
+            return;
+        }
+
+        Helpers.hydrateForm(user,userInfosForm);
+        this.render("user/me.html.twig", {demands,userInfosForm});
     }
 
     search = async () => {
@@ -38,6 +57,4 @@ export default class UserController extends Controller {
         });
         this.res.json(users);
     }
-
-
 }
