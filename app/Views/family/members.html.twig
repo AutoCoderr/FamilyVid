@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Membres de la famille {{ family.name }}{% endblock %}
+
+{% block body %}
+    <a class="btn back-btn" href="{{ path('section_index', {'familyId': family.id}) }}">Retour</a>
+    <h1>Membres de la famille {{ family.name }}</h1>
+    <input type="text" placeholder="Tapez un mot clé..." id="input_search">
+    <table>
+        <thead>
+        <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in family.Users %}
+            <tr>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4">Aucun utilisateur trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

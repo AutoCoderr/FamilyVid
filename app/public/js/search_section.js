@@ -28,13 +28,13 @@ function generateSectionList(sections) {
 
             const showButton = document.createElement("a");
             showButton.classList.add("btn");
-            showButton.href = "/family/"+familyId+"/sections/"+section.id+"/";
+            showButton.href = "/family/"+familyId+"/sections/"+section.id+"/medias/";
             showButton.innerText = "Voir";
             li.appendChild(showButton);
 
             const editButton = document.createElement("a");
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familyId+"/sections/edit/"+section.id;
+            editButton.href = "/family/"+familyId+"/sections/"+section.id+"/edit/";
             editButton.innerText = "Modifier";
             li.appendChild(editButton);
 
