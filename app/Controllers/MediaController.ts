@@ -10,6 +10,7 @@ import CheckService from "../Services/CheckService";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
+import DeplaceMedia from "../Forms/DeplaceMedia";
 
 export default class MediaController extends Controller {
 
@@ -32,6 +33,7 @@ export default class MediaController extends Controller {
             const {section} = sectionAndFamily;
             const mediaForm = MediaForm(familyId,sectionId);
             const validator = new Validator(this.req,mediaForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
@@ -66,6 +68,7 @@ export default class MediaController extends Controller {
 
             const mediaForm = MediaForm(familyId,sectionId,mediaId);
             const validator = new Validator(this.req,mediaForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
@@ -80,13 +83,42 @@ export default class MediaController extends Controller {
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
-            } else {
-                this.generateToken();
-                Helpers.hydrateForm(media, mediaForm);
-
-                const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
-                this.render("media/edit.html.twig", {media, mediaForm,deleteMediaForm});
+                return;
             }
+            let deplaceMediaForm;
+            if ((<Array<Section>>family.getSections()).length > 1) {
+                deplaceMediaForm = await DeplaceMedia(familyId, sectionId, mediaId);
+                const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
+
+                if (deplaceMediaValidator.isSubmitted()) {
+                    if (await deplaceMediaValidator.isValid()) {
+                        const datas = this.getDatas();
+
+                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        media.setSection(newSection);
+                        await media.save();
+
+                        this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
+                        this.redirectToRoute("media_index", {familyId, sectionId});
+                    } else {
+                        this.redirect(this.req.header('Referer'));
+                    }
+                    return;
+                }
+            }
+
+
+            this.generateToken();
+            Helpers.hydrateForm(media, mediaForm);
+
+            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            this.render("media/edit.html.twig",
+                {
+                    media,
+                    mediaForm,
+                    deleteMediaForm,
+                    ...((<Array<Section>>family.getSections()).length > 1 ? {deplaceMediaForm} : {})
+                });
         }
     }
 
@@ -97,8 +129,10 @@ export default class MediaController extends Controller {
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
+
             const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
             const validator = new Validator(this.req,deleteMediaForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     await media.delete();

@@ -60,6 +60,7 @@ export default class SectionController extends Controller {
 
             const deleteAllMediasForm = DeleteAllSectionMedias(family.getId(),sectionId);
             const validatorDeleteAllMedias = new Validator(this.req,deleteAllMediasForm);
+
             if (validatorDeleteAllMedias.isSubmitted()) {
                 if (await validatorDeleteAllMedias.isValid()) {
                     this.setFlash("section_success", "Rubrique supprimée avec succès!");
@@ -75,10 +76,12 @@ export default class SectionController extends Controller {
             if ((<Array<Section>>family.getSections()).length > 1) {
                 deplaceMediasForm = await DeplaceSectionMediasAndDelete(family.getId(), sectionId);
                 const validatorDeplaceMedias = new Validator(this.req, deplaceMediasForm);
+
                 if (validatorDeplaceMedias.isSubmitted()) {
                     if (await validatorDeplaceMedias.isValid()) {
                         const datas = this.getDatas();
                         const newSection: Section = await SectionRepository.findOne(datas.section);
+
                         for (const media of <Array<Media>>section.getMedias()) {
                             media.setSection(newSection);
                             await media.save();
@@ -113,6 +116,7 @@ export default class SectionController extends Controller {
 
             const sectionForm = SectionForm(familyId, sectionId);
             const validator = new Validator(this.req,sectionForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
@@ -142,6 +146,7 @@ export default class SectionController extends Controller {
         if (CheckService.checkFamily(family,this)) {
             const sectionForm = SectionForm(familyId);
             const validator = new Validator(this.req, sectionForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
