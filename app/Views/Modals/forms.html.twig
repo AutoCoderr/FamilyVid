@@ -50,7 +50,10 @@
 
 	{% endfor %}
 	</table>
-	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>
+	{% if session.token is defined %}
+		<input name="token" type="hidden" value="{{ session.token }}">
+	{% endif %}
+	<input name="actionName" type="hidden" value="{{ form.config.actionName }}"/>
 	<input class="btn" type="submit" value="{{ form.config.submit }}"/>
 </form>
 

@@ -35,7 +35,7 @@ export default class FamilyController extends Controller {
             }
             return;
         }
-
+        this.generateToken();
         this.render("family/new.html.twig", {formFamily});
     }
 
@@ -50,7 +50,7 @@ export default class FamilyController extends Controller {
         for (let family of user.Families) {
             forms[family.id] = FamilyDemandForm(user.id,family.id);
         }
-
+        this.generateToken();
         this.render("family/list.html.twig", {user, forms})
     }
 

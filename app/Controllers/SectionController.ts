@@ -64,6 +64,7 @@ export default class SectionController extends Controller {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
+                this.generateToken();
                 Helpers.hydrateForm(section, sectionForm);
                 this.render("section/edit.html.twig", {sectionForm, section});
             }
@@ -93,6 +94,7 @@ export default class SectionController extends Controller {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
+                this.generateToken();
                 this.render("section/new.html.twig", {sectionForm,familyId: family.id});
             }
         }
