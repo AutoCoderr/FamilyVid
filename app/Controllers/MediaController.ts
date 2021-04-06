@@ -9,6 +9,7 @@ import Media from "../Entities/Media";
 import FamilyCheckService from "../Services/FamilyCheckService";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
+import DeleteMedia from "../Forms/DeleteMedia";
 
 export default class MediaController extends Controller {
 
@@ -104,7 +105,9 @@ export default class MediaController extends Controller {
             } else {
                 this.generateToken();
                 Helpers.hydrateForm(media, mediaForm);
-                this.render("media/edit.html.twig", {media, mediaForm});
+
+                const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+                this.render("media/edit.html.twig", {media, mediaForm,deleteMediaForm});
             }
         }
     }
@@ -125,8 +128,17 @@ export default class MediaController extends Controller {
         const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
 
         if (FamilyCheckService.checkFamily(family,this)) {
-            await media.delete();
-            this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
+            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            const validator = new Validator(this.req,deleteMediaForm);
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    await media.delete();
+                    this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
+                } else {
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+            }
             this.redirectToRoute('media_index',{familyId,sectionId});
         }
     }

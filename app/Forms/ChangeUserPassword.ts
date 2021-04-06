@@ -7,7 +7,9 @@ export default function ChangeUserPassword() {
             method: "POST",
             submit: "Changer",
             actionName: "change_user_password",
-            msgError: "Erreur lors du changement de mot de passe"
+            msgError: "Erreur lors du changement de mot de passe",
+            formClass: "form-btn",
+            submitClass: "btn"
         },
         fields: {
             old_password: {
