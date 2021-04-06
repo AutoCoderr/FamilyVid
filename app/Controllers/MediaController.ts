@@ -6,7 +6,7 @@ import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
 import MediaForm from "../Forms/Media";
 import Media from "../Entities/Media";
-import FamilyCheckService from "../Services/FamilyCheckService";
+import CheckService from "../Services/CheckService";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
@@ -15,17 +15,10 @@ export default class MediaController extends Controller {
 
     index = async () => {
         const {sectionId,familyId} = this.req.params;
-        let section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "Cette section n'existe pas");
-            this.redirectToRoute("section_index", {familyId});
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {section} = sectionAndFamily;
             this.render("media/index.html.twig", {section});
         }
     }
@@ -33,17 +26,10 @@ export default class MediaController extends Controller {
     new = async () => {
         const {sectionId,familyId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "La section dans laquelle vous souhaitez ajouter un media n'existe pas");
-            this.redirectToRoute("section_index", {familyId})
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {section} = sectionAndFamily;
             const mediaForm = MediaForm(familyId,sectionId);
             const validator = new Validator(this.req,mediaForm);
             if (validator.isSubmitted()) {
@@ -73,19 +59,11 @@ export default class MediaController extends Controller {
     edit = async () => {
         const {familyId,sectionId,mediaId} = this.req.params;
 
-        const media: null|Media = await MediaRepository.findOne(mediaId);
-        if (media == null) {
-            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez éditer n'existe pas");
-            this.redirectToRoute("media_index", {familyId,sectionId})
-            return;
-        }
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
 
-        const section: Section = <Section>media.getSection();
+        if (mediaSectionAndFamily) {
+            const {media,section,family} = mediaSectionAndFamily;
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
             const mediaForm = MediaForm(familyId,sectionId,mediaId);
             const validator = new Validator(this.req,mediaForm);
             if (validator.isSubmitted()) {
@@ -115,19 +93,10 @@ export default class MediaController extends Controller {
     delete = async () => {
         const {familyId,sectionId,mediaId} = this.req.params;
 
-        const media: null|Media = await MediaRepository.findOne(mediaId);
-        if (media == null) {
-            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez supprimer n'existe pas");
-            this.redirectToRoute("media_index", {familyId,sectionId})
-            return;
-        }
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
 
-        const section: Section = <Section>media.getSection();
-
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (mediaSectionAndFamily) {
+            const {media,section,family} = mediaSectionAndFamily;
             const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
             const validator = new Validator(this.req,deleteMediaForm);
             if (validator.isSubmitted()) {
@@ -144,18 +113,11 @@ export default class MediaController extends Controller {
     }
 
     search = async () => {
-        const {sectionId} = this.req.params;
+        const {familyId,sectionId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.res.json({error: "La section dans laquelle vous souhaitez ajouter un media n'existe pas"})
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this, true);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this,true)) {
+        if (sectionAndFamily) {
             const {search,sort,sortBy,toDisplay} = this.req.body;
             let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
             medias = medias.map(media => {

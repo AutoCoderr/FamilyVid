@@ -5,18 +5,20 @@ import SectionForm from "../Forms/Section";
 import Validator from "../Core/Validator";
 import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
-import FamilyCheckService from "../Services/FamilyCheckService";
+import CheckService from "../Services/CheckService";
 import Helpers from "../Core/Helpers";
 import MediaRepository from "../Repositories/MediaRepository";
 import Media from "../Entities/Media";
 import DeleteSection from "../Forms/DeleteSection";
+import DeleteAllSectionMedias from "../Forms/DeleteAllSectionMedias";
+import DeplaceSectionMediasAndDelete from "../Forms/DeplaceSectionMediasAndDelete";
 
 export default class SectionController extends Controller {
     index = async () => {
         const {familyId} = this.req.params;
         const family: Family = await FamilyRepository.findOne(familyId);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (CheckService.checkFamily(family,this)) {
             this.render("section/index.html.twig", {family});
         }
     }
@@ -24,21 +26,21 @@ export default class SectionController extends Controller {
     delete = async () => {
         const {familyId,sectionId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "La section que vous souhaitez supprimer n'existe pas");
-            this.redirectToRoute("section_index", {familyId});
-            return;
-        }
-        const family: Family = await FamilyRepository.findOne((<Family>section.getFamily()).getId());
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {family,section} = sectionAndFamily;
             const deleteSectionForm = DeleteSection(family.id,sectionId);
             const validator = new Validator(this.req,deleteSectionForm);
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    await section.delete();
-                    this.setFlash("section_success", "Rubrique supprimée avec succès!");
+                    if ((<Array<Media>>section.getMedias()).length == 0) {
+                        await section.delete();
+                        this.setFlash("section_success", "Rubrique supprimée avec succès!");
+                    } else {
+                        this.redirectToRoute("section_delete_with_media",{familyId: family.id, sectionId: sectionId});
+                        return;
+                    }
                 } else {
                     this.redirect(this.req.header('Referer'));
                     return;
@@ -48,18 +50,67 @@ export default class SectionController extends Controller {
         }
     }
 
+    delete_with_media = async () => {
+        const {familyId,sectionId} = this.req.params;
+
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
+
+        if (sectionAndFamily) {
+            const {family,section} = sectionAndFamily;
+
+            const deleteAllMediasForm = DeleteAllSectionMedias(family.getId(),sectionId);
+            const validatorDeleteAllMedias = new Validator(this.req,deleteAllMediasForm);
+            if (validatorDeleteAllMedias.isSubmitted()) {
+                if (await validatorDeleteAllMedias.isValid()) {
+                    this.setFlash("section_success", "Rubrique supprimée avec succès!");
+                    await section.delete();
+                    this.redirectToRoute("section_index", {familyId: family.getId()});
+                } else {
+                    this.redirect(this.req.header('Referer'));
+                }
+                return;
+            }
+
+            let deplaceMediasForm;
+            if ((<Array<Section>>family.getSections()).length > 1) {
+                deplaceMediasForm = await DeplaceSectionMediasAndDelete(family.getId(), sectionId);
+                const validatorDeplaceMedias = new Validator(this.req, deplaceMediasForm);
+                if (validatorDeplaceMedias.isSubmitted()) {
+                    if (await validatorDeplaceMedias.isValid()) {
+                        const datas = this.getDatas();
+                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        for (const media of <Array<Media>>section.getMedias()) {
+                            media.setSection(newSection);
+                            await media.save();
+                        }
+                        await section.delete();
+                        this.setFlash("section_success", "Rubrique supprimée avec succès!");
+                        this.redirectToRoute("section_index", {familyId: family.getId()});
+                    } else {
+                        this.redirect(this.req.header('Referer'));
+                    }
+                    return;
+                }
+            }
+
+            this.generateToken();
+            this.render("section/delete_with_media.html.twig",
+                {
+                    section,
+                    deleteAllMediasForm,
+                    ...((<Array<Section>>family.getSections()).length > 1 ? {deplaceMediasForm} : {})
+                });
+        }
+    }
+
     edit = async () => {
         const {familyId,sectionId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "La section que vous souhaitez éditer n'existe pas");
-            this.redirectToRoute("section_index", {familyId});
-            return;
-        }
-        const family: Family = await FamilyRepository.findOne((<Family>section.getFamily()).getId());
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {family,section} = sectionAndFamily;
+
             const sectionForm = SectionForm(familyId, sectionId);
             const validator = new Validator(this.req,sectionForm);
             if (validator.isSubmitted()) {
@@ -88,7 +139,7 @@ export default class SectionController extends Controller {
         const {familyId} = this.req.params;
         const family: Family = await FamilyRepository.findOne(familyId);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (CheckService.checkFamily(family,this)) {
             const sectionForm = SectionForm(familyId);
             const validator = new Validator(this.req, sectionForm);
             if (validator.isSubmitted()) {
@@ -118,7 +169,7 @@ export default class SectionController extends Controller {
 
         const family: Family = await FamilyRepository.findOne(familyId);
 
-        if (FamilyCheckService.checkFamily(family,this,true)) {
+        if (CheckService.checkFamily(family,this,true)) {
             let sections = await SectionRepository.findAllByFamilyAndSearch(familyId,search);
             sections = await Helpers.serializeEntityArray(sections);
             sections = sections.map(section => {
@@ -133,7 +184,7 @@ export default class SectionController extends Controller {
 
         const family: Family = await FamilyRepository.findOne(familyId);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (CheckService.checkFamily(family,this)) {
             const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
                 section.getId()
             );
@@ -157,7 +208,7 @@ export default class SectionController extends Controller {
 
         const family: Family = await FamilyRepository.findOne(familyId);
 
-        if (FamilyCheckService.checkFamily(family,this,true)) {
+        if (CheckService.checkFamily(family,this,true)) {
             const {search,sort,sortBy,toDisplay} = this.req.body;
             const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
                 section.getId()
