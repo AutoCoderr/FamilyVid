@@ -122,6 +122,7 @@ export default class SectionController extends Controller {
                     const datas = this.getDatas();
 
                     section.setName(datas.name);
+                    await section.setSlugFrom("name");
                     await section.save();
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familyId});
@@ -153,6 +154,7 @@ export default class SectionController extends Controller {
 
                     const section = new Section();
                     section.setName(datas.name);
+                    await section.setSlugFrom("name");
                     section.setFamily(family);
 
                     await section.save();

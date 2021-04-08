@@ -6,6 +6,7 @@ export default class FamilyFixture {
         for (const name of familyNames) {
             const family = new Family();
             family.setName(name);
+            await family.setSlugFrom("name");
             await family.save()
         }
     }

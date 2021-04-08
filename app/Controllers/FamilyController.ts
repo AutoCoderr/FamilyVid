@@ -25,6 +25,7 @@ export default class FamilyController extends Controller {
 
                 let family = new Family();
                 family.setName(datas.name);
+                await family.setSlugFrom("name");
 
                 await family.save();
 

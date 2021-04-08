@@ -13,6 +13,34 @@ export default class EntityManager {
         return this.id;
     }
 
+    async setSlugFrom(column) {
+        if (typeof(this[column]) == "undefined" || typeof(this['slug']) == "undefined" ) return null;
+        let slug = this[column].toLowerCase();
+
+        const replaces = {
+            '-': [" ","'",'"',"`"],
+            "a": ["à","â","ä","ã"],
+            "e": ["é","è","ê","ë"],
+            "c": ["ç"],
+            "u": ["ù","û","ü"],
+            "o": ["ô","ö","õ"],
+        }
+
+        for (const replace in replaces) {
+            const toReplaces = replaces[replace];
+            for (const toReplace of toReplaces) {
+                slug = Helpers.replaceAll(slug,toReplace,replace);
+            }
+        }
+        let nb = 1; // @ts-ignore
+        let found = await this.Model.findOne({ where: { slug: slug+(nb > 1 ? "-"+nb : "") } } )
+        while (found != null) {
+            nb += 1; // @ts-ignore
+            found = await this.Model.findOne({ where: { slug: slug+(nb > 1 ? "-"+nb : "") } } )
+        }
+        this['slug'] = slug+(nb > 1 ? "-"+nb : "");
+    }
+
     constructor() {
     }
 

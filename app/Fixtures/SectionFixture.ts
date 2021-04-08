@@ -13,6 +13,7 @@ export default class SectionFixture {
             for (const sectionName of sectionsPerFamily) {
                 let section = new Section();
                 section.setName(sectionName);
+                await section.setSlugFrom("name");
                 section.setFamily(family);
 
                 await section.save();

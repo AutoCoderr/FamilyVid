@@ -8,6 +8,7 @@ export default class Section extends EntityManager {
     Model = SectionModel;
 
     name: null|string = null;
+    slug: null|string = null;
 
     Family: null|Family = null;
     FamilyId : null|number = null;
@@ -19,6 +20,10 @@ export default class Section extends EntityManager {
     }
     getName() {
         return this.name;
+    }
+
+    getSlug() {
+        return this.slug;
     }
 
     setFamily(family: Family) {
