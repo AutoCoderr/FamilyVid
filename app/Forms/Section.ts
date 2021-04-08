@@ -1,9 +1,10 @@
 import Helpers from "../Core/Helpers";
+import Family from "../Entities/Family";
 
-export default function Section(familyId, sectionId = null) {
+export default function Section(family: Family, sectionId = null) {
     return {
         config: {
-            action:  sectionId == null ? Helpers.getPath("section_new", {familyId}) : Helpers.getPath("section_edit", {familyId,sectionId}),
+            action:  sectionId == null ? Helpers.getPath("section_new", {familySlug: family.getSlug()}) : Helpers.getPath("section_edit", {familySlug: family.getSlug(),sectionId}),
             method: "POST",
             submit: sectionId == null ? "Créer" : "Modifier",
             actionName: sectionId == null ? "section_create" : "section_edit",
@@ -23,7 +24,7 @@ export default function Section(familyId, sectionId = null) {
                     table: "Section",
                     column: "name",
                     msgError: "Une rubrique porte déjà ce nom dans cette famille",
-                    where: { FamilyId: familyId }
+                    where: { FamilyId: family.getId() }
                 }
             }
         }

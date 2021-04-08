@@ -1,4 +1,4 @@
-import {Model} from "sequelize";
+import {Model, Op} from "sequelize";
 import Helpers from "./Helpers";
 
 export default class EntityManager {
@@ -33,10 +33,20 @@ export default class EntityManager {
             }
         }
         let nb = 1; // @ts-ignore
-        let found = await this.Model.findOne({ where: { slug: slug+(nb > 1 ? "-"+nb : "") } } )
+        let found = await this.Model.findOne({
+            where: {
+                slug: slug+(nb > 1 ? "-"+nb : ""),
+                ...(this.id != null ? { id: {[Op.ne]: this.id} } : {})
+            }
+        });
         while (found != null) {
             nb += 1; // @ts-ignore
-            found = await this.Model.findOne({ where: { slug: slug+(nb > 1 ? "-"+nb : "") } } )
+            found = await this.Model.findOne({
+                where: {
+                    slug: slug+(nb > 1 ? "-"+nb : ""),
+                    ...(this.id != null ? { id: {[Op.ne]: this.id} } : {})
+                }
+            });
         }
         this['slug'] = slug+(nb > 1 ? "-"+nb : "");
     }

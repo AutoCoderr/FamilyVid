@@ -15,8 +15,8 @@ import DeplaceMedia from "../Forms/DeplaceMedia";
 export default class MediaController extends Controller {
 
     index = async () => {
-        const {sectionId,familyId} = this.req.params;
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
+        const {sectionId,familySlug} = this.req.params;
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
 
         if (sectionAndFamily) {
             const {section} = sectionAndFamily;
@@ -25,13 +25,13 @@ export default class MediaController extends Controller {
     }
 
     new = async () => {
-        const {sectionId,familyId} = this.req.params;
+        const {sectionId,familySlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
 
         if (sectionAndFamily) {
             const {section} = sectionAndFamily;
-            const mediaForm = MediaForm(familyId,sectionId);
+            const mediaForm = MediaForm(familySlug,sectionId);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
@@ -48,26 +48,26 @@ export default class MediaController extends Controller {
 
                     this.setFlash("media_success", "Photo/video ajoutée avec succès!");
 
-                    this.redirectToRoute("media_index", {familyId,sectionId});
+                    this.redirectToRoute("media_index", {familySlug,sectionId});
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
                 this.generateToken();
-                this.render("media/new.html.twig", {mediaForm,sectionId,familyId})
+                this.render("media/new.html.twig", {mediaForm,sectionId,familySlug})
             }
         }
     }
 
     edit = async () => {
-        const {familyId,sectionId,mediaId} = this.req.params;
+        const {familySlug,sectionId,mediaId} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionId,mediaId,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const mediaForm = MediaForm(familyId,sectionId,mediaId);
+            const mediaForm = MediaForm(familySlug,sectionId,mediaId);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
@@ -81,7 +81,7 @@ export default class MediaController extends Controller {
 
                     await media.save();
 
-                    this.redirectToRoute("media_index", {familyId,sectionId});
+                    this.redirectToRoute("media_index", {familySlug,sectionId});
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
@@ -89,7 +89,7 @@ export default class MediaController extends Controller {
             }
             let deplaceMediaForm;
             if ((<Array<Section>>family.getSections()).length > 1) {
-                deplaceMediaForm = await DeplaceMedia(familyId, sectionId, mediaId);
+                deplaceMediaForm = await DeplaceMedia(family, sectionId, mediaId);
                 const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
 
                 if (deplaceMediaValidator.isSubmitted()) {
@@ -101,7 +101,7 @@ export default class MediaController extends Controller {
                         await media.save();
 
                         this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
-                        this.redirectToRoute("media_index", {familyId, sectionId});
+                        this.redirectToRoute("media_index", {familySlug, sectionId});
                     } else {
                         this.redirect(this.req.header('Referer'));
                     }
@@ -113,9 +113,10 @@ export default class MediaController extends Controller {
             this.generateToken();
             Helpers.hydrateForm(media, mediaForm);
 
-            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getId(),media.getId());
             this.render("media/edit.html.twig",
                 {
+                    familySlug: family.getSlug(),
                     media,
                     mediaForm,
                     deleteMediaForm,
@@ -125,9 +126,9 @@ export default class MediaController extends Controller {
     }
 
     delete = async () => {
-        const {familyId,sectionId,mediaId} = this.req.params;
+        const {familySlug,sectionId,mediaId} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionId,mediaId,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
@@ -144,7 +145,7 @@ export default class MediaController extends Controller {
                     return;
                 }
             }
-            this.redirectToRoute('media_index',{familyId,sectionId});
+            this.redirectToRoute('media_index',{familySlug,sectionId});
         }
     }
 

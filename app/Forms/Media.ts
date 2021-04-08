@@ -1,9 +1,9 @@
 import Helpers from "../Core/Helpers";
 
-export default function Media(familyId,sectionId, mediaId = null) {
+export default function Media(familySlug,sectionId, mediaId = null) {
 	return {
 		config: {
-			action: mediaId == null ? Helpers.getPath("media_new", {familyId,sectionId}) : Helpers.getPath("media_edit", {familyId,sectionId,mediaId}),
+			action: mediaId == null ? Helpers.getPath("media_new", {familySlug,sectionId}) : Helpers.getPath("media_edit", {familySlug,sectionId,mediaId}),
 			method: "POST",
 			submit: mediaId == null ? "Ajouter" : "Modifier",
 			actionName: mediaId == null ? "create_media" : "edit_media",
