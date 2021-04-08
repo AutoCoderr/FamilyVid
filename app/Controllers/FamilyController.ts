@@ -64,7 +64,7 @@ export default class FamilyController extends Controller {
         this.req.session.user = await user.serialize();
         let forms = {};
         for (const family of <Array<Family>>user.getFamilies()) {
-            const form = FamilyChangeDisplay(family.getId());
+            const form = FamilyChangeDisplay(family.getSlug());
             Helpers.hydrateForm(family,form);
             forms[<number>family.getId()] = form;
         }
@@ -73,13 +73,13 @@ export default class FamilyController extends Controller {
     }
 
     change_display = async () => {
-        const {id} = this.req.params;
+        const {slug} = this.req.params;
 
         const me = await <Promise<User>>this.getUser();
         for (const family of <Array<Family>>me.getFamilies()) {
-            if (family.getId() == id) {
+            if (family.getSlug() == slug) {
 
-                const changeDisplayform = FamilyChangeDisplay(id);
+                const changeDisplayform = FamilyChangeDisplay(slug);
                 const validator = new Validator(this.req,changeDisplayform);
                 if (validator.isSubmitted()) {
                     if (await validator.isValid()) {
@@ -225,9 +225,9 @@ export default class FamilyController extends Controller {
     }
 
     members = async () => {
-        const {id} = this.req.params;
+        const {slug} = this.req.params;
 
-        let family: Family = await FamilyRepository.findOne(id);
+        let family: Family = await FamilyRepository.findOneBySlug(slug)
 
         if(CheckService.checkFamily(family,this)) {
             this.render("family/members.html.twig", {family});
@@ -235,9 +235,9 @@ export default class FamilyController extends Controller {
     }
 
     members_search = async () => {
-        const {id} = this.req.params;
+        const {slug} = this.req.params;
 
-        let family: Family = await FamilyRepository.findOne(id);
+        let family: Family = await FamilyRepository.findOneBySlug(slug);
 
         if(CheckService.checkFamily(family,this, true)) {
             const {search} = this.req.body;

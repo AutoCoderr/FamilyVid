@@ -1,9 +1,9 @@
 let allUser;
-let familyId;
+let familySlug;
 
 function searchUsers(search) {
     const data = {search};
-    return fetch(allUser ? "/user/search": "/family/"+familyId+"/members/search", {
+    return fetch(allUser ? "/user/search": "/family/"+familySlug+"/members/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

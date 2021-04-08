@@ -42,7 +42,6 @@
       },
 
       "list": {
-        "route": "/list/:userId"
       },
 
       "list_mines": {
@@ -50,7 +49,7 @@
       },
 
       "change_display": {
-        "route": "/:id/change_display",
+        "route": "/:slug/change_display",
         "method": "POST"
       },
 
@@ -74,11 +73,11 @@
       },
 
       "members": {
-        "route": "/:id/members"
+        "route": "/:slug/members"
       },
 
       "members_search": {
-        "route": "/:id/members/search",
+        "route": "/:slug/members/search",
         "method": "POST"
       }
 
