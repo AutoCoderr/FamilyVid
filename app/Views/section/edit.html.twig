@@ -9,5 +9,5 @@
 	{% include 'Modals/forms.html.twig' with {'form': sectionForm} %}
 	<br/>
 	<br/>
-	{% include 'section/_delete_form.html.twig' with {'sectionId': section.id, 'familyId': section.Family.id} %}
+	{% include 'Modals/forms.html.twig' with {'form': deleteSectionForm} %}
 {% endblock %}

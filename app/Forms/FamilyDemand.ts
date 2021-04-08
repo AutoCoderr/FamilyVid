@@ -9,7 +9,9 @@ export default function FamilyDemand(userId,familyId) {
             method: "POST",
             submit: "Demander",
             actionName: "family_demand",
-            msgError: "Echec de l'envoie de la demande"
+            msgError: "Echec de l'envoie de la demande",
+            formClass: "form-btn",
+            submitClass: "btn"
         },
         fields: {
             visible: {

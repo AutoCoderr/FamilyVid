@@ -7,9 +7,22 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Vous informations personnelles</h1>
-    <div class="infos-container">
-        <a class="families-link btn" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
-        <a class="demands-link btn" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
+    <h1>Vos informations personnelles</h1>
+
+    <a class="families-link btn" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
+    <a class="demands-link btn" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
+    <div class="forms">
+        <div>
+            <h2>Vos informations personnelles :</h2>
+            Email : {{ session.user.email }}
+            {% include 'Modals/forms.html.twig' with {'form': userInfosForm} %}
+        </div>
+        <div>
+            <h2>Changer votre mot de passe :</h2>
+            {% include 'Modals/forms.html.twig' with {'form': userPasswordForm} %}
+        </div>
     </div>
+    {% if flash.me_success is defined %}
+        <p style="color: green">{{ flash.me_success }}</p>
+    {% endif %}
 {% endblock %}

@@ -1,15 +1,14 @@
-{% if flash is defined %}
-	{% if flash.errors is defined and flash.errors[form.config.actionName] is defined %}
-		{% set errors = flash.errors[form.config.actionName] %}
-	{% endif %}
-
-	{% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
-		{% set datas = flash.datas[form.config.actionName] %}
-	{% endif %}
-{% endif %}
-
-<form action="{{ form.config.action }}" method="{{ form.config.method }}">
-	<table class="form-table">
+<form
+		action="{{ form.config.action }}"
+		method="{{ form.config.method }}"
+		{% if form.config.confirmOnSumit is defined %}
+			onsubmit="return confirm(`{{ form.config.confirmOnSumit }}`)"
+		{% endif %}
+		{% if form.config.formClass is defined %}
+			class="{{ form.config.formClass }}"
+		{% endif %}
+>
+	<table>
 
 	{% for name in form.fields|keys %}
 
@@ -29,7 +28,10 @@
 				{% for value in field.options|keys %}
 					<option
 							value="{{ value }}"
-							{% if field.value is defined and field.value == value %}selected{% endif %}
+							{% if (field.value is defined and field.value == value) or
+								(flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 and flash.datas[form.config.actionName][name] == value)  %}
+								selected
+							{% endif %}
 					>
 						{{ field.options[value] }}
 					</option>
@@ -39,8 +41,8 @@
 			<input
 					type="{{ field.type }}"
 					name="{{ name }}"
-					{% if datas is defined %}
-						value="{{ datas[name] }}"
+					{% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+						value="{{ flash.datas[form.config.actionName][name] }}"
 					{% elseif field.value is defined %}
 						{% if field.type == "checkbox" %}
 							{{ field.value ? "checked" : "" }}
@@ -50,6 +52,7 @@
 					{% endif %}
 					{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
 					{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
+					{% if field.class is defined %}class="{{ field.class }}"{% endif %}
 					{% if field.required is defined and field.required %} required='required'{% endif %}
 			/>
 		{% endif %}
@@ -60,13 +63,21 @@
 
 	{% endfor %}
 	</table>
-	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>
-	<input class="btn" type="submit" value="{{ form.config.submit }}"/>
+	{% if session.token is defined %}
+		<input name="token" type="hidden" value="{{ session.token }}">
+	{% endif %}
+	<input name="actionName" type="hidden" value="{{ form.config.actionName }}"/>
+	<input
+			{% if form.config.submitClass is defined %}
+				class="{{ form.config.submitClass }}"
+			{% endif %}
+			type="submit"
+			value="{{ form.config.submit }}"/>
 </form>
 
-{% if errors is defined %}
+{% if flash.errors[form.config.actionName] is defined and flash.errors[form.config.actionName]|length > 0  %}
 	<ul>
-	{% for error in errors %}
+	{% for error in flash.errors[form.config.actionName] %}
 		<li style="color: red;">{{ error }}</li>
 	{% endfor %}
 	</ul>

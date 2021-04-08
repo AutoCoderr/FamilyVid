@@ -16,6 +16,15 @@ export default class SectionRepository extends RepositoryManager {
         ]);
     }
 
+    static findAllByFamilyIdExceptOne(familyId,sectionId) {
+        return super.findAllByParams({
+           where: {
+               FamilyId: familyId,
+               id: { [Op.ne]: sectionId }
+           }
+        });
+    }
+
     static findAllByFamilyAndSearch(familyId,search) {
         search = "%"+search+"%";
         return super.findAllByParams({

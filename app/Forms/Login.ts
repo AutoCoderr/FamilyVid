@@ -7,7 +7,9 @@ export default function Login() {
 			method: "POST",
 			submit: "Se connecter",
 			actionName: "login",
-			msgError: "Connexion échouée"
+			msgError: "Connexion échouée",
+			formClass: "form-btn",
+			submitClass: "btn"
 		},
 		fields: {
 			email: {

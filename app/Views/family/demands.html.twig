@@ -19,12 +19,8 @@
                     <span>
                         {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} ({{ demand.Applicant.email }}) souhaite rejoindre la famille {{ demand.Family.name }}
                     </span>
-                    <form action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
-                        <input class="btn" type="submit" value="Accepter">
-                    </form>
-                    <form action="{{ path('family_deny_demand', {'id': demand.id}) }}" method="post">
-                        <input class="btn" type="submit" value="Refuser">
-                    </form>
+                    {% include 'Modals/forms.html.twig' with {'form': acceptForms[demand.id]} %}
+                    {% include 'Modals/forms.html.twig' with {'form': denyForms[demand.id]} %}
                 </li>
             {% endfor %}
         </ul>

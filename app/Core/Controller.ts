@@ -97,4 +97,13 @@ export default class Controller {
         }
         this.req.session.flash[key] = msgs;
     }
+
+    generateToken() {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%*!?/&#@";
+        let token = "";
+        for (let i=0;i<20;i++) {
+            token += chars[Helpers.rand(0,chars.length-1)];
+        }
+        this.req.session.token = token;
+    }
 }
