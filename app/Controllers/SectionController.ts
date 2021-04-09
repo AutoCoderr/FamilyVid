@@ -84,6 +84,7 @@ export default class SectionController extends Controller {
 
                         for (const media of <Array<Media>>section.getMedias()) {
                             media.setSection(newSection);
+                            await media.setSlugFrom("name", {SectionId: newSection.getId() });
                             await media.save();
                         }
                         await section.delete();
@@ -122,7 +123,7 @@ export default class SectionController extends Controller {
                     const datas = this.getDatas();
 
                     section.setName(datas.name);
-                    await section.setSlugFrom("name");
+                    await section.setSlugFrom("name", {FamilyId: family.getId()});
                     await section.save();
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
@@ -154,7 +155,7 @@ export default class SectionController extends Controller {
 
                     const section = new Section();
                     section.setName(datas.name);
-                    await section.setSlugFrom("name");
+                    await section.setSlugFrom("name", {FamilyId: family.getId()});
                     section.setFamily(family);
 
                     await section.save();

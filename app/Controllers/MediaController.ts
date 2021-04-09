@@ -1,6 +1,4 @@
 import Controller from "../Core/Controller";
-import FamilyRepository from "../Repositories/FamilyRepository";
-import Family from "../Entities/Family";
 import Validator from "../Core/Validator";
 import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
@@ -30,17 +28,18 @@ export default class MediaController extends Controller {
         const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
 
         if (sectionAndFamily) {
-            const {section} = sectionAndFamily;
+            const {section,family} = sectionAndFamily;
             const mediaForm = MediaForm(familySlug,sectionId);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
+
                     let media = new Media();
                     media.setDate(datas.date);
                     media.setName(datas.name != "" ? datas.name : datas.date);
-                    await media.setSlugFrom("name");
+                    await media.setSlugFrom("name", {SectionId: section.getId() });
                     media.setType(datas.type);
                     media.setSection(section);
 
@@ -76,7 +75,7 @@ export default class MediaController extends Controller {
 
                     media.setDate(datas.date);
                     media.setName(datas.name);
-                    await media.setSlugFrom("name");
+                    await media.setSlugFrom("name", {SectionId: section.getId() });
                     media.setType(datas.type);
 
                     await media.save();
@@ -98,6 +97,7 @@ export default class MediaController extends Controller {
 
                         const newSection: Section = await SectionRepository.findOne(datas.section);
                         media.setSection(newSection);
+                        await media.setSlugFrom("name", {SectionId: newSection.getId() });
                         await media.save();
 
                         this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
