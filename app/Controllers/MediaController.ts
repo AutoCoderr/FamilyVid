@@ -9,6 +9,7 @@ import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
 import DeplaceMedia from "../Forms/DeplaceMedia";
+import UploadService from "../Services/UploadService";
 
 export default class MediaController extends Controller {
 
@@ -34,20 +35,14 @@ export default class MediaController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
+                    if(await UploadService.uploadMedia(this.getDatas(),section)) {
+                        this.setFlash("media_success", "Photo/video ajoutée avec succès!");
 
-                    let media = new Media();
-                    media.setDate(datas.date);
-                    media.setName(datas.name != "" ? datas.name : datas.date);
-                    await media.setSlugFrom("name");
-                    media.setType(datas.type);
-                    media.setSection(section);
-
-                    await media.save();
-
-                    this.setFlash("media_success", "Photo/video ajoutée avec succès!");
-
-                    this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                        this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                    } else {
+                        validator.setFlashErrors(["Echec de mise en ligne de la photo/video"]);
+                        this.redirect(this.req.header('Referer'));
+                    }
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }

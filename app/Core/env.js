@@ -5,5 +5,6 @@ module.exports = {
   DB_NAME: "db",
   DB_HOST: "database",
   DB_PORT: 5432,
-  DB_DRIVER: "postgres"
+  DB_DRIVER: "postgres",
+  UPLOAD_DIR: "Medias"
 };

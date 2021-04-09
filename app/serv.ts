@@ -6,6 +6,7 @@ const {twig} = Twig;
 const express = require("express");
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const fileUpload = require('express-fileupload');
 
 Twig.extendFunction('path', (pathName, params = {}) =>
     Helpers.getPath(pathName, params)
@@ -21,6 +22,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 60*60*1000 }
 }));
+app.use(fileUpload());
 app.use(express.static('public'));
 app.use(function(req, res, next){
     if (req.session.flash && Object.keys(req.session.flash).length > 0) {

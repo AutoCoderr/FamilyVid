@@ -10,7 +10,11 @@ export default class Helpers {
         if (req.method === "GET") {
             return {...req.query};
         } else if (req.method == "POST") {
-            return {...req.body};
+            let datas = {...req.body};
+            if (req.files != undefined) {
+                datas = {...datas, ...req.files};
+            }
+            return datas;
         }
         return {};
     }

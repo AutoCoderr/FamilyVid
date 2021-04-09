@@ -114,7 +114,6 @@ export default class Validator {
 		return Object.keys(field.options).includes(value);
 	}
 
-
 	checkPassword(field,password) {
 		return !((typeof(field.confirmWith) != "undefined" &&
 			password !== this.datas[field.confirmWith]) ||
@@ -133,6 +132,10 @@ export default class Validator {
 	checkEmail(field,email) {
 		const regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
 		return regex.test(email);
+	}
+
+	checkFile(field,file) {
+		return !(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)
 	}
 
 	thereIsASpecialChar(str) {
