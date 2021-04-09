@@ -96,15 +96,15 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/:sectionId/edit",
+        "route": "/:sectionSlug/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/:sectionId/delete",
+        "route": "/:sectionSlug/delete",
         "method": "POST"
       },
       "delete_with_media": {
-        "route": "/:sectionId/delete/medias",
+        "route": "/:sectionSlug/delete/medias",
         "methods": ["GET","POST"]
       },
       "search": {
@@ -122,7 +122,7 @@
   },
   "MediaController": {
     "prefix": "media_",
-    "prefix_route": "/family/:familySlug/sections/:sectionId/medias",
+    "prefix_route": "/family/:familySlug/sections/:sectionSlug/medias",
 
     "routes": {
       "index": {

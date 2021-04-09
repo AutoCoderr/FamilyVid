@@ -3,7 +3,7 @@
 {% block title %}Supprimer {{ section.name }}{% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_edit', {familySlug: section.Family.slug, sectionId: section.id}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('section_edit', {familySlug: section.Family.slug, sectionSlug: section.slug}) }}">Retour</a>
     <h1>Supprimer {{ section.name }}</h1>
     <p>Il semblerait que la rubrique '{{ section.name }}' possède des photos et/ou des vidéos</p>
     {% if deplaceMediasForm is defined %}

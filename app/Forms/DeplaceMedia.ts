@@ -3,15 +3,15 @@ import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
 import Family from "../Entities/Family";
 
-export default async function DeplaceMedia(family: Family, sectionId, mediaId) {
+export default async function DeplaceMedia(family: Family, section: Section, mediaId) {
     let options: any = {};
-    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(family.getId(),sectionId);
+    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(family.getId(),section.getId());
     for (const section of sections) {
         options[<number>section.getId()] = section.getName();
     }
     return {
         config: {
-            action: Helpers.getPath("media_edit", {familySlug: family.getSlug(),sectionId,mediaId}),
+            action: Helpers.getPath("media_edit", {familySlug: family.getSlug(),sectionSlug: section.getSlug(),mediaId}),
             method: "POST",
             submit: "Déplacer",
             actionName: "deplace_media",

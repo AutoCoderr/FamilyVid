@@ -13,8 +13,8 @@ import DeplaceMedia from "../Forms/DeplaceMedia";
 export default class MediaController extends Controller {
 
     index = async () => {
-        const {sectionId,familySlug} = this.req.params;
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
+        const {sectionSlug,familySlug} = this.req.params;
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this);
 
         if (sectionAndFamily) {
             const {section} = sectionAndFamily;
@@ -23,13 +23,13 @@ export default class MediaController extends Controller {
     }
 
     new = async () => {
-        const {sectionId,familySlug} = this.req.params;
+        const {sectionSlug,familySlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this);
 
         if (sectionAndFamily) {
-            const {section,family} = sectionAndFamily;
-            const mediaForm = MediaForm(familySlug,sectionId);
+            const {section} = sectionAndFamily;
+            const mediaForm = MediaForm(familySlug,sectionSlug);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
@@ -39,7 +39,7 @@ export default class MediaController extends Controller {
                     let media = new Media();
                     media.setDate(datas.date);
                     media.setName(datas.name != "" ? datas.name : datas.date);
-                    await media.setSlugFrom("name", {SectionId: section.getId() });
+                    await media.setSlugFrom("name");
                     media.setType(datas.type);
                     media.setSection(section);
 
@@ -47,26 +47,26 @@ export default class MediaController extends Controller {
 
                     this.setFlash("media_success", "Photo/video ajoutée avec succès!");
 
-                    this.redirectToRoute("media_index", {familySlug,sectionId});
+                    this.redirectToRoute("media_index", {familySlug,sectionSlug});
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
                 this.generateToken();
-                this.render("media/new.html.twig", {mediaForm,sectionId,familySlug})
+                this.render("media/new.html.twig", {mediaForm,sectionSlug,familySlug})
             }
         }
     }
 
     edit = async () => {
-        const {familySlug,sectionId,mediaId} = this.req.params;
+        const {familySlug,sectionSlug,mediaId} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionId,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaId,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const mediaForm = MediaForm(familySlug,sectionId,mediaId);
+            const mediaForm = MediaForm(familySlug,sectionSlug,mediaId);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
@@ -75,12 +75,12 @@ export default class MediaController extends Controller {
 
                     media.setDate(datas.date);
                     media.setName(datas.name);
-                    await media.setSlugFrom("name", {SectionId: section.getId() });
+                    await media.setSlugFrom("name");
                     media.setType(datas.type);
 
                     await media.save();
 
-                    this.redirectToRoute("media_index", {familySlug,sectionId});
+                    this.redirectToRoute("media_index", {familySlug,sectionSlug});
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
@@ -88,7 +88,7 @@ export default class MediaController extends Controller {
             }
             let deplaceMediaForm;
             if ((<Array<Section>>family.getSections()).length > 1) {
-                deplaceMediaForm = await DeplaceMedia(family, sectionId, mediaId);
+                deplaceMediaForm = await DeplaceMedia(family, section, mediaId);
                 const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
 
                 if (deplaceMediaValidator.isSubmitted()) {
@@ -97,11 +97,11 @@ export default class MediaController extends Controller {
 
                         const newSection: Section = await SectionRepository.findOne(datas.section);
                         media.setSection(newSection);
-                        await media.setSlugFrom("name", {SectionId: newSection.getId() });
+                        await media.setSlugFrom("name");
                         await media.save();
 
                         this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
-                        this.redirectToRoute("media_index", {familySlug, sectionId});
+                        this.redirectToRoute("media_index", {familySlug, sectionSlug});
                     } else {
                         this.redirect(this.req.header('Referer'));
                     }
@@ -113,7 +113,7 @@ export default class MediaController extends Controller {
             this.generateToken();
             Helpers.hydrateForm(media, mediaForm);
 
-            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getId(),media.getId());
+            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getSlug(),media.getId());
             this.render("media/edit.html.twig",
                 {
                     familySlug: family.getSlug(),
@@ -126,37 +126,38 @@ export default class MediaController extends Controller {
     }
 
     delete = async () => {
-        const {familySlug,sectionId,mediaId} = this.req.params;
+        const {familySlug,sectionSlug,mediaId} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionId,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaId,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            const deleteMediaForm = DeleteMedia(family.getId(),section.getSlug(),media.getId());
             const validator = new Validator(this.req,deleteMediaForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     await media.delete();
-                    this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
+                    this.setFlash("media_success", "La photo/vidéo '"+media.getName()+"' a été supprimée avec succès!");
                 } else {
                     this.redirect(this.req.header('Referer'));
                     return;
                 }
             }
-            this.redirectToRoute('media_index',{familySlug,sectionId});
+            this.redirectToRoute('media_index',{familySlug,sectionSlug});
         }
     }
 
     search = async () => {
-        const {familyId,sectionId} = this.req.params;
+        const {familySlug,sectionSlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this, true);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this, true);
 
         if (sectionAndFamily) {
+            const {section} = sectionAndFamily;
             const {search,sort,sortBy,toDisplay} = this.req.body;
-            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
+            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(<number>section.getId(),search,sort,sortBy,toDisplay);
             medias = medias.map(media => {
                 return {
                     id: media.getId(),

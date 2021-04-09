@@ -3,7 +3,7 @@
 {% block title %}Ajout de photo/vidéo{% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionId': sectionId}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionSlug': sectionSlug}) }}">Retour</a>
     <h1>Ajout de photo/vidéo</h1>
 
     {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}

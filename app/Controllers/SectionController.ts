@@ -24,13 +24,13 @@ export default class SectionController extends Controller {
     }
 
     delete = async () => {
-        const {familySlug,sectionId} = this.req.params;
+        const {familySlug,sectionSlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this);
 
         if (sectionAndFamily) {
             const {family,section} = sectionAndFamily;
-            const deleteSectionForm = DeleteSection(family.getSlug(),sectionId);
+            const deleteSectionForm = DeleteSection(family.getSlug(),sectionSlug);
             const validator = new Validator(this.req,deleteSectionForm);
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
@@ -38,7 +38,7 @@ export default class SectionController extends Controller {
                         await section.delete();
                         this.setFlash("section_success", "Rubrique supprimée avec succès!");
                     } else {
-                        this.redirectToRoute("section_delete_with_media",{familySlug: family.getSlug(), sectionId: sectionId});
+                        this.redirectToRoute("section_delete_with_media",{familySlug: family.getSlug(), sectionSlug: sectionSlug});
                         return;
                     }
                 } else {
@@ -51,14 +51,14 @@ export default class SectionController extends Controller {
     }
 
     delete_with_media = async () => {
-        const {familySlug,sectionId} = this.req.params;
+        const {familySlug,sectionSlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this);
 
         if (sectionAndFamily) {
             const {family,section} = sectionAndFamily;
 
-            const deleteAllMediasForm = DeleteAllSectionMedias(family.getSlug(),sectionId);
+            const deleteAllMediasForm = DeleteAllSectionMedias(family.getSlug(),sectionSlug);
             const validatorDeleteAllMedias = new Validator(this.req,deleteAllMediasForm);
 
             if (validatorDeleteAllMedias.isSubmitted()) {
@@ -74,7 +74,7 @@ export default class SectionController extends Controller {
 
             let deplaceMediasForm;
             if ((<Array<Section>>family.getSections()).length > 1) {
-                deplaceMediasForm = await DeplaceSectionMediasAndDelete(family, sectionId);
+                deplaceMediasForm = await DeplaceSectionMediasAndDelete(family, section);
                 const validatorDeplaceMedias = new Validator(this.req, deplaceMediasForm);
 
                 if (validatorDeplaceMedias.isSubmitted()) {
@@ -84,7 +84,6 @@ export default class SectionController extends Controller {
 
                         for (const media of <Array<Media>>section.getMedias()) {
                             media.setSection(newSection);
-                            await media.setSlugFrom("name", {SectionId: newSection.getId() });
                             await media.save();
                         }
                         await section.delete();
@@ -108,14 +107,14 @@ export default class SectionController extends Controller {
     }
 
     edit = async () => {
-        const {familySlug,sectionId} = this.req.params;
+        const {familySlug,sectionSlug} = this.req.params;
 
-        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionId, this);
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familySlug,sectionSlug, this);
 
         if (sectionAndFamily) {
             const {family,section} = sectionAndFamily;
 
-            const sectionForm = SectionForm(family, sectionId);
+            const sectionForm = SectionForm(family, sectionSlug);
             const validator = new Validator(this.req,sectionForm);
 
             if (validator.isSubmitted()) {
@@ -123,7 +122,7 @@ export default class SectionController extends Controller {
                     const datas = this.getDatas();
 
                     section.setName(datas.name);
-                    await section.setSlugFrom("name", {FamilyId: family.getId()});
+                    await section.setSlugFrom("name");
                     await section.save();
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
@@ -134,7 +133,7 @@ export default class SectionController extends Controller {
                 this.generateToken();
                 Helpers.hydrateForm(section, sectionForm);
 
-                const deleteSectionForm = DeleteSection(family.getSlug(),sectionId);
+                const deleteSectionForm = DeleteSection(family.getSlug(),sectionSlug);
                 this.render("section/edit.html.twig", {sectionForm,deleteSectionForm, section});
             }
         }
@@ -155,7 +154,7 @@ export default class SectionController extends Controller {
 
                     const section = new Section();
                     section.setName(datas.name);
-                    await section.setSlugFrom("name", {FamilyId: family.getId()});
+                    await section.setSlugFrom("name");
                     section.setFamily(family);
 
                     await section.save();
@@ -203,7 +202,7 @@ export default class SectionController extends Controller {
                     name: media.getName(),
                     date: Helpers.formatDate(<Date>media.getDate()),
                     type: media.getType(),
-                    sectionId: media.getSection().getId(),
+                    sectionSlug: media.getSection().getSlug(),
                     sectionName: media.getSection().getName()
                 }
             });
@@ -228,7 +227,7 @@ export default class SectionController extends Controller {
                     name: media.getName(),
                     date: Helpers.formatDate(<Date>media.getDate()),
                     type: media.getType(),
-                    sectionId: media.getSection().getId(),
+                    sectionSlug: media.getSection().getSlug(),
                     sectionName: media.getSection().getName()
                 }
             });
