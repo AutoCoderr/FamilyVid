@@ -6,12 +6,12 @@
     <script src="/js/search_user.js"></script>
     <script>
         allUser = false;
-        familyId = {{ family.id }};
+        familySlug = "{{ family.slug }}";
     </script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familyId': family.id}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Retour</a>
     <h1>Membres de la famille {{ family.name }}</h1>
     <input type="text" placeholder="Tapez un mot clé..." id="input_search">
     <table>

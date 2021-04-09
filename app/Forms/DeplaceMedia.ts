@@ -1,16 +1,17 @@
 import Helpers from "../Core/Helpers";
 import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
+import Family from "../Entities/Family";
 
-export default async function DeplaceMedia(familyId, sectionId, mediaId) {
+export default async function DeplaceMedia(family: Family, section: Section, mediaSlug) {
     let options: any = {};
-    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(familyId,sectionId);
+    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(family.getId(),section.getId());
     for (const section of sections) {
         options[<number>section.getId()] = section.getName();
     }
     return {
         config: {
-            action: Helpers.getPath("media_edit", {familyId,sectionId,mediaId}),
+            action: Helpers.getPath("media_edit", {familySlug: family.getSlug(),sectionSlug: section.getSlug(),mediaSlug}),
             method: "POST",
             submit: "Déplacer",
             actionName: "deplace_media",

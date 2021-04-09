@@ -12,6 +12,13 @@ export default class MediaRepository extends RepositoryManager {
         return super.findOne(id,SectionModel);
     }
 
+    static findOneBySlug(slug) {
+        return super.findOneByParams({
+            where: { slug: slug },
+            include: SectionModel
+        })
+    }
+
     static findAllBySectionIdAndSearchFilters(sectionsId: Array<number>|number,search,sort,sortBy,toDisplay){
         if (!(sectionsId instanceof Array)) {
             sectionsId = [sectionsId];

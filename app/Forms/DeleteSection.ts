@@ -1,9 +1,9 @@
 import Helpers from "../Core/Helpers";
 
-export default function DeleteSection(familyId,sectionId) {
+export default function DeleteSection(familySlug,sectionSlug) {
     return {
         config: {
-            action: Helpers.getPath("section_delete", {familyId,sectionId}),
+            action: Helpers.getPath("section_delete", {familySlug,sectionSlug}),
             method: "POST",
             submit: "Supprimer",
             actionName: "delete_section",

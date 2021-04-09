@@ -38,14 +38,14 @@ export default class CheckService {
         return true;
     }
 
-    static async checkSectionAndFamily(familyId: number, sectionId: number, controller: Controller, json = false) {
-        const section: null|Section = await SectionRepository.findOne(sectionId);
+    static async checkSectionAndFamily(familySlug: string, sectionSlug: string, controller: Controller, json = false) {
+        const section: null|Section = await SectionRepository.findOneBySlug(sectionSlug);
         if (section == null) {
             if (json) {
                 controller.res.json({error: "Cette rubrique n'existe pas"})
             } else {
                 controller.setFlash("section_failed", "Cette rubrique n'existe pas");
-                controller.redirectToRoute("section_index", {familyId});
+                controller.redirectToRoute("section_index", {familySlug});
             }
             return false;
         }
@@ -54,14 +54,14 @@ export default class CheckService {
         return this.checkFamily(family,controller, json) ? {family,section} : false;
     }
 
-    static async checkMediaAndFamily(familyId: number, sectionId: number, mediaId: number, controller: Controller, json = false) {
-        const media: null|Media = await MediaRepository.findOne(mediaId);
+    static async checkMediaAndFamily(familySlug: string, sectionSlug: string, mediaSlug: string, controller: Controller, json = false) {
+        const media: null|Media = await MediaRepository.findOneBySlug(mediaSlug);
         if (media == null) {
             if(json) {
                 controller.res.json({error: "Cette photo/vidéo n'existe pas"});
             } else {
                 controller.setFlash("media_failed", "Cette photo/vidéo n'existe pas");
-                controller.redirectToRoute("media_index", {familyId, sectionId})
+                controller.redirectToRoute("media_index", {familySlug, sectionSlug})
             }
             return false;
         }

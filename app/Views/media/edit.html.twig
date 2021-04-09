@@ -3,7 +3,7 @@
 {% block title %}Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}{% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('media_index', {'familyId': media.Section.FamilyId, 'sectionId': media.Section.id}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionSlug': media.Section.slug}) }}">Retour</a>
     <h1>Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}</h1>
     {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
 

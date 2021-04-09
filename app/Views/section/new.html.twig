@@ -3,7 +3,7 @@
 {% block title %}Création de rubrique{% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familyId': familyId}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('section_index', {'familySlug': familySlug}) }}">Retour</a>
     <h1>Créer une rubrique</h1>
 
     {% include 'Modals/forms.html.twig' with {'form': sectionForm} %}

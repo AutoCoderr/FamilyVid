@@ -1,4 +1,4 @@
-import {Model} from "sequelize";
+import {Model, Op} from "sequelize";
 import Helpers from "./Helpers";
 
 export default class EntityManager {
@@ -11,6 +11,46 @@ export default class EntityManager {
     }
     getId() {
         return this.id;
+    }
+
+    async setSlugFrom(column, params = {}) {
+        if (typeof(this[column]) == "undefined" || typeof(this['slug']) == "undefined" ) return null;
+        let slug = this[column].toLowerCase();
+
+        const replaces = {
+            '-': [" ","'",'"',"`"],
+            "a": ["à","â","ä","ã"],
+            "e": ["é","è","ê","ë"],
+            "c": ["ç"],
+            "u": ["ù","û","ü"],
+            "o": ["ô","ö","õ"],
+        }
+
+        for (const replace in replaces) {
+            const toReplaces = replaces[replace];
+            for (const toReplace of toReplaces) {
+                slug = Helpers.replaceAll(slug,toReplace,replace);
+            }
+        }
+        let nb = 1; // @ts-ignore
+        let found = await this.Model.findOne({
+            where: {
+                slug: slug+(nb > 1 ? "-"+nb : ""),
+                ...(this.id != null ? { id: {[Op.ne]: this.id} } : {}),
+                ...params
+            }
+        });
+        while (found != null) {
+            nb += 1; // @ts-ignore
+            found = await this.Model.findOne({
+                where: {
+                    slug: slug+(nb > 1 ? "-"+nb : ""),
+                    ...(this.id != null ? { id: {[Op.ne]: this.id} } : {}),
+                    ...params
+                }
+            });
+        }
+        this['slug'] = slug+(nb > 1 ? "-"+nb : "");
     }
 
     constructor() {

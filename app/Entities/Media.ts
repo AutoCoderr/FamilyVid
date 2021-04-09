@@ -7,6 +7,7 @@ export default class Media extends EntityManager {
     Model = MediaModel;
 
     name: null|string = null;
+    slug: null|string = null;
     date: null|Date = null;
     type: null|string = null;
 
@@ -18,6 +19,10 @@ export default class Media extends EntityManager {
     }
     getName() {
         return this.name;
+    }
+
+    getSlug() {
+        return this.slug;
     }
 
     setDate(date: string) {

@@ -8,14 +8,14 @@
 {% block javascripts %}
     <script src="/js/media_search.js"></script>
     <script>
-        familyId = {{ section.Family.id }};
-        sectionId = {{ section.id }};
+		familySlug = "{{ section.Family.slug }}";
+		sectionSlug = "{{ section.slug }}";
         globalSearch = false;
     </script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familyId': section.Family.id}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('section_index', {'familySlug': section.Family.slug}) }}">Retour</a>
     <h1>{{ section.name }}</h1>
 
     {% if flash.media_success %}
@@ -68,16 +68,16 @@
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Modifier</a>
+                        <a class="btn" href="{{ path('media_edit', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         <h2>Vous pouvez aussi ajouter une nouvelle photo/video dans cette rubrique!</h2>
-        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer</a>
+        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer</a>
     {% else %}
         <h2>Il semblerait qu'il n'y ait pas de photo/video dans cette rubrique</h2>
-        <a class="btn" href="{{ path('media_new', {'familyId': section.Family.id, 'sectionId': section.id}) }}">Créer en une!</a>
+        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer en une!</a>
     {% endif %}
 {% endblock %}

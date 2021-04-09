@@ -8,6 +8,7 @@ export default class Family extends EntityManager {
     Model = FamilyModel;
 
     name: null|string = null;
+    slug: null|string = null
 
     visible: null|boolean = null;
 
@@ -19,6 +20,10 @@ export default class Family extends EntityManager {
     }
     getName() {
         return this.name;
+    }
+
+    getSlug() {
+        return this.slug;
     }
 
     getVisible() { // @ts-ignore
