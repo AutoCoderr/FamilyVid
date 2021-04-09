@@ -57,7 +57,7 @@ function generateMediaList(medias) {
             const editButton = document.createElement("a");
 
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionSlug : sectionSlug)+"/medias/"+media.id+"/edit/";
+            editButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionSlug : sectionSlug)+"/medias/"+media.slug+"/edit/";
             editButton.innerText = "Modifier";
 
             tdButtons.appendChild(editButton);
@@ -78,6 +78,8 @@ function generateMediaList(medias) {
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    if (document.getElementById("input_search") == null) return;
+
    document.getElementById("sortBy_filter").addEventListener("change", async function() {
        sortBy = this.value;
        generateMediaList(await searchMedias());

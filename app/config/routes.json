@@ -42,6 +42,7 @@
       },
 
       "list": {
+        "route": "/list/:userId"
       },
 
       "list_mines": {
@@ -133,11 +134,11 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/:mediaId/edit",
+        "route": "/:mediaSlug/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/:mediaId/delete",
+        "route": "/:mediaSlug/delete",
         "method": "POST"
       },
       "search": {

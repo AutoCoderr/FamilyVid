@@ -28,13 +28,13 @@ function generateSectionList(sections) {
 
             const showButton = document.createElement("a");
             showButton.classList.add("btn");
-            showButton.href = "/family/"+familySlug+"/sections/"+section.id+"/medias/";
+            showButton.href = "/family/"+familySlug+"/sections/"+section.slug+"/medias/";
             showButton.innerText = "Voir";
             li.appendChild(showButton);
 
             const editButton = document.createElement("a");
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familySlug+"/sections/"+section.id+"/edit/";
+            editButton.href = "/family/"+familySlug+"/sections/"+section.slug+"/edit/";
             editButton.innerText = "Modifier";
             li.appendChild(editButton);
 
@@ -48,6 +48,7 @@ function generateSectionList(sections) {
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    if (document.getElementById("input_search") == null) return;
     document.getElementById("input_search").addEventListener("input", async function() {
         generateSectionList(await searchSections(this.value));
     });
