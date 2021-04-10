@@ -54,6 +54,15 @@ function generateMediaList(medias) {
             }
 
             const tdButtons = document.createElement("td");
+
+            const viewButton = document.createElement("a");
+
+            viewButton.classList.add("btn");
+            viewButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionSlug : sectionSlug)+"/medias/"+media.slug;
+            viewButton.innerText = "Voir";
+
+            tdButtons.appendChild(viewButton);
+
             const editButton = document.createElement("a");
 
             editButton.classList.add("btn");
@@ -61,6 +70,7 @@ function generateMediaList(medias) {
             editButton.innerText = "Modifier";
 
             tdButtons.appendChild(editButton);
+
             tr.appendChild(tdButtons);
 
             tbody.appendChild(tr);

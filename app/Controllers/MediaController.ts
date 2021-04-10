@@ -149,6 +149,30 @@ export default class MediaController extends Controller {
         }
     }
 
+    view = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+
+            this.render("media/view.html.twig", {media,section,family});
+        }
+    }
+
+    read = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+
+            FileUploadService.readMedia(family,section,media,this.res)
+        }
+    }
+
     search = async () => {
         const {familySlug,sectionSlug} = this.req.params;
 

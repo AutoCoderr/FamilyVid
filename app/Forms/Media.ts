@@ -30,7 +30,7 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 					type: "file",
 					mimes: ['video/mp4','video/ogg','video/x-msvideo','image/png','image/jpeg','image/bmp'],
 					label: "Envoyez votre photo/vidéo",
-					required: false,
+					required: true,
 					msgError: "Vous devez envoyer un fichier image ou vidéo"
 				}
 			} : {})

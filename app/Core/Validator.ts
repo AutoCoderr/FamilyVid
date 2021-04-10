@@ -32,6 +32,11 @@ export default class Validator {
 			return ["Token invalide!"];
 		}
 		delete this.datas.token;
+		for (const name in this.form.fields) {
+			if (!Object.keys(this.datas).includes(name)) {
+				this.datas[name] = undefined;
+			}
+		}
 
 		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
 			return ["Tentative de hack!!"];
