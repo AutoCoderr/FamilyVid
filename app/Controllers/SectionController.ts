@@ -12,6 +12,7 @@ import Media from "../Entities/Media";
 import DeleteSection from "../Forms/DeleteSection";
 import DeleteAllSectionMedias from "../Forms/DeleteAllSectionMedias";
 import DeplaceSectionMediasAndDelete from "../Forms/DeplaceSectionMediasAndDelete";
+import FileUploadService from "../Services/FileUploadService";
 
 export default class SectionController extends Controller {
     index = async () => {
@@ -35,7 +36,7 @@ export default class SectionController extends Controller {
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     if ((<Array<Media>>section.getMedias()).length == 0) {
-                        await section.delete();
+                        await FileUploadService.deleteSection(family,section);
                         this.setFlash("section_success", "Rubrique supprimée avec succès!");
                     } else {
                         this.redirectToRoute("section_delete_with_media",{familySlug: family.getSlug(), sectionSlug: sectionSlug});
@@ -64,7 +65,7 @@ export default class SectionController extends Controller {
             if (validatorDeleteAllMedias.isSubmitted()) {
                 if (await validatorDeleteAllMedias.isValid()) {
                     this.setFlash("section_success", "Rubrique supprimée avec succès!");
-                    await section.delete();
+                    await FileUploadService.deleteSection(family,section);
                     this.redirectToRoute("section_index", {familySlug: family.getSlug()});
                 } else {
                     this.redirect(this.req.header('Referer'));
@@ -82,11 +83,13 @@ export default class SectionController extends Controller {
                         const datas = this.getDatas();
                         const newSection: Section = await SectionRepository.findOne(datas.section);
 
-                        for (const media of <Array<Media>>section.getMedias()) {
-                            media.setSection(newSection);
-                            await media.save();
+                        if (!await FileUploadService.moveAllMedia(section,newSection)) {
+                            validatorDeplaceMedias.setFlashErrors(["Déplacement des photos/videos de la rubrique échoué"]);
+                            this.redirect(this.req.header('Referer'));
+                            return;
                         }
-                        await section.delete();
+
+                        await FileUploadService.deleteSection(family,section);
                         this.setFlash("section_success", "Rubrique supprimée avec succès!");
                         this.redirectToRoute("section_index", {familySlug: family.getSlug()});
                     } else {
@@ -121,9 +124,8 @@ export default class SectionController extends Controller {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
 
-                    section.setName(datas.name);
-                    await section.setSlugFrom("name");
-                    await section.save();
+                    await FileUploadService.renameSection(family,section,datas.name);
+
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
                 } else {
