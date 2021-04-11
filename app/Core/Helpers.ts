@@ -109,4 +109,16 @@ export default class Helpers {
     static rand(a,b) {
         return a+Math.floor(Math.random()*(b-a+1));
     }
+
+    static generateToken(nb, forbiddenChars: Array<string> = []) {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%*!?/&#@";
+        let token = "";
+        while (token.length < nb) {
+            const char = chars[Helpers.rand(0,chars.length-1)];
+            if (!forbiddenChars.includes(char)) {
+                token += char;
+            }
+        }
+        return token;
+    }
 };

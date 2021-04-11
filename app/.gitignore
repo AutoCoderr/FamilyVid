@@ -8,7 +8,7 @@ package-lock.json
 /Services/*.js
 /Fixtures/*.js
 /Core/*.js
-!/Core/env.js
+!/Core/env.example.js
 /Medias/*
 !/Medias/.gitkeep
 /node_modules

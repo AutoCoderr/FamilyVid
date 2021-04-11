@@ -20,6 +20,15 @@ export default class UserRepository extends RepositoryManager {
         });
     }
 
+    static findAllByEmailAndNotActive(email) {
+        return super.findAllByParams({
+            where: {
+                email,
+                active: false
+            }
+        })
+    }
+
     static findAllBySearchExceptOne(id, search = '') {
         search = "%"+search+"%";
         return super.findAllByParams({
@@ -35,7 +44,8 @@ export default class UserRepository extends RepositoryManager {
                         email: { [Op.iLike]: search }
                     }
                 ],
-                id: {[Op.ne]: id}
+                id: {[Op.ne]: id},
+                active: true
             },
             order: ["email"],
             limit: 20,

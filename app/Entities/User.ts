@@ -2,6 +2,7 @@ import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
 import UserModel from "../Models/User";
 import Family from "./Family";
+import AccountConfirmation from "../Entities/AccountConfirmation";
 
 export default class User extends EntityManager {
 
@@ -12,6 +13,7 @@ export default class User extends EntityManager {
     lastname: null|string = null;
     roles: null|string = null;
     password: null|string = null;
+    active: null|boolean = null;
 
     Families: null|Array<Family> = [];
 
@@ -66,6 +68,13 @@ export default class User extends EntityManager {
     }
     getPassword() {
         return this.password;
+    }
+
+    setActive(active: boolean) {
+        this.active = active;
+    }
+    getActive() {
+        return this.active;
     }
 
     getFamilies() {

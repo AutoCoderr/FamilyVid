@@ -114,12 +114,16 @@ export default class FamilyController extends Controller {
                 let user: User = await UserRepository.findOne(datas.user);
                 let family: Family = await FamilyRepository.findOne(datas.family);
 
-                for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
-                    if (eachFamily.getId() == family.getId()) {
-                        this.setFlash("family_demand_faileds",["Vous vous trouvez déjà dans la famille "+family.getName()]);
-                        this.redirect(this.req.header('Referer'));
-                        return;
-                    }
+                if ((<Array<Family>>applicant.getFamilies()).map(family => family.getId()).includes(family.getId())) {
+                    this.setFlash("family_demand_faileds", ["Vous vous trouvez déjà dans la famille " + family.getName()]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+
+                if (!(<Array<Family>>user.getFamilies()).map(family => family.getId()).includes(family.getId())) {
+                    this.setFlash("family_demand_faileds", ["L'utilisateur "+user.getFirstname()+" "+user.getLastname()+" ne fait pas partie de la famille "+family.getName()]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
                 }
 
                 let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user,datas.family);
