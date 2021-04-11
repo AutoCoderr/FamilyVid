@@ -142,10 +142,10 @@
         "method": "POST"
       },
       "view": {
-        "route": "/:mediaSlug"
+        "route": "/:mediaSlug/view"
       },
       "read": {
-        "route": "/:mediaSlug/read"
+        "route": "/:mediaSlug"
       },
       "search": {
         "route": "/search",

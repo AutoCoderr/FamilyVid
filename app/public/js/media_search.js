@@ -58,7 +58,7 @@ function generateMediaList(medias) {
             const viewButton = document.createElement("a");
 
             viewButton.classList.add("btn");
-            viewButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionSlug : sectionSlug)+"/medias/"+media.slug;
+            viewButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionSlug : sectionSlug)+"/medias/"+media.slug+"/view";
             viewButton.innerText = "Voir";
 
             tdButtons.appendChild(viewButton);
