@@ -18,7 +18,7 @@ export default class EntityManager {
         let slug = this[column].toLowerCase();
 
         const replaces = {
-            '-': [" ","'",'"',"`"],
+            '-': [" ","'",'"',"`","\\","/",":","*","?","<",">","|"],
             "a": ["à","â","ä","ã"],
             "e": ["é","è","ê","ë"],
             "c": ["ç"],

@@ -34,6 +34,10 @@ Media.init(
             type: DataTypes.STRING(60),
             allowNull: false
         },
+        fileExtension: {
+            type: DataTypes.STRING(10),
+            allowNull: false
+        },
         date: {
             type: DataTypes.DATE,
             allowNull: false

@@ -7,6 +7,9 @@
 		{% if form.config.formClass is defined %}
 			class="{{ form.config.formClass }}"
 		{% endif %}
+		{% if form.config.formData %}
+			encType="multipart/form-data"
+		{% endif %}
 >
 	<table>
 
@@ -54,6 +57,9 @@
 					{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
 					{% if field.class is defined %}class="{{ field.class }}"{% endif %}
 					{% if field.required is defined and field.required %} required='required'{% endif %}
+					{% if field.type == "file" and field.mimes is defined %}
+						accept="{{ field.mimes }}"
+					{% endif %}
 			/>
 		{% endif %}
 

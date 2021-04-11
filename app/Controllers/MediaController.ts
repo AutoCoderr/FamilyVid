@@ -9,6 +9,7 @@ import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
 import DeplaceMedia from "../Forms/DeplaceMedia";
+import FileUploadService from "../Services/FileUploadService";
 
 export default class MediaController extends Controller {
 
@@ -34,20 +35,13 @@ export default class MediaController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
-
-                    let media = new Media();
-                    media.setDate(datas.date);
-                    media.setName(datas.name != "" ? datas.name : datas.date);
-                    await media.setSlugFrom("name");
-                    media.setType(datas.type);
-                    media.setSection(section);
-
-                    await media.save();
-
-                    this.setFlash("media_success", "Photo/video ajoutée avec succès!");
-
-                    this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                    if(await FileUploadService.uploadMedia(this.getDatas(),section)) {
+                        this.setFlash("media_success", "Photo/video ajoutée avec succès!");
+                        this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                    } else {
+                        validator.setFlashErrors(["Echec de mise en ligne de la photo/video"]);
+                        this.redirect(this.req.header('Referer'));
+                    }
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
@@ -74,9 +68,12 @@ export default class MediaController extends Controller {
                     const datas = this.getDatas();
 
                     media.setDate(datas.date);
-                    media.setName(datas.name);
-                    await media.setSlugFrom("name");
-                    media.setType(datas.type);
+
+                    if (media.getName() != datas.name && !(await FileUploadService.renameMedia(family, section, media, datas.name))) {
+                        validator.setFlashErrors(["La photo/video ne peut pas être renommée"]);
+                        this.redirect(this.req.header('Referer'));
+                        return;
+                    }
 
                     await media.save();
 
@@ -96,9 +93,12 @@ export default class MediaController extends Controller {
                         const datas = this.getDatas();
 
                         const newSection: Section = await SectionRepository.findOne(datas.section);
-                        media.setSection(newSection);
-                        await media.setSlugFrom("name");
-                        await media.save();
+
+                        if (!await FileUploadService.moveMedia(family,section,newSection,media)) {
+                            deplaceMediaValidator.setFlashErrors(["La photo/video ne peut pas être déplacée"]);
+                            this.redirect(this.req.header('Referer'));
+                            return;
+                        }
 
                         this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
                         this.redirectToRoute("media_index", {familySlug, sectionSlug});
@@ -138,7 +138,7 @@ export default class MediaController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    await media.delete();
+                    await FileUploadService.deleteMedia(family,section,media);
                     this.setFlash("media_success", "La photo/vidéo '"+media.getName()+"' a été supprimée avec succès!");
                 } else {
                     this.redirect(this.req.header('Referer'));
@@ -146,6 +146,30 @@ export default class MediaController extends Controller {
                 }
             }
             this.redirectToRoute('media_index',{familySlug,sectionSlug});
+        }
+    }
+
+    view = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+
+            this.render("media/view.html.twig", {media,section,family});
+        }
+    }
+
+    read = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+
+            FileUploadService.readMedia(family,section,media,this.res)
         }
     }
 

@@ -32,6 +32,11 @@ export default class Validator {
 			return ["Token invalide!"];
 		}
 		delete this.datas.token;
+		for (const name in this.form.fields) {
+			if (!Object.keys(this.datas).includes(name)) {
+				this.datas[name] = undefined;
+			}
+		}
 
 		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
 			return ["Tentative de hack!!"];
@@ -114,7 +119,6 @@ export default class Validator {
 		return Object.keys(field.options).includes(value);
 	}
 
-
 	checkPassword(field,password) {
 		return !((typeof(field.confirmWith) != "undefined" &&
 			password !== this.datas[field.confirmWith]) ||
@@ -133,6 +137,10 @@ export default class Validator {
 	checkEmail(field,email) {
 		const regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
 		return regex.test(email);
+	}
+
+	checkFile(field,file) {
+		return !(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)
 	}
 
 	thereIsASpecialChar(str) {

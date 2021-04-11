@@ -141,6 +141,12 @@
         "route": "/:mediaSlug/delete",
         "method": "POST"
       },
+      "view": {
+        "route": "/:mediaSlug/view"
+      },
+      "read": {
+        "route": "/:mediaSlug"
+      },
       "search": {
         "route": "/search",
         "method": "POST"
