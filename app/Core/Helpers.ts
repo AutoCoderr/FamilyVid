@@ -110,7 +110,7 @@ export default class Helpers {
         return a+Math.floor(Math.random()*(b-a+1));
     }
 
-    static generateToken(nb, forbiddenChars: Array<string> = []) {
+    static generateRandomString(nb, forbiddenChars: Array<string> = []) {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%*!?/&#@";
         let token = "";
         while (token.length < nb) {

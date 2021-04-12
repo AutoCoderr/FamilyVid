@@ -20,6 +20,11 @@
 
       "confirm": {
         "route": "/confirm/:token"
+      },
+
+      "forgot_password": {
+        "route": "/forgot_password",
+        "methods": ["GET","POST"]
       }
     }
   },

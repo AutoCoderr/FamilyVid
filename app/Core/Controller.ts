@@ -99,6 +99,6 @@ export default class Controller {
     }
 
     generateToken() {
-        this.req.session.token = Helpers.generateToken(20);
+        this.req.session.token = Helpers.generateRandomString(20);
     }
 }
