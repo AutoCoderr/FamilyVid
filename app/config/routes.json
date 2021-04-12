@@ -18,12 +18,17 @@
         "route": "/logout"
       },
 
-      "confirm": {
-        "route": "/confirm/:token"
+      "confirm_account": {
+        "route": "/confirm_account/:token"
       },
 
       "forgot_password": {
         "route": "/forgot_password",
+        "methods": ["GET","POST"]
+      },
+
+      "new_password": {
+        "route": "/new_password/:token",
         "methods": ["GET","POST"]
       }
     }
