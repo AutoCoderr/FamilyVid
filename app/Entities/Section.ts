@@ -7,6 +7,10 @@ export default class Section extends EntityManager {
 
     Model = SectionModel;
 
+    entityTypes = {
+        Medias: Media.name
+    }
+
     name: null|string = null;
     slug: null|string = null;
 
@@ -31,9 +35,6 @@ export default class Section extends EntityManager {
         this.FamilyId = family.getId();
     }
     getFamily() {
-        if (!(this.Family instanceof Family) && this.Family != null) {
-            this.Family = (new Family()).hydrate(this.Family);
-        }
         return this.Family;
     }
     getFamilyId() {
@@ -42,11 +43,6 @@ export default class Section extends EntityManager {
 
     getMedias() {
         if (this.Medias instanceof Array) {
-            for (let i=0;i<this.Medias.length;i++) {
-                if (!(this.Medias[i] instanceof Media)) {
-                    this.Medias[i] = (new Media()).hydrate(this.Medias[i]);
-                }
-            }
             this.Medias.sort((A,B) => {
                 return (<Date>A.getDate()).getTime() - (<Date>B.getDate()).getTime()
             });

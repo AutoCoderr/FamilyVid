@@ -52,9 +52,6 @@ export default class Media extends EntityManager {
         this.SectionId = section.getId();
     }
     getSection() {
-        if (!(this.Section instanceof Section) && this.Section != null) {
-            this.Section = (new Section()).hydrate(this.Section);
-        }
         return this.Section;
     }
 

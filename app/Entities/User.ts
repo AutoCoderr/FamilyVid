@@ -2,11 +2,14 @@ import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
 import UserModel from "../Models/User";
 import Family from "./Family";
-import Confirmation from "./Confirmation";
 
 export default class User extends EntityManager {
 
     Model = UserModel;
+
+    entityTypes = {
+        Families: Family.name
+    }
 
     email: null|string = null;
     firstname: null|string = null;

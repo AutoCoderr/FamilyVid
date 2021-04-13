@@ -32,9 +32,6 @@ export default class Confirmation extends EntityManager {
         this.UserId = user.getId();
     }
     getUser() {
-        if (!(this.User instanceof User) && this.User != null) {
-            this.User = (new User()).hydrate(this.User);
-        }
         return this.User;
     }
 
