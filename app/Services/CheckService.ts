@@ -13,7 +13,7 @@ export default class CheckService {
             if (json) {
                 controller.res.json({error: "Cette famille n'existe pas"});
             } else {
-                controller.setFlash("access_family_failed", "Cette famille n'existe pas");
+                controller.setFlash("failed", "Cette famille n'existe pas");
                 controller.redirectToRoute("index");
             }
             return false;
@@ -30,7 +30,7 @@ export default class CheckService {
             if (json) {
                 controller.res.json({error: "Vous ne faites pas partie de cette famille"});
             } else {
-                controller.setFlash("access_family_failed", "Vous ne faites pas partie de cette famille");
+                controller.setFlash("failed", "Vous ne faites pas partie de cette famille");
                 controller.redirectToRoute("index");
             }
             return false;

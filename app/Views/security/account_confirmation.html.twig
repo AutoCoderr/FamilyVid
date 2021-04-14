@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ success ? "Confirmation réussie!!" : "Confirmation échouée" }}{% endblock %}
+
+{% block body %}
+    <h1 style="color: green;">Confirmation réussie!!</h1>
+    <p>Vous pouvez à présent vous connecter sur le compte '{{ user.email }}'</p>
+    <a class="btn" href="{{ path('security_login') }}">Se connecter</a>
+{% endblock %}

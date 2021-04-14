@@ -9,6 +9,7 @@ export interface IUser {
     lastname: string;
     roles: string;
     password: string;
+    active: boolean;
 }
 
 export default class User extends Model {
@@ -17,6 +18,7 @@ export default class User extends Model {
     public lastname!: string;
     public roles!: string;
     public password!: string;
+    public active!: boolean;
 }
 
 User.init(
@@ -47,6 +49,10 @@ User.init(
             type: DataTypes.STRING(40),
             allowNull: false
         },
+        active: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        }
     },
     {
         tableName: DB_PREFIX+"user",

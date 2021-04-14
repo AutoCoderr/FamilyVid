@@ -47,7 +47,7 @@ export default class UserController extends Controller {
             if (await userPasswordValidator.isValid()) {
                 const datas = this.getDatas();
                 if (Helpers.hashPassword(datas.old_password) != user.getPassword()) {
-                    userPasswordValidator.setFlashErrors([userPasswordForm.fields.old_password.msgError]);
+                    userPasswordValidator.setFlashErrors([(<any>userPasswordForm.fields.old_password).msgError]);
                     this.redirect(this.req.header('Referer'));
                     return;
                 }

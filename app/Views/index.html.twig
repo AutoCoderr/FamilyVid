@@ -3,8 +3,11 @@
 {% block body %}
     <h1>Bienvenue sur Family Vid!</h1>
 
-    {% if flash.access_family_failed is defined %}
-        <p style="color: red">{{ flash.access_family_failed }}</p>
+    {% if flash.failed is defined %}
+        <p style="color: red">{{ flash.failed }}</p>
+    {% endif %}
+    {% if flash.success is defined %}
+        <p style="color: green;">{{ flash.success }}</p>
     {% endif %}
 
     <div>

@@ -6,6 +6,8 @@ export default class EntityManager {
     ModelInstance: null|Model = null;
     id: null|number = null;
 
+    entityTypes = {};
+
     setId(id) {
         this.id = id;
     }
@@ -59,7 +61,19 @@ export default class EntityManager {
     hydrate(entry: any) {
         for (let attr in entry.dataValues) {
             if (typeof(this[attr]) != "undefined") {
-                this[attr] = entry.dataValues[attr];
+                if (typeof(entry.dataValues[attr]) == "object" && entry.dataValues[attr] != null && !(entry.dataValues[attr] instanceof Date)) {
+                    const entityName = this.entityTypes[attr] ? this.entityTypes[attr] : attr;
+                    const entity = require("../Entities/"+entityName).default;
+                    if (entry.dataValues[attr] instanceof Array) {
+                        this[attr] = entry.dataValues[attr].map(elem => {
+                            return (new entity()).hydrate(elem);
+                        });
+                    } else {
+                        this[attr] = (new entity()).hydrate(entry.dataValues[attr]);
+                    }
+                } else {
+                    this[attr] = entry.dataValues[attr];
+                }
             }
         }
         this.ModelInstance = entry;

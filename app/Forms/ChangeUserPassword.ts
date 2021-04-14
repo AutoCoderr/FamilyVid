@@ -1,9 +1,9 @@
 import Helpers from "../Core/Helpers";
 
-export default function ChangeUserPassword() {
+export default function ChangeUserPassword(confirmation_token = null) {
     return {
         config: {
-            action: Helpers.getPath("user_me"),
+            action: confirmation_token == null ? Helpers.getPath("user_me") : Helpers.getPath("security_new_password", {token: confirmation_token}),
             method: "POST",
             submit: "Changer",
             actionName: "change_user_password",
@@ -12,13 +12,15 @@ export default function ChangeUserPassword() {
             submitClass: "btn"
         },
         fields: {
-            old_password: {
-                type: "password",
-                label: "Votre ancien mot de passe",
-                required: true,
-                checkValid: false,
-                msgError: "Vous devez entrer votre ancien mot de passe"
-            },
+            ...(confirmation_token == null ? {
+                old_password: {
+                    type: "password",
+                    label: "Votre ancien mot de passe",
+                    required: true,
+                    checkValid: false,
+                    msgError: "Vous devez entrer votre ancien mot de passe"
+                }
+            } : {}),
             password: {
                 type: "password",
                 label: "Votre mot de passe",
