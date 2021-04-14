@@ -11,6 +11,7 @@ import DeleteMedia from "../Forms/DeleteMedia";
 import DeplaceMedia from "../Forms/DeplaceMedia";
 import FileUploadService from "../Services/FileUploadService";
 import Comment from "../Entities/Comment";
+import CommentForm from "../Forms/Comment";
 import CommentRepository from "../Repositories/CommentRepository";
 
 export default class MediaController extends Controller {
@@ -160,7 +161,10 @@ export default class MediaController extends Controller {
             const {media, section, family} = mediaSectionAndFamily;
             const comments: Array<Comment> = await CommentRepository.findAllByMediaId(media.getId());
 
-            this.render("media/view.html.twig", {comments,media,section,family});
+            const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
+            this.generateToken();
+
+            this.render("media/view.html.twig", {comments,commentForm,media,section,family});
         }
     }
 

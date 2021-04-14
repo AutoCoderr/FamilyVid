@@ -1,11 +1,11 @@
 import EntityManager from "../Core/EntityManager";
-import MediaModel from "../Models/Media";
+import CommentModel from "../Models/Comment";
 import Media from "./Media";
 import User from "./User";
 
 export default class Comment extends EntityManager {
 
-    Model = MediaModel;
+    Model = CommentModel;
 
     content: null|string = null;
     createdAt: null|Date = null;

@@ -12,7 +12,8 @@ export default class CommentRepository extends RepositoryManager {
             where: {
                 MediaId: mediaId
             },
-            include: UserModel
+            include: UserModel,
+            order: [["createdAt","DESC"]]
         })
     }
 }
