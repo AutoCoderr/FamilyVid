@@ -2,21 +2,20 @@ import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../Core/DB";
 
 import env from "../Core/env.js";
-import Family from "./Family";
+import Media from "./Media";
+import User from "./User";
 const {DB_PREFIX} = env;
 
-export interface ISection {
-    name: string;
-    slug: string;
+export interface IComment {
+    content: string;
 }
 
-export default class Section extends Model {
+export default class Comment extends Model {
     public id!: number;
-    public name!: string;
-    public slug!: string;
+    public content!: string;
 }
 
-Section.init(
+Comment.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -24,20 +23,19 @@ Section.init(
             primaryKey: true,
             allowNull: false
         },
-        name: {
-            type: DataTypes.STRING(50),
-            allowNull: false
-        },
-        slug: {
-            type: DataTypes.STRING(60),
+        content: {
+            type: DataTypes.TEXT,
             allowNull: false
         }
     },
     {
-        tableName: DB_PREFIX+"section",
+        tableName: DB_PREFIX+"comment",
         sequelize, // passing the `sequelize` instance is required
     }
 );
 
-Section.belongsTo(Family);
-Family.hasMany(Section);
+Comment.belongsTo(Media, {as: "Media", foreignKey: "MediaId"});
+Media.hasMany(Comment, {foreignKey: "MediaId"});
+
+Comment.belongsTo(User);
+User.hasMany(Comment);

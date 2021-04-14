@@ -10,6 +10,8 @@ import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
 import DeplaceMedia from "../Forms/DeplaceMedia";
 import FileUploadService from "../Services/FileUploadService";
+import Comment from "../Entities/Comment";
+import CommentRepository from "../Repositories/CommentRepository";
 
 export default class MediaController extends Controller {
 
@@ -156,8 +158,9 @@ export default class MediaController extends Controller {
 
         if (mediaSectionAndFamily) {
             const {media, section, family} = mediaSectionAndFamily;
+            const comments: Array<Comment> = await CommentRepository.findAllByMediaId(media.getId());
 
-            this.render("media/view.html.twig", {media,section,family});
+            this.render("media/view.html.twig", {comments,media,section,family});
         }
     }
 
