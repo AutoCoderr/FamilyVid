@@ -2,6 +2,7 @@ import EntityManager from "../Core/EntityManager";
 import CommentModel from "../Models/Comment";
 import Media from "./Media";
 import User from "./User";
+import Helpers from "../Core/Helpers";
 
 export default class Comment extends EntityManager {
 
@@ -20,7 +21,7 @@ export default class Comment extends EntityManager {
         this.content = content;
     }
     getContent() {
-        return this.content;
+        return Helpers.escapeHtml(this.content);
     }
 
     getCreatedAt() {

@@ -17,16 +17,29 @@
             <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
         </video>
     {% endif %}
-    <div class="comments">
+    <div id="comment_container">
         {% if flash.comment_success is defined %}
             <p style="color: green">{{ flash.comment_success }}</p>
         {% endif %}
         <h2>Créez un commentaire</h2>
         {% include "Modals/forms.html.twig" with {'form': commentForm} %}
         {% if comments|length > 0 %}
-            <ul>
+            <ul id="comments">
+                {% set nb = 0 %}
                 {% for comment in comments %}
-                    <li>{{ comment.User.firstname }} {{ comment.User.lastname }} : {{ comment.content }}</li>
+                    <li class="comment">
+                        {% if nb > 0 %}
+                            <hr>
+                        {% endif %}
+                        <div class="header">
+                            De {{ comment.User.firstname }} {{ comment.User.lastname }}
+                            à {{ comment.createdAt|date("Y-m-d H:i:s") }}
+                        </div>
+                        <div class="body">
+                            {{ comment.content }}
+                        </div>
+                    </li>
+                    {% set nb = nb+1 %}
                 {% endfor %}
             </ul>
         {% else %}

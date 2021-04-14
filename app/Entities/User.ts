@@ -28,21 +28,21 @@ export default class User extends EntityManager {
         this.email = email;
     }
     getEmail() {
-        return this.email;
+        return Helpers.escapeHtml(this.email);
     }
 
     setFirstname(firstname: string) {
         this.firstname = firstname.trim();
     }
     getFirstname() {
-        return this.firstname;
+        return Helpers.escapeHtml(this.firstname);
     }
 
     setLastname(lastname: string) {
         this.lastname = lastname.trim();
     }
     getLastname() {
-        return this.lastname;
+        return Helpers.escapeHtml(this.lastname);
     }
 
     addRole(role: string) {

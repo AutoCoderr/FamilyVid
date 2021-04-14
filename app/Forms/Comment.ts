@@ -5,7 +5,7 @@ export default function DenyDemand(familySlug,sectionSlug,mediaSlug) {
         config: {
             action: Helpers.getPath("comment_create", {familySlug,sectionSlug,mediaSlug}),
             method: "POST",
-            submit: "Créer",
+            submit: "Ajouter",
             actionName: "create_comment",
             msgError: "Création du commentaire échoué",
             submitClass: "btn"

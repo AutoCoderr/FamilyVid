@@ -2,6 +2,7 @@ import EntityManager from "../Core/EntityManager";
 import SectionModel from "../Models/Section";
 import Family from "./Family";
 import Media from "./Media";
+import Helpers from "../Core/Helpers";
 
 export default class Section extends EntityManager {
 
@@ -23,7 +24,7 @@ export default class Section extends EntityManager {
         this.name = name;
     }
     getName() {
-        return this.name;
+        return Helpers.escapeHtml(this.name);
     }
 
     getSlug() {

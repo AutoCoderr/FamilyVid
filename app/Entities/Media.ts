@@ -2,6 +2,7 @@ import EntityManager from "../Core/EntityManager";
 import MediaModel from "../Models/Media";
 import Section from "./Section";
 import Comment from "./Comment";
+import Helpers from "../Core/Helpers";
 
 export default class Media extends EntityManager {
 
@@ -26,7 +27,7 @@ export default class Media extends EntityManager {
         this.name = name;
     }
     getName() {
-        return this.name;
+        return Helpers.escapeHtml(this.name);
     }
 
     getSlug() {
