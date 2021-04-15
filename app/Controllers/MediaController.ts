@@ -14,6 +14,7 @@ import Comment from "../Entities/Comment";
 import CommentForm from "../Forms/Comment";
 import CommentRepository from "../Repositories/CommentRepository";
 import CommentDelete from "../Forms/CommentDelete";
+import CommentEdit from "../Forms/CommentEdit";
 
 export default class MediaController extends Controller {
 
@@ -165,13 +166,15 @@ export default class MediaController extends Controller {
             const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
 
             let commentDeleteForms: any = {};
+            let commentEditForms: any = {};
             for (const comment of comments) {
                 commentDeleteForms[<number>comment.getId()] = CommentDelete(comment.getId());
+                commentEditForms[<number>comment.getId()] = CommentEdit(comment.getId());
             }
 
             this.generateToken();
 
-            this.render("media/view.html.twig", {comments,commentForm,commentDeleteForms,media,section,family});
+            this.render("media/view.html.twig", {comments,commentForm,commentDeleteForms,commentEditForms,media,section,family});
         }
     }
 

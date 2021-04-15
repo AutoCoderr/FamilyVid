@@ -26,6 +26,11 @@ Comment.init(
         content: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        updated: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         }
     },
     {

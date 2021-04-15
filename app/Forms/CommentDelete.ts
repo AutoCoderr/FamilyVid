@@ -10,6 +10,7 @@ export default function CommentDelete(commentId) {
             actionName: "delete_comment_"+commentId,
             confirmOnSumit: "Voulez vous vraiment supprimer ce commentaire?",
             msgError: "Suppression du commentaire échouée",
+            submitClass: "btn btn-form-action",
             formClass: "form-btn",
         },
         fields: {

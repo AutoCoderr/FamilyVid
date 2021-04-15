@@ -178,6 +178,10 @@
       "delete": {
         "route": "/delete",
         "method": "POST"
+      },
+      "edit": {
+        "route": "/edit",
+        "method": "POST"
       }
     }
   },

@@ -9,7 +9,9 @@ export default class Comment extends EntityManager {
     Model = CommentModel;
 
     content: null|string = null;
+    updated: null|boolean = null;
     createdAt: null|Date = null;
+    updatedAt: null|Date = null;
 
     Media: null|Media = null;
     MediaId : null|number = null;
@@ -21,11 +23,21 @@ export default class Comment extends EntityManager {
         this.content = content;
     }
     getContent() {
-        return Helpers.escapeHtml(this.content);
+        return Helpers.escapeHtml(this.content).replace(/\n/g,"<br/>");
+    }
+
+    setUpdated(updated: boolean) {
+        this.updated = updated;
+    }
+    getUpdated() {
+        return this.updated;
     }
 
     getCreatedAt() {
         return this.createdAt;
+    }
+    getUpdatedAt() {
+        return this.updatedAt;
     }
 
     setMedia(media: Media) {
