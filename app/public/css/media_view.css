@@ -29,8 +29,20 @@ img, video {
 
 .header {
     margin-bottom: 10px;
+    position: relative;
+}
+
+.body {
+    position: relative;
 }
 
 .comment {
     margin-bottom: 25px;
+    position: relative;
+}
+
+.actions {
+    position: absolute;
+    right: 20px;
+    top: -10px;
 }
