@@ -12,32 +12,13 @@
 	{% include 'Modals/fields.html.twig' %}
 </form>
 
-
 <script>
-	document.getElementById("form_{{ form.config.actionName }}").addEventListener("submit", function(e) {
-		e.preventDefault();
-
-		{% if checkBefore is defined %}
-			if (!{{ checkBefore }}(this)) return;
-		{% endif %}
-
-		{% if form.config.confirmOnSumit is defined %}
-			if (!confirm(`{{ form.config.confirmOnSumit }}`)) return;
-		{% endif %}
-
-		const formData = new FormData(this);
-		fetch(this.action, {
-			method: this.method,
-			body: formData
-		})
-				.then(res => res.json())
-				.then(json => {
-					{% if callback is defined %}
-						{{ callback }}(json,this)
-					{% else %}
-					console.log("{{ form.config.actionName }} =>");
-					console.log(json);
-					{% endif %}
-				} );
+	window.addEventListener("DOMContentLoaded", (event) => {
+		form_listener(
+				document.getElementById("form_{{ form.config.actionName }}"),
+				{{ callback is defined ? callback : "null" }},
+				{{ checkBefore is defined ? checkBefore : "null" }},
+				{{ form.config.confirmOnSubmit is defined ? "`"~form.config.confirmOnSubmit~"`" : "null" }}
+		);
 	});
 </script>

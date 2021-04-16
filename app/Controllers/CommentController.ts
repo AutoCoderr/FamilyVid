@@ -11,7 +11,7 @@ export default class CommentController extends Controller {
     create = async () => {
         const {familySlug,sectionSlug,mediaSlug} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this, true);
 
         if (mediaSectionAndFamily) {
             const {media} = mediaSectionAndFamily;
@@ -30,11 +30,13 @@ export default class CommentController extends Controller {
 
                 await comment.save();
 
-                this.setFlash("comment_success", "Commentaire ajouté avec succès!");
+                this.res.json({status: "success", id: comment.getId()});
+            } else {
+                this.res.json({status: "failed", errors: validator.getFlashErrors()});
             }
-
-            this.redirect(this.req.header('Referer'));
+            return;
         }
+        this.res.json({status: "failed", errors: ["Formulaire non soumis"]});
     }
 
     delete = async () => {

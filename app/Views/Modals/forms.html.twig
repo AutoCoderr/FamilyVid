@@ -1,8 +1,8 @@
 <form
 		action="{{ form.config.action }}"
 		method="{{ form.config.method }}"
-		{% if form.config.confirmOnSumit is defined %}
-			onsubmit="return confirm(`{{ form.config.confirmOnSumit }}`)"
+		{% if form.config.confirmOnSubmit is defined %}
+			onsubmit="return confirm(`{{ form.config.confirmOnSubmit }}`)"
 		{% endif %}
 		{% if form.config.formClass is defined %}
 			class="{{ form.config.formClass }}"

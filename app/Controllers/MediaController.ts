@@ -172,9 +172,22 @@ export default class MediaController extends Controller {
                 commentEditForms[<number>comment.getId()] = CommentEdit(comment.getId());
             }
 
+            const commentDeleteFormPrototype = CommentDelete(0);
+            const commentEditFormPrototype = CommentEdit(0);
+
             this.generateToken();
 
-            this.render("media/view.html.twig", {comments,commentForm,commentDeleteForms,commentEditForms,media,section,family});
+            this.render("media/view.html.twig", {
+                comments,
+                commentForm,
+                commentDeleteForms,
+                commentDeleteFormPrototype,
+                commentEditForms,
+                commentEditFormPrototype,
+                media,
+                section,
+                family
+            });
         }
     }
 

@@ -1,3 +1,6 @@
+let firstname;
+let lastname;
+
 function comment_deleted(res,form) {
     if (res.status === "success") {
         const idOfElemToDelete = "comment_" + form.comment.value;
@@ -14,17 +17,52 @@ function comment_deleted(res,form) {
     }
 }
 
-function beforeEdit(form) {
-    const id = form.comment.value,
-        commentBody =  document.querySelector("#comment_"+id+" .body"),
-        textAreaValue = form.content.value;
+function comment_created(res,form) {
+    if (res.status === "success") {
+        const firstComment = document.querySelector("#comments li");
+        firstComment.prepend(document.createElement("hr"));
 
-    if (trim(commentBody.innerText) === textAreaValue) {
-        form.style.display = "none";
-        commentBody.style.display = "block";
-        return false;
+        const date = new Date();
+        const currentDateText =
+            date.getFullYear() + "-" + addMissingZero(date.getMonth() + 1) + "-" + addMissingZero(date.getDate()) + " " +
+            addMissingZero(date.getHours()) + ":" + addMissingZero(date.getMinutes()) + ":" + addMissingZero(date.getSeconds());
+
+        let container = document.getElementById("comment_prototype");
+        container = container.cloneNode(true);
+        container.setAttribute("id", "comment_" + res.id);
+
+        container.querySelector(".author_name").innerText = firstname + " " + lastname;
+        container.querySelector(".comment_date").innerText = currentDateText;
+        container.querySelector('.edit_button').addEventListener("click", () => {
+            displayEdit(res.id);
+        });
+
+        const formDelete = container.querySelector(".delete-comment-form");
+        formDelete.setAttribute("id", "form_delete_comment_" + res.id);
+        formDelete.comment.value = res.id;
+        formDelete.actionName.value = "delete_comment_"+res.id;
+
+        form_listener(formDelete, comment_deleted,null,"Voulez vous vraiment supprimer ce commentaire?");
+
+        container.querySelector('.body').innerText = form.content.value;
+
+        const formEdit = container.querySelector(".edit-comment-form");
+        formEdit.setAttribute("id", "form_edit_comment_" + res.id);
+        formEdit.comment.value = res.id;
+        formEdit.actionName.value = "edit_comment_"+res.id;
+
+        form_listener(formEdit, comment_edited, can_edit);
+
+        document.getElementById("comments").prepend(container);
+
+        form.content.value = "";
+    } else {
+        throw new Error(res.errors.join("\n-----------------\n"));
     }
-    return true;
+}
+
+function can_create(form) {
+    return form.content.value !== "";
 }
 
 function comment_edited(res,form) {
@@ -43,6 +81,19 @@ function comment_edited(res,form) {
     } else {
         throw new Error(res.errors.join("\n-----------------\n"));
     }
+}
+
+function can_edit(form) {
+    const id = form.comment.value,
+        commentBody =  document.querySelector("#comment_"+id+" .body"),
+        textAreaValue = form.content.value;
+
+    if (trim(commentBody.innerText) === textAreaValue) {
+        form.style.display = "none";
+        commentBody.style.display = "block";
+        return false;
+    }
+    return true;
 }
 
 function displayEdit(id) {
@@ -73,6 +124,15 @@ function trim(str) {
     }
 
     str = str.substring(0,i+1);
-    console.log({str});
     return str;
+}
+
+function addMissingZero(num, nb = 2) {
+    if (typeof(num) == "number") {
+        num = num.toString();
+    }
+    while(num.length < nb) {
+        num = '0'+num;
+    }
+    return num;
 }
