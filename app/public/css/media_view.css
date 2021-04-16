@@ -30,7 +30,10 @@ img, video {
 .header {
     margin-bottom: 10px;
     width: 50%;
-    text-align: left;;
+    text-align: left;
+    background-color: #CC9E43;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .body {
@@ -52,7 +55,7 @@ img, video {
 
 .btn-form-action {
     padding: 1px 3px;
-    border-radius: unset;
+    border-radius: 5px;
 }
 
 .edit-comment-form {

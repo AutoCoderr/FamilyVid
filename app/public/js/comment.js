@@ -3,15 +3,27 @@ let lastname;
 
 function comment_deleted(res,form) {
     if (res.status === "success") {
-        const idOfElemToDelete = "comment_" + form.comment.value;
-        const firstLi = document.querySelector("#comments li");
-        if (firstLi.id === idOfElemToDelete) {
-            const firstCommentHr = document.querySelector("#comments li hr");
-            firstCommentHr.remove();
-        }
+        const commentsContainer = document.getElementById("comments");
 
-        const comment_li = document.getElementById(idOfElemToDelete);
-        comment_li.remove();
+        if (commentsContainer.getElementsByTagName("li").length === 1) {
+
+            commentsContainer.remove();
+            const h2 = document.createElement("h2");
+            h2.innerText = "Il n'y a aucun commentaire";
+            document.getElementById("comment_container").appendChild(h2);
+
+        } else {
+
+            const idOfElemToDelete = "comment_" + form.comment.value;
+            const firstLi = document.querySelector("#comments li");
+            if (firstLi.id === idOfElemToDelete) {
+                const firstCommentHr = document.querySelector("#comments li hr");
+                firstCommentHr.remove();
+            }
+
+            const comment_li = document.getElementById(idOfElemToDelete);
+            comment_li.remove();
+        }
     } else {
         throw new Error(res.errors.join("\n-----------------\n"));
     }
@@ -19,8 +31,20 @@ function comment_deleted(res,form) {
 
 function comment_created(res,form) {
     if (res.status === "success") {
+
+        if (document.getElementById("comments") == null) {
+            document.getElementsByTagName("h2")[1].remove();
+
+            const commentsUl = document.createElement("ul");
+            commentsUl.setAttribute("id", "comments")
+
+            document.getElementById("comment_container").appendChild(commentsUl);
+        }
+
         const firstComment = document.querySelector("#comments li");
-        firstComment.prepend(document.createElement("hr"));
+        if (firstComment != null) {
+            firstComment.prepend(document.createElement("hr"));
+        }
 
         const date = new Date();
         const currentDateText =
