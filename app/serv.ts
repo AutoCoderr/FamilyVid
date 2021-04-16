@@ -1,5 +1,6 @@
 import Router from "./Core/Router";
 import Helpers from "./Core/Helpers";
+import env from "./Core/env";
 
 const Twig = require("twig");
 const {twig} = Twig;
@@ -22,7 +23,10 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 60*60*1000 }
 }));
-app.use(fileUpload());
+app.use(fileUpload({
+    limits: { fileSize: env.UPLOAD_SIZE_LIMIT+1 }
+}));
+
 app.use(express.static('public'));
 app.use(function(req, res, next){
     if (req.session.flash && Object.keys(req.session.flash).length > 0) {
