@@ -2,13 +2,15 @@ import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
 import UserModel from "../Models/User";
 import Family from "./Family";
+import Comment from "./Comment";
 
 export default class User extends EntityManager {
 
     Model = UserModel;
 
     entityTypes = {
-        Families: Family.name
+        Families: Family.name,
+        Comments: Comment.name
     }
 
     email: null|string = null;
@@ -19,27 +21,28 @@ export default class User extends EntityManager {
     active: null|boolean = null;
 
     Families: null|Array<Family> = [];
+    Comments: null|Array<Comment> = [];
 
 
     setEmail(email: string) {
         this.email = email;
     }
     getEmail() {
-        return this.email;
+        return Helpers.escapeHtml(this.email);
     }
 
     setFirstname(firstname: string) {
         this.firstname = firstname.trim();
     }
     getFirstname() {
-        return this.firstname;
+        return Helpers.escapeHtml(this.firstname);
     }
 
     setLastname(lastname: string) {
         this.lastname = lastname.trim();
     }
     getLastname() {
-        return this.lastname;
+        return Helpers.escapeHtml(this.lastname);
     }
 
     addRole(role: string) {
@@ -82,11 +85,6 @@ export default class User extends EntityManager {
 
     getFamilies() {
         if (this.Families instanceof Array) {
-            for (let i=0;i<this.Families.length;i++) {
-                if (!(this.Families[i] instanceof Family)) {
-                    this.Families[i] = (new Family()).hydrate(this.Families[i]);
-                }
-            }
             this.Families.sort((A,B) => {
                return (<string>A.getName()).toLowerCase() > (<string>B.getName()).toLowerCase() ? 1 : -1;
             });
@@ -102,6 +100,15 @@ export default class User extends EntityManager {
             }
             this.Families.push(family);
         }
+    }
+
+    getComments() {
+        if (this.Comments instanceof Array) {
+            this.Comments.sort((A,B) => {
+                return (<Date>A.getCreatedAt()).getTime() - (<Date>B.getCreatedAt()).getTime()
+            });
+        }
+        return this.Comments
     }
 
 }

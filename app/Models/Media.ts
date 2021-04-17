@@ -7,6 +7,7 @@ const {DB_PREFIX} = env;
 
 export interface IMedia {
     name: string;
+    slug: string;
     date: string;
     type: string
 }
@@ -14,6 +15,7 @@ export interface IMedia {
 export default class Media extends Model {
     public id!: number;
     public name!: string;
+    public slug!: string;
     public date!: string;
     public type!: string;
 }

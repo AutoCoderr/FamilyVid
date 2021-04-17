@@ -1,0 +1,26 @@
+<script>
+    function form_listener(form, callback = null, checkBefore = null, confirmOnSubmit = null) {
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            if (checkBefore != null && !checkBefore(this)) return;
+
+            if (confirmOnSubmit != null && !confirm(confirmOnSubmit)) return;
+
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: this.method,
+                    body: formData
+            })
+                .then(res => res.json())
+                .then(json => {
+                    if (callback != null) {
+                        callback(json, this)
+                    } else {
+                        console.log(form.actionName.value+" => ");
+                        console.log(json);
+                    }
+                });
+        });
+    }
+</script>

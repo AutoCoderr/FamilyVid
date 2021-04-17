@@ -95,17 +95,10 @@ export default class EntityManager {
             this.ModelInstance = entry;
             return this;
         } else {
-            let entry
-            try {// @ts-ignore
-                entry = await this.Model.findOne({where: {id: this.id}});
-            } catch(e) {
-                throw e;
-            }
-            for (let attr in entryObject) {
-                entry[attr] = this[attr];
-            }
-            await entry.save();
-            this.ModelInstance = entry;
+            for (let attr in entryObject) {// @ts-ignore
+                this.ModelInstance[attr] = this[attr];
+            }// @ts-ignore
+            await this.ModelInstance.save();
             return this;
         }
     }
@@ -126,7 +119,7 @@ export default class EntityManager {
     async serialize(forSaving = false) {
         let entryObject: any = {};
         for (let attr in this) {
-            if (typeof(this[attr]) != "function" && attr != "Model" && attr != "ModelInstance" && (!forSaving || (forSaving && attr != "id"))) {
+            if (typeof(this[attr]) != "function" && attr != "Model" && attr != "ModelInstance" && attr != "entityTypes" && (!forSaving || (forSaving && attr != "id"))) {
                 let elem;
                 if (typeof(this["get"+Helpers.ucFirst(attr)]) == "function" && !forSaving) {
                     elem = await this["get"+Helpers.ucFirst(attr)]();
@@ -144,24 +137,18 @@ export default class EntityManager {
                         }
                     }
                 } else if(!(elem instanceof Array) || attr == "roles") {
-                    if (elem instanceof EntityManager) {
+                    if (elem instanceof EntityManager && !forSaving) {
                         entryObject[attr] = await elem.serialize(forSaving);
-                    } else if (typeof(elem) == "object" && elem != null && typeof(elem.dataValues) != "undefined") {
-                        entryObject[attr] = elem.dataValues;
-                    } else {
-                        entryObject[attr] = elem;
+                    } else if (!(elem instanceof EntityManager)) {
+                        if (typeof(elem) == "object" && elem != null && typeof(elem.dataValues) != "undefined" && !forSaving) {
+                            entryObject[attr] = elem.dataValues;
+                        } else {
+                            entryObject[attr] = elem;
+                        }
                     }
                 }
             }
         }
         return entryObject;
     }
-}
-
-function addMissingZero(number: string|number, n: number = 2) {
-    number = number.toString();
-    while (number.length < n) {
-        number = "0"+number;
-    }
-    return number
 }

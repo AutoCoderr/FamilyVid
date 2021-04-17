@@ -1,5 +1,6 @@
 import RepositoryManager from "../Core/RepositoryManager";
 import SectionModel from "../Models/Section";
+import CommentModel from "../Models/Comment";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
 import {col, fn, Op} from "sequelize";

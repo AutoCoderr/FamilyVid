@@ -166,6 +166,25 @@
       }
     }
   },
+  "CommentController": {
+    "prefix": "comment_",
+    "prefix_route": "/comment",
+
+    "routes": {
+      "create": {
+        "route": "/:familySlug/:sectionSlug/:mediaSlug/create",
+        "method": "POST"
+      },
+      "delete": {
+        "route": "/delete",
+        "method": "POST"
+      },
+      "edit": {
+        "route": "/edit",
+        "method": "POST"
+      }
+    }
+  },
   "UserController": {
     "prefix": "user_",
     "prefix_route": "/user",

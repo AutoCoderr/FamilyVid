@@ -12,9 +12,14 @@ export default class Validator {
 		this.req = req;
 	}
 
+	getDatas() {
+		return this.datas;
+	}
+
 	isSubmitted() {
 		return (this.datas.actionName == this.form.config.actionName);
 	}
+
 	async isValid() {
 		delete this.datas.actionName;
 		this.fillCheckboxs();
@@ -94,6 +99,8 @@ export default class Validator {
 					const elem = await repository.findOne(id);
 					if (elem == null) {
 						errors.push(field.msgError);
+					} else {
+						this.datas[name] = elem;
 					}
 				}
 			}
@@ -140,7 +147,7 @@ export default class Validator {
 	}
 
 	checkFile(field,file) {
-		return !(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)
+		return (!(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)) && file.size <= field.max_size;
 	}
 
 	thereIsASpecialChar(str) {
@@ -207,8 +214,20 @@ export default class Validator {
 			this.req.session.flash.datas = {};
 		}
 
+		const allowedTypes = ["string", "number"];
+		for (const key in this.datas) {
+			const data = this.datas[key];
+			if (!allowedTypes.includes(typeof(data))) {
+				delete this.datas[key];
+			}
+		}
+
 		this.req.session.flash.errors[this.form.config.actionName] = errors;
 		this.req.session.flash.datas[this.form.config.actionName] = {...this.datas};
+	}
+
+	getFlashErrors() {
+		return this.req.session.flash.errors[this.form.config.actionName];
 	}
 
 }

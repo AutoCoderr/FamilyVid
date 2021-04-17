@@ -1,0 +1,24 @@
+<form
+		id="form_{{ form.config.actionName }}"
+		action="{{ form.config.action }}"
+		method="{{ form.config.method }}"
+		{% if form.config.formClass is defined %}
+			class="{{ form.config.formClass }}"
+		{% endif %}
+		{% if form.config.formData %}
+			encType="multipart/form-data"
+		{% endif %}
+>
+	{% include 'Modals/fields.html.twig' %}
+</form>
+
+<script>
+	window.addEventListener("DOMContentLoaded", (event) => {
+		form_listener(
+				document.getElementById("form_{{ form.config.actionName }}"),
+				{{ callback is defined ? callback : "null" }},
+				{{ checkBefore is defined ? checkBefore : "null" }},
+				{{ form.config.confirmOnSubmit is defined ? "`"~form.config.confirmOnSubmit~"`" : "null" }}
+		);
+	});
+</script>

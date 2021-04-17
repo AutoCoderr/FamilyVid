@@ -2,6 +2,7 @@ import EntityManager from "../Core/EntityManager";
 import FamilyModel from "../Models/Family";
 import User from "./User";
 import Section from "./Section";
+import Helpers from "../Core/Helpers";
 
 export default class Family extends EntityManager {
 
@@ -24,7 +25,7 @@ export default class Family extends EntityManager {
         this.name = name;
     }
     getName() {
-        return this.name;
+        return Helpers.escapeHtml(this.name);
     }
 
     getSlug() {
