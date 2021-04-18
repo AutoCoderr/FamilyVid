@@ -1,7 +1,13 @@
 import Helpers from "../Core/Helpers";
 import env from "../Core/env";
+import FileUploadService from "../Services/FileUploadService";
 
 export default function Media(familySlug,sectionSlug, mediaSlug = null) {
+	let fileMimes: Array<string> = [];
+	for (const type in FileUploadService.mediaTypeByMimeType) {
+		fileMimes = [...fileMimes, ...FileUploadService.mediaTypeByMimeType[type]];
+	}
+
 	return {
 		config: {
 			action: mediaSlug == null ? Helpers.getPath("media_new", {familySlug,sectionSlug}) : Helpers.getPath("media_edit", {familySlug,sectionSlug,mediaSlug}),
@@ -29,11 +35,12 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 			...(mediaSlug == null ? {
 				file: {
 					type: "file",
-					mimes: ['video/mp4','video/ogg','video/x-msvideo','image/png','image/jpeg','image/bmp'],
+					mimes: fileMimes,
 					max_size: env.UPLOAD_SIZE_LIMIT,
 					label: "Envoyez votre photo/vidéo",
+					description: "Formats vidéo acceptés : MP4, OGG/OGV, WEBM",
 					required: true,
-					msgError: "Vous devez envoyer un fichier image ou vidéo, qui fasse moins de 500 mo"
+					msgError: "Le vidéo n'est pas au bon format, ou fait plus de 1.5 giga octets"
 				}
 			} : {})
 		}
