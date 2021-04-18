@@ -45,6 +45,7 @@
             <input
                     type="{{ field.type }}"
                     name="{{ name }}"
+                    id="{{ form.config.actionName }}_{{ name }}"
                     {% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
                         value="{{ flash.datas[form.config.actionName][name] }}"
                     {% elseif field.value is defined %}
@@ -65,6 +66,26 @@
         {% endif %}
 
         {% if field.type != "hidden" %}
+            {% if field.type == "password" and field.canDisplay is defined and field.canDisplay %}
+                </td><td style="text-align: left">
+                <input type="button" value="Afficher" id="{{ form.config.actionName }}_{{ name }}_display"/>
+                <script>
+                    document.getElementById("{{ form.config.actionName }}_{{ name }}_display").addEventListener("click", function() {
+                       const input = document.getElementById("{{ form.config.actionName }}_{{ name }}");
+
+                       this.value = input.type === "password" ? "Masquer" : "Afficher";
+                       input.type = input.type === "password" ? "text" : "password";
+                    });
+                </script>
+            {% endif %}
+
+            {% if field.description is defined %}
+                </td></tr>
+                <tr><td colspan="3">
+                <p style="margin-left: 20%; text-align: left">{{ field.description }}</p>
+                <br/>
+            {% endif %}
+
             </td></tr>
         {% endif %}
 

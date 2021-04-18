@@ -18,6 +18,7 @@ export default function ChangeUserPassword(confirmation_token = null) {
                     label: "Votre ancien mot de passe",
                     required: true,
                     checkValid: false,
+                    canDisplay: true,
                     msgError: "Vous devez entrer votre ancien mot de passe"
                 }
             } : {}),
@@ -26,6 +27,7 @@ export default function ChangeUserPassword(confirmation_token = null) {
                 label: "Votre mot de passe",
                 minLength: 8,
                 required: true,
+                canDisplay: true,
                 msgError: "Format de mot de passe incorrect"
             },
             passwordConfirm: {
@@ -33,6 +35,7 @@ export default function ChangeUserPassword(confirmation_token = null) {
                 label: "Veuillez confirmer votre mot de passe",
                 confirmWith: "password",
                 required: true,
+                canDisplay: true,
                 msgError: "Les mots de passe ne correspondent pas"
             }
         }
