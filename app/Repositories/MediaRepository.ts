@@ -48,6 +48,9 @@ export default class MediaRepository extends RepositoryManager {
                     {
                         name: {[Op.iLike]: search}
                     },
+                    {
+                        tags: {[Op.iLike]: search}
+                    },
                         (!isNaN(date.getTime()) &&
                             {
                                 date: {[Op.between]: [date,endDate]}
