@@ -73,6 +73,9 @@ export default class MediaController extends Controller {
                     const datas = this.getDatas();
 
                     media.setDate(datas.date);
+                    if (datas.tags) {
+                        media.setTags(datas.tags);
+                    }
 
                     if (media.getName() != datas.name && !(await FileUploadService.renameMedia(family, section, media, datas.name))) {
                         validator.setFlashErrors(["La photo/video ne peut pas être renommée"]);

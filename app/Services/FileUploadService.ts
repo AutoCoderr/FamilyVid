@@ -131,6 +131,9 @@ export default class FileUploadService {
             media.setName(datas.name != "" ? datas.name : filename);
             await media.setSlugFrom("name");
             media.setFileExtension(ext);
+            if (datas.tags) {
+                media.setTags(datas.tags);
+            }
 
             for (const mediaType in this.mediaTypeByMimeType) {
                 if (this.mediaTypeByMimeType[mediaType].includes(datas.file.mimetype)) {
