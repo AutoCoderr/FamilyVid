@@ -22,4 +22,10 @@ module.exports = {
 
 
   UPLOAD_SIZE_LIMIT: 500 * 1024 * 1024, // File upload limited to 500 mo
+
+  // Https part
+  SSL_CERTIFICATE: 'crt.crt',
+  SSL_PRIVATE_KEY: 'key.key',
+  SSL_ENABLED: false,
+  SSL_REDIRECT_HTTP_TO_HTTPS: false
 };

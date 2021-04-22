@@ -1,6 +1,9 @@
 import Router from "./Core/Router";
 import Helpers from "./Core/Helpers";
 import env from "./Core/env";
+import http from "http";
+import https from "https";
+import fs from 'fs-extra';
 
 const Twig = require("twig");
 const {twig} = Twig;
@@ -41,7 +44,31 @@ app.use(function(req, res, next){
 app.set('views', 'Views');
 app.set('view engine', 'twig');
 
-app.listen(80);
+if (env.SSL_ENABLED) {
+    const sslPath = __dirname+"/ssl/";
+    if ((!fs.existsSync(sslPath+env.SSL_CERTIFICATE) || !fs.existsSync(sslPath+env.SSL_PRIVATE_KEY)) ||
+        (fs.statSync(sslPath+env.SSL_CERTIFICATE).isDirectory() || fs.statSync(sslPath+env.SSL_CERTIFICATE).isDirectory()) ) {
+        throw new Error("'SSL_CERTIFICATE' and 'SSL_PRIVATE_KEY' are not correctly set");
+    }
+    const credentials = {
+        key: fs.readFileSync(sslPath+env.SSL_PRIVATE_KEY, 'utf8'),
+        cert: fs.readFileSync(sslPath+env.SSL_CERTIFICATE, 'utf8')
+    }
+    if (env.SSL_REDIRECT_HTTP_TO_HTTPS) {
+        app.use(function (req, res, next) {
+            if (req.protocol == "http") {
+                res.redirect(302, "https://" + req.headers.host + req.originalUrl);
+            } else {
+                next();
+            }
+        });
+    }
+    const httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(443);
+}
+
+const httpServer = http.createServer(app);
+httpServer.listen(80);
 
 Router(app);
 
