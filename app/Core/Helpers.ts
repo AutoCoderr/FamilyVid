@@ -1,4 +1,5 @@
-import crypto from "crypto";
+import env from './env';
+import crypto from 'crypto';
 import EntityManager from "./EntityManager";
 
 export default class Helpers {
@@ -18,10 +19,17 @@ export default class Helpers {
         return {};
     }
 
-    static hashPassword(str) {
-        let sha1 = crypto.createHash("sha1");
+    private static sha1(str) {
+        const sha1 = crypto.createHash("sha1");
         sha1.update(str);
         return sha1.digest("hex");
+    }
+
+    static hashPassword(password): string {
+        for (let i=0;i<env.SALT_NB;i++) {
+            password = this.sha1(password+env.SALT);
+        }
+        return password;
     }
 
     static replaceAll(str,A,B) {
