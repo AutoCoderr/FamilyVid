@@ -44,7 +44,7 @@ export default class MediaController extends Controller {
                         this.setFlash("media_success", "Photo/video ajoutée avec succès!");
                         this.redirectToRoute("media_index", {familySlug,sectionSlug});
                     } else {
-                        validator.setFlashErrors(["Echec de mise en ligne de la photo/video"]);
+                        validator.setFlashErrors("Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier");
                         this.redirect(this.req.header('Referer'));
                     }
                 } else {

@@ -18,13 +18,13 @@ export default class FileUploadService {
         const familyPath = this.filesPath+"/"+family.getSlug();
         const sectionPath = familyPath+"/"+section.getSlug();
 
-        if (fs.existsSync(sectionPath)) {
-            fs.emptyDirSync(sectionPath);
-            fs.rmdirSync(sectionPath)
+        if (await fs.exists(sectionPath)) {
+            await fs.emptyDir(sectionPath);
+            await fs.rmdir(sectionPath)
         }
 
-        if (fs.existsSync(familyPath) && fs.readdirSync(familyPath).length == 0) {
-            fs.rmdirSync(familyPath);
+        if (await fs.exists(familyPath) && (await fs.readdir(familyPath)).length == 0) {
+            await fs.rmdir(familyPath);
         }
 
         await section.delete();
@@ -35,15 +35,15 @@ export default class FileUploadService {
         const sectionPath = familyPath+"/"+section.getSlug();
         const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
-        if (fs.existsSync(mediaPath)) {
-            fs.unlinkSync(mediaPath);
+        if (await fs.exists(mediaPath)) {
+            await fs.unlink(mediaPath);
         }
 
-        if (fs.readdirSync(sectionPath).length == 0) {
-            fs.rmdirSync(sectionPath);
+        if ((await fs.readdir(sectionPath)).length == 0) {
+            await fs.rmdir(sectionPath);
         }
-        if (fs.readdirSync(familyPath).length == 0) {
-            fs.rmdirSync(familyPath);
+        if ((await fs.readdir(familyPath)).length == 0) {
+            await fs.rmdir(familyPath);
         }
         await media.delete();
     }
@@ -65,12 +65,12 @@ export default class FileUploadService {
         const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
         const newMediaPath = newSectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
-        if (!fs.existsSync(mediaPath)) {
+        if (!await fs.exists(mediaPath)) {
             console.log("'"+mediaPath+"' not found, can't move media");
             return false;
         }
-        if (!fs.existsSync(newSectionPath)) {
-            fs.mkdirSync(newSectionPath);
+        if (!await fs.exists(newSectionPath)) {
+            await fs.mkdir(newSectionPath);
         }
 
         media.setSection(newSection);
@@ -80,8 +80,8 @@ export default class FileUploadService {
             mediaPath,
             newMediaPath
         )
-        if (fs.readdirSync(sectionPath).length == 0) {
-            fs.rmdirSync(sectionPath);
+        if ((await fs.readdir(sectionPath)).length == 0) {
+            await fs.rmdir(sectionPath);
         }
         return true;
     }
@@ -96,8 +96,8 @@ export default class FileUploadService {
 
         const newSectionPath = familyPath+"/"+section.getSlug();
 
-        if (fs.existsSync(sectionPath)) {
-            fs.renameSync(sectionPath,newSectionPath);
+        if (await fs.exists(sectionPath)) {
+            await fs.rename(sectionPath,newSectionPath);
         }
     }
 
@@ -106,7 +106,7 @@ export default class FileUploadService {
         const sectionPath = familyPath+"/"+section.getSlug();
         const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
-        if (!fs.existsSync(mediaPath)) {
+        if (!await fs.exists(mediaPath)) {
             console.log("'"+mediaPath+"' not found, can't rename media");
             return false;
         }
@@ -116,7 +116,7 @@ export default class FileUploadService {
 
         const newMediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
-        fs.renameSync(mediaPath, newMediaPath);
+        await fs.rename(mediaPath, newMediaPath);
         return true;
     }
 
@@ -125,6 +125,10 @@ export default class FileUploadService {
             const splitFilename = datas.file.name.split(".");
             const filename = splitFilename.slice(0,splitFilename.length-1).join(".");
             const ext = splitFilename.slice(-1)[0];
+            if (datas.name == "" && filename.length > 50) {
+                resolve(false);
+                return;
+            }
 
             let media = new Media();
             media.setDate(datas.date);
@@ -148,11 +152,11 @@ export default class FileUploadService {
             const sectionPath = familyPath+"/"+section.getSlug();
             const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
-            if (!fs.existsSync(familyPath)) {
-                fs.mkdirSync(familyPath);
+            if (!await fs.exists(familyPath)) {
+                await fs.mkdir(familyPath);
             }
-            if (!fs.existsSync(sectionPath)) {
-                fs.mkdirSync(sectionPath);
+            if (!await fs.exists(sectionPath)) {
+                await fs.mkdir(sectionPath);
             }
             datas.file.mv(mediaPath, (err) => {
                 if (err) {
@@ -164,9 +168,9 @@ export default class FileUploadService {
         });
     }
 
-    static readMedia(family: Family, section: Section, media: Media, res) {
+    static async readMedia(family: Family, section: Section, media: Media, res) {
         const mediaPath = this.filesPath+"/"+family.getSlug()+"/"+section.getSlug()+"/"+media.getSlug()+"."+media.getFileExtension();
-        if (!fs.existsSync(mediaPath)) {
+        if (!await fs.exists(mediaPath)) {
             res.send("Fichier introuvable");
             return;
         }
