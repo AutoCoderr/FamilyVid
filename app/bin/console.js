@@ -1,15 +1,40 @@
 const fs = require('fs-extra');
 
-let first,second;
+let commandName
 if (process.argv.length < 3) {
-	first = "help";
-	second = "";
+	commandName = "help";
 } else {
-	first = process.argv[2].split(':')[0];
-	second = typeof (process.argv[2].split(':')[1]) != "undefined" ? process.argv[2].split(':')[1] : "";
+	commandName = process.argv[2];
 }
 
-if(fs.existsSync(__dirname+"/commands/"+first)) {
+const path = __dirname+"/commands/";
+
+(async () => {
+	if (!await foundCommand(path)) {
+		console.log("Wrong command");
+		process.exit();
+	}
+})();
+
+async function foundCommand(path) {
+	const filesAndFolders  = await fs.readdir(path);
+	for (const fileOrFolder  of filesAndFolders) {
+		if (await fs.stat(path+fileOrFolder).then(elem => elem.isDirectory())) {
+			if (await foundCommand(path+fileOrFolder+"/")) {
+				return true;
+			}
+		} else {
+			const Command = require(path+fileOrFolder);
+			if (Command.commandName === commandName) {
+				await Command.action();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/*if(fs.existsSync(__dirname+"/commands/"+first)) {
 	let action;
 
 	if (second === "" && fs.existsSync(__dirname+"/commands/"+first+"/default.js")) {
@@ -23,3 +48,4 @@ if(fs.existsSync(__dirname+"/commands/"+first)) {
 	}
 }
 console.log("Wrong command");
+*/
