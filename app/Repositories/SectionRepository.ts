@@ -26,6 +26,18 @@ export default class SectionRepository extends RepositoryManager {
         })
     }
 
+    static findAllByFamilyId(familyIds: number|Array<number>) {
+        if (typeof(familyIds) == "number") {
+            familyIds = [familyIds];
+        }
+        return super.findAllByParams({
+            where: {
+                FamilyId: { [Op.in]: familyIds }
+            },
+            include: FamilyModel
+        });
+    }
+
     static findAllByFamilyIdExceptOne(familyId,sectionId) {
         return super.findAllByParams({
            where: {

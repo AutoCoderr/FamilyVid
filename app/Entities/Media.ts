@@ -16,6 +16,7 @@ export default class Media extends EntityManager {
     slug: null|string = null;
     fileExtension: null|string = null;
     date: null|Date = null;
+    tags: null|string = null;
     type: null|string = null;
 
     Section: null|Section = null;
@@ -46,6 +47,13 @@ export default class Media extends EntityManager {
     }
     getDate(): null|Date {
         return this.date;
+    }
+
+    setTags(tags: string) {
+        this.tags = tags;
+    }
+    getTags(): null|string {
+        return this.tags;
     }
 
     setType(type: string) {

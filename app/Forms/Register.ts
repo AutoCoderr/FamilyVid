@@ -42,13 +42,21 @@ export default function Register() {
 				label: "Votre mot de passe",
 				minLength: 8,
 				required: true,
-				msgError: "Format de mot de passe incorrect"
+				msgError: "Format de mot de passe incorrect",
+				canDisplay: true,
+				description: "Doit respecter une certaine compléxité :<br/>"+
+							 "- Au moins 10 caractères<br/>"+
+							 "- Au moins une majuscule<br/>"+
+							 "- Au moins une miniscule<br/>"+
+							 "- Au moins un chiffre<br/>"+
+							 "- Au moins un caractère spécial (!~\"'()`?/.^*@$%_-#&<>§:;,)"
 			},
 			passwordConfirm: {
 				type: "password",
 				label: "Veuillez confirmer votre mot de passe",
 				confirmWith: "password",
 				required: true,
+				canDisplay: true,
 				msgError: "Les mots de passe ne correspondent pas"
 			}
 		}

@@ -6,7 +6,7 @@ export default function AcceptDemand(demandId) {
             action: Helpers.getPath("family_accept_demand", {id: demandId}),
             method: "POST",
             submit: "Accepter",
-            actionName: "accept_demand",
+            actionName: "accept_demand_"+demandId,
             msgError: "Acceptation échouée",
             formClass: "form-btn",
             submitClass: "btn"

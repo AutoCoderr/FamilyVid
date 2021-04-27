@@ -44,7 +44,7 @@ export default class MediaController extends Controller {
                         this.setFlash("media_success", "Photo/video ajoutée avec succès!");
                         this.redirectToRoute("media_index", {familySlug,sectionSlug});
                     } else {
-                        validator.setFlashErrors(["Echec de mise en ligne de la photo/video"]);
+                        validator.setFlashErrors("Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier");
                         this.redirect(this.req.header('Referer'));
                     }
                 } else {
@@ -73,6 +73,9 @@ export default class MediaController extends Controller {
                     const datas = this.getDatas();
 
                     media.setDate(datas.date);
+                    if (datas.tags) {
+                        media.setTags(datas.tags);
+                    }
 
                     if (media.getName() != datas.name && !(await FileUploadService.renameMedia(family, section, media, datas.name))) {
                         validator.setFlashErrors(["La photo/video ne peut pas être renommée"]);

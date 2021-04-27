@@ -9,6 +9,7 @@ export interface IMedia {
     name: string;
     slug: string;
     date: string;
+    tags: string;
     type: string
 }
 
@@ -17,6 +18,7 @@ export default class Media extends Model {
     public name!: string;
     public slug!: string;
     public date!: string;
+    public tags!: string;
     public type!: string;
 }
 
@@ -43,6 +45,10 @@ Media.init(
         date: {
             type: DataTypes.DATE,
             allowNull: false
+        },
+        tags: {
+            type: DataTypes.STRING(140),
+            allowNull: true
         },
         type: {
             type: DataTypes.STRING(7),

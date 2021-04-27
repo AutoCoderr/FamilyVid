@@ -60,8 +60,7 @@ export default class Validator {
 				continue;
 			}
 
-			if (this.datas[name].length < field.minLength && this.datas[name].length > field.maxLength) {
-				errors.push(field.msgError);
+			if ((!field.required || typeof(field.required) == "undefined") && this.datas[name] === "") {
 				continue;
 			}
 
@@ -147,11 +146,18 @@ export default class Validator {
 	}
 
 	checkFile(field,file) {
+		if (typeof(file) != "object" || file instanceof Array || file == null || file.name == undefined) return false;
+
+		const splitFilename = file.name.split(".");
+		const filename = splitFilename.slice(0,splitFilename.length-1).join(".");
+		if ((typeof(field.minLength) == "number" && filename.length < field.minLength) ||
+			(typeof(field.maxLength) == "number" && filename.length > field.maxLength)) return false;
+
 		return (!(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)) && file.size <= field.max_size;
 	}
 
 	thereIsASpecialChar(str) {
-		const specialChars = "?.*$_-#&<>";
+		const specialChars = "!~\"'()`?/.^*@$%_-#&<>§:;,";
 		for (let i=0;i<specialChars.length;i++) {
 			if (str !== str.replace(specialChars[i],"")) {
 				return true;

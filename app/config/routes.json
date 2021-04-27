@@ -39,6 +39,13 @@
 
       "index": {
         "route": "/"
+      },
+      "global": {
+        "route": "/global"
+      },
+      "global_search": {
+        "route": "/global/search",
+        "method": "POST"
       }
 
     }

@@ -6,6 +6,7 @@
     <script src="/js/search_user.js"></script>
     <script>
         allUser = true;
+        userId = {{ session.user.id }};
     </script>
 {% endblock %}
 
@@ -27,8 +28,12 @@
                 <tr>
                     <td>{{ user.firstname }}</td>
                     <td>{{ user.lastname }}</td>
-                    <td>{{ user.email }}</td>
-                    <td><a class="btn" href="{{ path('family_list', {'userId': user.id}) }}">Voir ses familles ({{ user.Families|length }})</a></td>
+                    <td>{{ user.email }} {% if user.id == session.user.id %}(vous){% endif %}</td>
+                    {% if user.id == session.user.id %}
+                        <td><a class="btn" href="{{ path('family_list_mines', {'userId': user.id}) }}">Voir mes familles ({{ user.Families|length }})</a></td>
+                    {% else %}
+                        <td><a class="btn" href="{{ path('family_list', {'userId': user.id}) }}">Voir ses familles ({{ user.Families|length }})</a></td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr><td colspan="4">Aucun utilisateur trouvé</td></tr>
