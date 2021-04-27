@@ -1,4 +1,4 @@
-module.exports = class MakeHelp {
+export default class MakeHelp {
     static commandName = "make";
 
     static action() {

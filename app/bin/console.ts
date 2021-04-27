@@ -1,6 +1,6 @@
-const fs = require('fs-extra');
+import fs from 'fs-extra';
 
-let commandName
+let commandName;
 if (process.argv.length < 3) {
 	commandName = "help";
 } else {
@@ -23,8 +23,8 @@ async function foundCommand(path) {
 			if (await foundCommand(path+fileOrFolder+"/")) {
 				return true;
 			}
-		} else {
-			const Command = require(path+fileOrFolder);
+		} else if (fileOrFolder.endsWith(".js")) {
+			const Command = require(path+fileOrFolder).default;
 			if (Command.commandName === commandName) {
 				await Command.action();
 				return true;

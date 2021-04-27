@@ -1,4 +1,4 @@
-module.exports = class Help {
+export default class Help {
     static commandName = "help";
 
     static action() {

@@ -1,6 +1,6 @@
-const Migration = require("../../../Core/Migration").default;
+import Migration from "../../../Core/Migration";
 
-module.exports = class MigrationMigrate {
+export default class MigrationMigrate {
     static commandName = "migration:migrate";
 
     static async action() {

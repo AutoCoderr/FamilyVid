@@ -1,4 +1,4 @@
-module.exports = class MigrationHelp {
+export default class MigrationHelp {
     static commandName = "migration";
 
     static action() {
