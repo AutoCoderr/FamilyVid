@@ -1,9 +1,10 @@
 import Migration from "../../../Core/Migration";
+import Command from "../../../Core/Command";
 
-export default class MigrationMigrate {
+export default class MigrationMigrate extends Command {
     static commandName = "migration:migrate";
 
-    static async action() {
+    static async action(_) {
         await Migration.migrate();
         process.exit();
     }

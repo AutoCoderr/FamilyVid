@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import Command from "../Core/Command";
 
 let commandName;
 if (process.argv.length < 3) {
@@ -8,44 +9,39 @@ if (process.argv.length < 3) {
 }
 
 const path = __dirname+"/commands/";
+let foundCommand: typeof Command|null = null;
 
 (async () => {
-	if (!await foundCommand(path)) {
+	if (!await findCommand(path)) {
 		console.log("Wrong command");
-		process.exit();
+	} else if (foundCommand != null) {
+		await (<typeof Command>foundCommand).action((<typeof Command>foundCommand).parse(process.argv));
 	}
+	process.exit();
 })();
 
-async function foundCommand(path) {
+async function findCommand(path, p = 0) {
 	const filesAndFolders  = await fs.readdir(path);
 	for (const fileOrFolder  of filesAndFolders) {
 		if (await fs.stat(path+fileOrFolder).then(elem => elem.isDirectory())) {
-			if (await foundCommand(path+fileOrFolder+"/")) {
-				return true;
+			if (!await findCommand(path+fileOrFolder+"/", p+1)) {
+				return false;
 			}
 		} else if (fileOrFolder.endsWith(".js")) {
-			const Command = require(path+fileOrFolder).default;
-			if (Command.commandName === commandName) {
-				await Command.action();
-				return true;
+			const ACommand: typeof Command = require(path+fileOrFolder).default;
+			if (ACommand.match(commandName)) {
+				if (foundCommand == null) {
+					foundCommand = ACommand;
+				} else {
+					console.log("Ambigous command name");
+					return false;
+				}
 			}
 		}
 	}
-	return false;
-}
-
-/*if(fs.existsSync(__dirname+"/commands/"+first)) {
-	let action;
-
-	if (second === "" && fs.existsSync(__dirname+"/commands/"+first+"/default.js")) {
-		action = require(__dirname+"/commands/"+first+"/default.js");
-	} else if (fs.existsSync(__dirname+"/commands/"+first+"/"+second+".js")) {
-		action = require(__dirname+"/commands/"+first+"/"+second+".js");
-	}
-	if (action !== undefined) {
-		action();
-		return;
+	if (p == 0) {
+		return foundCommand != null;
+	} else {
+		return true;
 	}
 }
-console.log("Wrong command");
-*/

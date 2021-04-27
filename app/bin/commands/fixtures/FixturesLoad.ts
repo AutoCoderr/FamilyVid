@@ -1,10 +1,11 @@
-const fs = require("fs-extra");
 import fs from 'fs-extra';
+import Command from "../../../Core/Command";
 
-export default class FixtureLoad {
+
+export default class FixtureLoad extends Command {
     static commandName = "fixtures:load";
 
-    static async action() {
+    static async action(_) {
         const path = __dirname+"/../../../Fixtures";
         const files = fs.readdirSync(path).filter(file => file.endsWith(".js"));
 
