@@ -15,7 +15,7 @@ let foundCommand: typeof Command|null = null;
 	if (!await findCommand(path)) {
 		console.log("Wrong command");
 	} else if (foundCommand != null) {
-		await (<typeof Command>foundCommand).action((<typeof Command>foundCommand).parse(process.argv));
+		await (<typeof Command>foundCommand).start(process.argv);
 	}
 	process.exit();
 })();
