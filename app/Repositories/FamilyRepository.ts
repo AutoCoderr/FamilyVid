@@ -19,6 +19,12 @@ export default class FamilyRepository extends RepositoryManager {
         });
     }
 
+    static findOneByName(name) {
+        return super.findOneByParams({
+            where: {name: name}
+        })
+    }
+
     static findAll() {
         return super.findAll(SectionModel);
     }
