@@ -5,6 +5,7 @@ import CreateUserService from "../../../Services/CreateUserService";
 
 export default class UserCreateMulti extends Command {
     static commandName = "user:create:multi";
+    static description = "Créer des utilisateurs depuis un fichier csv";
 
     static argsModel = {
         $argsWithoutKey: [

@@ -4,8 +4,12 @@ import Command from "../../../Core/Command";
 
 export default class FixtureLoad extends Command {
     static commandName = "fixtures:load";
+    static description = "Executer les fixtures";
 
     static async action(_) {
+        if (!await this.validQuestion("Êtes vous sûre de vouloir appliquer ces fixtures (O/n) ? : ",["y","yes","o","oui"])) {
+            return;
+        }
         const path = __dirname+"/../../../Fixtures";
         const files = fs.readdirSync(path).filter(file => file.endsWith(".js"));
 
@@ -33,6 +37,5 @@ export default class FixtureLoad extends Command {
             }
         }
         console.log("\n\nAll fixtures executed");
-        process.exit();
     }
 }
