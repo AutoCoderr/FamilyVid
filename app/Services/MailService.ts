@@ -15,7 +15,8 @@ export default class MailService {
         mailer.addDestinations(<string>user.getEmail());
         mailer.setSubject("FamilyVid - Changer de mot de passe");
         mailer.setMessage("Bonjour "+user.getFirstname()+" "+user.getLastname()+"<br/>"+
-                          "Vous pouvez définir votre nouveau mot de passe <a href='"+proto+"://"+host+Helpers.getPath("security_new_password", {token: confirmation.getToken()})+"'>ICI</a>");
+                          "Vous pouvez définir votre nouveau mot de passe <a href='"+proto+"://"+host+Helpers.getPath("security_new_password", {token: confirmation.getToken()})+"'>ICI</a><br/>"+
+                          "Vous pouvez accéder au site <a href='"+proto+"://"+host+Helpers.getPath("index")+"'>ICI</a>");
 
         if (await mailer.send()) {
             await confirmation.save();
