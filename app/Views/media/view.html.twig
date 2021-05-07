@@ -23,6 +23,7 @@
     </span>
 
     <h1>{{ media.name }}</h1>
+    <div class="date">{{ media.date|date('Y-m-d') }}</div>
 
     <div id="media">
         {% if media.type == "picture" %}
