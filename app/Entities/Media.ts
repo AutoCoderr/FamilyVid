@@ -17,6 +17,7 @@ export default class Media extends EntityManager {
     fileExtension: null|string = null;
     date: null|Date = null;
     tags: null|string = null;
+    nbViews: null|number = null;
     type: null|string = null;
 
     Section: null|Section = null;
@@ -54,6 +55,13 @@ export default class Media extends EntityManager {
     }
     getTags(): null|string {
         return this.tags;
+    }
+
+    getNbViews() {
+        return this.nbViews;
+    }
+    setNbViews(nbViews: number) {
+        this.nbViews = nbViews;
     }
 
     setType(type: string) {
