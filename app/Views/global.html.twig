@@ -58,7 +58,7 @@
             {% for media in medias %}
                 <tr>
                     <td>{{ media.name }}</td>
-                    <td>{{ media.date|date('Y-m-d') }}</td>
+                    <td>{{ media.date|date('d/m/Y') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
                     <td><a href="{{ path('section_index', {'familySlug': media.familySlug}) }}">{{ media.familyName }}</a></td>
                     <td><a href="{{ path('media_index', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug}) }}">{{ media.sectionName }}</a></td>
