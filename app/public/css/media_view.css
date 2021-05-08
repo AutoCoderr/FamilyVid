@@ -16,7 +16,19 @@
 }
 
 h1 {
-  margin-bottom: 30px;
+    margin-bottom: 0;
+}
+
+.title_prev_next {
+    width: 30%;
+    display: table;
+    flex-direction: row;
+    margin-bottom: 30px;
+}
+.title_prev_next div {
+    display: table-cell;
+    vertical-align: middle;
+    width: 185px;
 }
 
 .date {
