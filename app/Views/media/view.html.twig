@@ -23,7 +23,7 @@
     </span>
 
     <h1>{{ media.name }}</h1>
-    <div class="date">{{ media.date|date('Y-m-d') }}</div>
+    <div class="date">{{ media.date|date('d/m/Y') }}</div>
 
     <div id="media">
         {% if media.type == "picture" %}
@@ -56,7 +56,7 @@
                         <div class="header">
                             <div class="infos">
                                 De <span class="author_name">{{ comment.User.firstname }} {{ comment.User.lastname }}</span>
-                                à <span class="comment_date">{{ comment.createdAt|date("Y-m-d H:i:s") }}</span>
+                                à <span class="comment_date">{{ comment.createdAt|date("d/m/Y H:i:s") }}</span>
                                 {% if comment.updated %}
                                     <span class="comment_updated">(modifié)</span>
                                 {% endif %}

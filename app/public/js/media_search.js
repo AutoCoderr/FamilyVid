@@ -50,7 +50,10 @@ function generateMediaList(medias) {
             tr.appendChild(tdDate);
 
             const tdType = document.createElement("td");
-            tdType.innerText = media.type === "video" ? "Vidéo" : "Photo";
+            const imgType = document.createElement("img");
+            imgType.title = media.type === "video" ? "Vidéo" : "Photo";
+            imgType.src = media.type === "video" ? "/images/clap.png" : "/images/picture.png";
+            tdType.appendChild(imgType);
             tr.appendChild(tdType);
 
             if (globalSearch) {
