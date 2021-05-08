@@ -24,7 +24,10 @@ export default class MediaRepository extends RepositoryManager {
         if (!(sectionsId instanceof Array)) {
             sectionsId = [sectionsId];
         }
-        const searchDate = search.replace(/\//g,"-");
+        let searchDate = search.replace(/\//g,"-");
+        if (search.match(/^((0[1-9])|([1-2][0-9])|(3[0-1]))\/((0[1-9])|(1[0-2]))\/[0-9]{4}$/g)) {
+            searchDate = search.split("/")[2] + "-" + search.split("/")[1] + "-" + search.split("/")[0]
+        }
         const keyWords = search.split(" ").map(word => "%"+word+"%");
         search = "%"+search+"%";
         let date: Date = new Date(searchDate);
