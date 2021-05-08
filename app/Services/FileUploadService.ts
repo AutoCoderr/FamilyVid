@@ -131,6 +131,7 @@ export default class FileUploadService {
             }
 
             let media = new Media();
+            media.setNbViews(0);
             media.setDate(datas.date);
             media.setName(datas.name != "" ? datas.name : filename);
             await media.setSlugFrom("name");

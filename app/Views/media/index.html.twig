@@ -50,7 +50,7 @@
                 </select>
             </div>
         </div>
-        <input type="text" placeholder="Tapez un mot clé..." id="input_search">
+        <input type="text" placeholder="Recherche..." id="input_search">
         <h2>Les photos/videos :</h2>
         <table>
             <thead>
@@ -65,8 +65,8 @@
             {% for media in section.Medias %}
                 <tr>
                     <td>{{ media.name }}</td>
-                    <td>{{ media.date|date('Y-m-d') }}</td>
-                    <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
+                    <td>{{ media.date|date('d/m/Y') }}</td>
+                    <td><img title="{{ media.type == "video" ? "Vidéo": "Photo" }}" src="{{ media.type == "video" ? "/images/clap.png" : "/images/picture.png" }}"></td>
                     <td>
                         <a class="btn" href="{{ path('media_view', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Voir</a>
                         <a class="btn" href="{{ path('media_edit', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Modifier</a>

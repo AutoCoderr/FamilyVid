@@ -99,8 +99,13 @@ export default class Helpers {
         return num;
     }
 
-    static formatDate(date: Date) {
-        return date.getFullYear() + "-" + this.addMissingZero(date.getMonth() + 1) + "-" + this.addMissingZero(date.getDate())
+    static formatDate(date: Date, format = "fr") {
+        if (format == "fr") {
+            return this.addMissingZero(date.getDate())+"/"+this.addMissingZero(date.getMonth() + 1)+"/"+date.getFullYear();
+        } else if (format == "en") {
+            return date.getFullYear() + "-" + this.addMissingZero(date.getMonth() + 1) + "-" + this.addMissingZero(date.getDate())
+        }
+        return ""
     }
 
     static hydrateForm(entity: EntityManager, form) {
@@ -109,7 +114,7 @@ export default class Helpers {
                 let value = entity["get"+this.ucFirst(name)]();
                 if (!(value instanceof Array) && !(value instanceof EntityManager)) {
                     if (value instanceof Date) {
-                        value = this.formatDate(value);
+                        value = this.formatDate(value, "en");
                     }
                     form.fields[name].value = value;
                 }

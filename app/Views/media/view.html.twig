@@ -15,16 +15,41 @@
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">Retour</a>
-    <h1>{{ media.name }}</h1>
+    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">Retour à la liste</a>
+    <span class="path">
+        <a title="Famille {{ family.name }}" href="{{ path('section_index', {'familySlug': family.slug}) }}">{{ family.name }}</a>
+        <span>></span>
+        <a title="Section {{ section.name }}" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">{{ section.name }}</a>
+    </span>
 
-    {% if media.type == "picture" %}
-        <img src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}"/>
-    {% elseif media.type == "video" %}
-        <video controls>
-            <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
-        </video>
-    {% endif %}
+    <div class="title_prev_next">
+        <div>
+        {% if previousMedia %}
+            <a class="btn" href="{{ path('media_view', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': previousMedia.slug}) }}">Précédent</a>
+        {% endif %}
+        </div>
+
+        <h1>{{ media.name }}</h1>
+
+        <div>
+        {% if nextMedia %}
+                <a class="btn" href="{{ path('media_view', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': nextMedia.slug}) }}">Suivant</a>
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="date">{{ media.date|date('d/m/Y') }}</div>
+
+    <div id="media">
+        {% if media.type == "picture" %}
+            <img src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}"/>
+        {% elseif media.type == "video" %}
+            <video controls>
+                <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
+            </video>
+        {% endif %}
+        <div id="nb_views">{{ media.nbViews }} vues</div>
+    </div>
 
 
     <div id="comment_container">
@@ -46,7 +71,7 @@
                         <div class="header">
                             <div class="infos">
                                 De <span class="author_name">{{ comment.User.firstname }} {{ comment.User.lastname }}</span>
-                                à <span class="comment_date">{{ comment.createdAt|date("Y-m-d H:i:s") }}</span>
+                                à <span class="comment_date">{{ comment.createdAt|date("d/m/Y H:i:s") }}</span>
                                 {% if comment.updated %}
                                     <span class="comment_updated">(modifié)</span>
                                 {% endif %}

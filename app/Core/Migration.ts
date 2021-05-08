@@ -22,6 +22,7 @@ export default class Migration {
                 await sequelize.sync({alter: true});
                 syncSuccessful = true;
             }  catch (e) {
+                console.error(e);
                 console.log("Database synchronization failed, retry");
                 await sleep(500);
                 nbRetry += 1;
