@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Diaporama{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/diaporama.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/diaporama.js"></script>
+    <script>
+        {% for familyId in sectionsByFamily|keys %}
+            sectionsByFamily[{{ familyId }}] = [];
+            {% for section in sectionsByFamily[familyId] %}
+                sectionsByFamily[{{ familyId }}].push({
+                    id: {{ section.id }},
+                    name: "{{ section.name }}"
+                });
+            {% endfor %}
+        {% endfor %}
+        {% if media is not null %}
+            currentMedia = {
+                id: {{ media.id }},
+                name: "{{ media.name }}",
+                date: "{{ media.date|date('d/m/Y') }}",
+                slug: "{{ media.slug }}",
+                sectionSlug: "{{ media.sectionSlug }}",
+                familySlug: "{{ media.familySlug }}"
+            };
+        {% endif %}
+        {% if section is not null %}
+            currentSectionId = {{ section.id }};
+        {% endif %}
+        {% if family is not null %}
+            currentFamilyId = {{ family.id }};
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block body %}
+    <h1>
+        Diaporama sur
+        {% if family %}
+            {% if section %}
+                la section {{ section.name }}
+            {% else %}
+                la famille {{ family.name }}
+            {% endif %}
+        {% else %}
+            toutes les photos
+        {% endif %}
+    </h1>
+
+    <p style="color: red" id="error">
+
+    </p>
+
+    <div id="settings_diaporama">
+        <div id="select_family_section">
+            <label for="family">
+                La famille :
+                <select id="family">
+                    <option value="0">Toutes les familles</option>
+                    {% for eachFamily in allUserFamilies %}
+                        <option
+                                value="{{ eachFamily.id }}"
+                                {% if family is not null and family.id == eachFamily.id %}
+                                    selected
+                                {% endif %}
+                        >{{ eachFamily.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label for="section">
+                La rubrique :
+                <select id="section">
+                    {% if family is null %}
+                        <option value="0">Choisissez d'abord une famille</option>
+                    {% else %}
+                        <option value="0">Toutes les rubriques</option>
+                        {% for eachSection in sectionsByFamily[family.id] %}
+                            <option
+                                    value="{{ eachSection.id }}"
+                                    {% if section is not null and section.id == eachSection.id %}
+                                        selected
+                                    {% endif %}
+                            >{{ eachSection.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </label>
+            <label>
+                Ordre :
+                <select id="diapo_order">
+                    <option value="chronologic" selected>Chronologique</option>
+                    <option value="random">Aléatoire</option>
+                </select>
+            </label>
+        </div>
+
+        <div id="buttons">
+            <a class="btn btn-diapo" id="play_stop_button"><img src="/images/play.png"></a>
+        </div>
+    </div>
+
+    <div id="image">
+        {% if media is not null %}
+            <img src="{{ path('media_read', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}">
+        {% endif %}
+    </div>
+{% endblock %}
