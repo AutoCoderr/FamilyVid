@@ -67,7 +67,8 @@ export default class DiaporamaController extends Controller {
             sectionsByFamily,
             family,
             section,
-            media
+            media,
+            referer: this.req.header('Referer')
         });
     }
 
