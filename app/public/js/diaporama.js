@@ -77,13 +77,28 @@ function diapoLoop() {
 }
 
 function displayCurrentMedia() {
-    let img;
-    if (document.querySelector("#image img") != null) {
-        img = document.querySelector("#image img");
-    } else {
-        img = document.createElement("img");
-        document.getElementById("image").appendChild(img);
-    }
+    let imageContainer = document.getElementById("image");
+    imageContainer.style.display = "block";
+
+    const h2Title = imageContainer.querySelector("h2");
+    h2Title.innerText = currentMedia.name;
+
+    const path = imageContainer.querySelector(".path");
+
+    const familySpan = path.querySelector(".family");
+    familySpan.title = "Famille "+currentMedia.familyName;
+    familySpan.href = "/family/"+currentMedia.familySlug+"/sections"
+    familySpan.innerText = currentMedia.familyName;
+
+    const sectionSpan = path.querySelector(".section");
+    sectionSpan.title = "Rubrique "+currentMedia.sectionName;
+    sectionSpan.href = "/family/"+currentMedia.familySlug+"/sections/"+currentMedia.sectionSlug+"/medias";
+    sectionSpan.innerText = currentMedia.sectionName;
+
+    const dateSpan = imageContainer.querySelector(".date");
+    dateSpan.innerText = currentMedia.date;
+
+    const img = imageContainer.querySelector("img");
     img.src = "/family/"+currentMedia.familySlug+"/sections/"+currentMedia.sectionSlug+"/medias/"+currentMedia.slug;
 }
 
@@ -126,7 +141,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("section").addEventListener("change", function () {
         if (currentMedia != null) {
             currentMedia = null;
-            document.querySelector("#image img").remove();
+            document.getElementById("image").style.display = "none";
         }
         if (playing) document.getElementById("play_stop_button").click();
         medias = null;
@@ -141,7 +156,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("family").addEventListener("change", function () {
         if (currentMedia != null) {
             currentMedia = null;
-            document.querySelector("#image img").remove();
+            document.getElementById("image").style.display = "none";
         }
         if (playing) document.getElementById("play_stop_button").click();
         medias = null;
