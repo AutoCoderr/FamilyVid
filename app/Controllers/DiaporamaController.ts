@@ -1,6 +1,5 @@
 import Controller from "../Core/Controller";
 import Family from "../Entities/Family";
-import FamilyRepository from "../Repositories/FamilyRepository";
 import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
 import User from "../Entities/User";
@@ -22,8 +21,8 @@ export default class DiaporamaController extends Controller {
 
         let family: null|Family = null;
         if (familySlug) {
-            family = await FamilyRepository.findOneBySlug(familySlug);
-            if (family == null || !allUserFamilies.map(family => family.getId()).includes(family.getId())) {
+            family = <Family>allUserFamilies.find(family => family.getSlug() == familySlug) ?? null;
+            if (family == null) {
                 return this.returnFailedError("Cette famille n'existe pas ou vous est inaccessible");
             }
         }
@@ -84,7 +83,7 @@ export default class DiaporamaController extends Controller {
         }
 
         if (familyId && !allUserFamilies.map(family => family.getId()).includes(familyId)) {
-            return this.returnFailedError("Vous n'avez pas accès à cette famille", true);
+            return this.returnFailedError("Cette famille n'existe pas ou vous est inaccessible", true);
         }
         if (
             sectionId && (
@@ -92,7 +91,7 @@ export default class DiaporamaController extends Controller {
                 !sectionsByFamily[familyId].map(section => section.getId()).includes(sectionId)
             )
         ) {
-            return this.returnFailedError("Cette rubrique est introuvable", true);
+            return this.returnFailedError("La rubrique spécifiée n'existe pas", true);
         }
         let sectionIds: Array<number>;
         if (familyId) {
