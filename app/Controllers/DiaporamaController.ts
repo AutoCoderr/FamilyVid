@@ -117,7 +117,7 @@ export default class DiaporamaController extends Controller {
             return this.returnFailedError("Aucune image trouvée", true)
         }
         if (pictures.length == 1) {
-            return this.returnFailedError("On ne peut faire de diaporama avec une seule image", true)
+            return this.returnFailedError("On ne peut pas faire de diaporama avec une seule image dans cette rubrique ou famille", true)
         }
         pictures = pictures.map((picture: Media) => {
             return {

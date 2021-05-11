@@ -38,7 +38,9 @@
         </div>
     </div>
 
-    <a class="btn" href="{{ path('diaporama_show') }}?familySlug={{ family.slug }}&sectionSlug={{ section.slug }}&mediaSlug={{ media.slug }}">Diaporama</a>
+    {% if media.type == "picture" %}
+        <a class="btn" href="{{ path('diaporama_show') }}?familySlug={{ family.slug }}&sectionSlug={{ section.slug }}&mediaSlug={{ media.slug }}">Diaporama</a>
+    {% endif %}
 
     <div class="date">{{ media.date|date('d/m/Y') }}</div>
 

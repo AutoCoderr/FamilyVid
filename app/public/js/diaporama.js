@@ -98,6 +98,9 @@ function displayCurrentMedia() {
     const dateSpan = imageContainer.querySelector(".date");
     dateSpan.innerText = currentMedia.date;
 
+    const media_link = imageContainer.querySelector(".media_link");
+    media_link.href = "/family/"+currentMedia.familySlug+"/sections/"+currentMedia.sectionSlug+"/medias/"+currentMedia.slug+"/view";
+
     const img = imageContainer.querySelector("img");
     img.src = "/family/"+currentMedia.familySlug+"/sections/"+currentMedia.sectionSlug+"/medias/"+currentMedia.slug;
 }
@@ -152,7 +155,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         if (currentMedia == null) {
             currentMediaIndex = 0;
         } else {
-            currentMediaIndex = currentMediaIndex === 0 ? medias.length - 1 : currentMediaIndex - 1;
+            currentMediaIndex = (currentMediaIndex === 0 || currentMediaIndex == null) ? medias.length - 1 : currentMediaIndex - 1;
         }
         currentMedia = medias[currentMediaIndex];
         displayCurrentMedia();
