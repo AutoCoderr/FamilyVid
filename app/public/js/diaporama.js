@@ -16,7 +16,7 @@ let loopInterval = null;
 
 let playing = false;
 
-function getMedias() {
+function downloadMediasList() {
     const data = {};
     if (currentSectionId != null) data.sectionId = currentSectionId;
     if (currentFamilyId != null) data.familyId = currentFamilyId;
@@ -102,32 +102,80 @@ function displayCurrentMedia() {
     img.src = "/family/"+currentMedia.familySlug+"/sections/"+currentMedia.sectionSlug+"/medias/"+currentMedia.slug;
 }
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    document.getElementById("play_stop_button").addEventListener("click", async function() {
+function displayPrevNextButtons() {
+    document.getElementById("btn_prev").style.display = "inline-block";
+    document.getElementById("btn_next").style.display = "inline-block";
+}
+
+function hidePrevNextButtons() {
+    document.getElementById("btn_prev").style.display = "none";
+    document.getElementById("btn_next").style.display = "none";
+}
+
+async function getMedias() {
+    const res = await downloadMediasList();
+    if (res.status === "success") {
+        if (order === "chronologic") {
+            displayPrevNextButtons();
+        }
+        medias = res.pictures;
         document.getElementById("error").innerText = "";
-        if (!playing) {
-            if (medias == null) {
-                const res = await getMedias();
-                if (res.status === "success") {
-                    medias = res.pictures;
-                    this.querySelector("img").src = "/images/pause.png";
-                    diapo();
-                } else {
-                    document.getElementById("error").innerText = res.error;
-                }
-            } else {
-                this.querySelector("img").src = "/images/pause.png";
-                diapo();
+        return true;
+    }
+    medias = null;
+    hidePrevNextButtons();
+    document.getElementById("error").innerText = res.error;
+    return false;
+}
+
+window.addEventListener("DOMContentLoaded", (event) => {
+    getMedias();
+
+    document.getElementById("play_stop_button").addEventListener("click", async function() {
+        if (!playing && medias != null) {
+            hidePrevNextButtons();
+            playing = true;
+            this.querySelector("img").src = "/images/pause.png";
+            diapo();
+        } else if (playing) {
+            if (order === "chronologic") {
+                displayPrevNextButtons();
             }
-        } else {
             playing = false;
             clearInterval(loopInterval);
             this.querySelector("img").src = "/images/play.png";
         }
     });
 
+    document.getElementById("btn_prev").addEventListener("click", function () {
+        if (order !== "chronologic" || playing) return;
+        if (currentMedia == null) {
+            currentMediaIndex = 0;
+        } else {
+            currentMediaIndex = currentMediaIndex === 0 ? medias.length - 1 : currentMediaIndex - 1;
+        }
+        currentMedia = medias[currentMediaIndex];
+        displayCurrentMedia();
+    });
+
+    document.getElementById("btn_next").addEventListener("click", function () {
+        if (order !== "chronologic" || playing) return;
+        if (currentMedia == null) {
+            currentMediaIndex = 0;
+        } else {
+            currentMediaIndex = currentMediaIndex === medias.length - 1 ? 0 : currentMediaIndex + 1;
+        }
+        currentMedia = medias[currentMediaIndex];
+        displayCurrentMedia();
+    });
+
     document.getElementById("diapo_order").addEventListener("change", function () {
         order = this.value;
+        if (order === "chronologic" && medias != null && !playing) {
+            displayPrevNextButtons();
+        } else {
+            hidePrevNextButtons();
+        }
     });
 
     document.getElementById("to_loop").addEventListener("click", function () {
@@ -144,8 +192,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
             document.getElementById("image").style.display = "none";
         }
         if (playing) document.getElementById("play_stop_button").click();
-        medias = null;
         currentSectionId = this.value !== "0" ? parseInt(this.value) : null;
+        getMedias();
+
         if (currentSectionId != null) {
             document.querySelector("h1").innerText = "Diaporama sur la rubrique "+sectionNameById[currentSectionId];
         } else {
@@ -159,9 +208,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
             document.getElementById("image").style.display = "none";
         }
         if (playing) document.getElementById("play_stop_button").click();
-        medias = null;
         currentFamilyId = this.value !== "0" ? parseInt(this.value): null;
         currentSectionId = null;
+        getMedias();
 
         const sectionSelect = document.getElementById("section");
         while (sectionSelect.firstChild) {
