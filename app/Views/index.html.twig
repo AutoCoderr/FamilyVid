@@ -15,6 +15,10 @@
         <p style="color: green;">{{ flash.success }}</p>
     {% endif %}
 
+    {% if session.user %}
+        <a class="btn" href="{{ path('diaporama_show') }}">Diaporama</a>
+    {% endif %}
+
     <div>
         {% if session.user %}
             {% if session.user.Families|length == 0 %}

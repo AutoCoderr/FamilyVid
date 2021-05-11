@@ -17,6 +17,10 @@
       {
         "path": "^/global",
         "roles": "connected"
+      },
+      {
+        "path": "^/diaporama",
+        "roles": "connected"
       }
     ]
 }
