@@ -21,6 +21,20 @@ export default class MediaRepository extends RepositoryManager {
         })
     }
 
+    static findForDiaporama(sectionsIds: Array<number>) {
+        return super.findAllByParams({
+            where: {
+                SectionId: {[Op.in]: sectionsIds},
+                type: "picture"
+            },
+            order: [
+                ["date","ASC"],
+                ["id","ASC"]
+            ],
+            include: SectionModel
+        })
+    }
+
     static async findNextMedia(media: Media) {
         const out = await super.findAllByParams({
             where: {

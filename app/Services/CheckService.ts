@@ -8,7 +8,7 @@ import Media from "../Entities/Media";
 import MediaRepository from "../Repositories/MediaRepository";
 
 export default class CheckService {
-    static checkFamily(family: Family, controller: Controller, json = false) {
+    static checkFamily(family: null|Family, controller: Controller, json = false) {
         if (family == null) {
             if (json) {
                 controller.res.json({status: "failed", errors: ["Cette famille n'existe pas"]});
@@ -19,23 +19,18 @@ export default class CheckService {
             return false;
         }
 
-        let found = false;
         for (const user of <Array<User>>family.getUsers()) {
             if (user.getId() == controller.req.session.user.id) {
-                found = true;
-                break;
+                return true;
             }
         }
-        if (!found) {
-            if (json) {
-                controller.res.json({status: "failed", errors: ["Vous ne faites pas partie de cette famille"]});
-            } else {
-                controller.setFlash("failed", "Vous ne faites pas partie de cette famille");
-                controller.redirectToRoute("index");
-            }
-            return false;
+        if (json) {
+            controller.res.json({status: "failed", errors: ["Vous ne faites pas partie de cette famille"]});
+        } else {
+            controller.setFlash("failed", "Vous ne faites pas partie de cette famille");
+            controller.redirectToRoute("index");
         }
-        return true;
+        return false;
     }
 
     static async checkSectionAndFamily(familySlug: string, sectionSlug: string, controller: Controller, json = false) {
