@@ -110,7 +110,7 @@ textarea {
 .right-top-buttons  {
     position: absolute;
     top: 70px;
-    left: 60%;
+    right: 10%;
 }
 
 .date {
