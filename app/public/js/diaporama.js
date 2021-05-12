@@ -62,7 +62,6 @@ function diapo() {
             while (mediaToNotRedisplayRandom.includes(newMediaIndex)) {
                 newMediaIndex = rand(0,medias.length-1);
             }
-            console.log(mediaToNotRedisplayRandom);
             currentMediaIndex = newMediaIndex;
         } else {
             if (currentMediaIndex < medias.length-1) {
