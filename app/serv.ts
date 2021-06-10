@@ -9,7 +9,6 @@ import setTZ from "set-tz";
 const Twig = require("twig");
 const {twig} = Twig;
 const express = require("express");
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 
@@ -20,9 +19,8 @@ Twig.extendFunction('path', (pathName, params = {}) =>
 );
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.raw());
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(session({
     secret: 'pVkEmEums7PD7kCuhkqF',
     resave: false,
