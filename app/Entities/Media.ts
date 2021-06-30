@@ -3,6 +3,7 @@ import MediaModel from "../Models/Media";
 import Section from "./Section";
 import Comment from "./Comment";
 import Helpers from "../Core/Helpers";
+import User from "./User";
 
 export default class Media extends EntityManager {
 
@@ -22,6 +23,9 @@ export default class Media extends EntityManager {
 
     Section: null|Section = null;
     SectionId : null|number = null;
+
+    User: null|User = null;
+    UserId: null|number = null;
 
     Comments: null|Array<Comment> = [];
 
@@ -69,6 +73,17 @@ export default class Media extends EntityManager {
     }
     getType() {
         return this.type;
+    }
+
+    setUser(user: null|User) {
+        if (user != null) {
+            this.User = user;
+            this.UserId = user.getId();
+        }
+    }
+
+    getUser() {
+        return this.User;
     }
 
     setSection(section: Section) {

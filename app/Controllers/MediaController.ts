@@ -40,7 +40,7 @@ export default class MediaController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    if(await FileUploadService.uploadMedia(this.getDatas(),section)) {
+                    if(await FileUploadService.uploadMedia(this.getDatas(),section,await this.getUser())) {
                         this.setFlash("media_success", "Photo/video ajoutée avec succès!");
                         this.redirectToRoute("media_index", {familySlug,sectionSlug});
                     } else {

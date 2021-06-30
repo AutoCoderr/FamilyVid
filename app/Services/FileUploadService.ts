@@ -5,6 +5,7 @@ import * as path from "path";
 import Media from "../Entities/Media";
 import Section from "../Entities/Section";
 import Family from "../Entities/Family";
+import User from "../Entities/User";
 
 export default class FileUploadService {
     static mediaTypeByMimeType = {
@@ -120,7 +121,7 @@ export default class FileUploadService {
         return true;
     }
 
-    static uploadMedia(datas,section: Section) {
+    static uploadMedia(datas,section: Section,user: null|User) {
         return new Promise(async resolve => {
             const splitFilename = datas.file.name.split(".");
             const filename = splitFilename.slice(0,splitFilename.length-1).join(".");
@@ -134,6 +135,7 @@ export default class FileUploadService {
             media.setNbViews(0);
             media.setDate(datas.date);
             media.setName(datas.name != "" ? datas.name : filename);
+            media.setUser(user);
             await media.setSlugFrom("name");
             media.setFileExtension(ext);
             if (datas.tags) {
