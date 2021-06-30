@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Diaporama{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/diaporama.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/diaporama.js"></script>
+    <script>
+        {% for familyId in sectionsByFamily|keys %}
+            sectionsByFamily[{{ familyId }}] = [];
+            {% for section in sectionsByFamily[familyId] %}
+                sectionsByFamily[{{ familyId }}].push({
+                    id: {{ section.id }},
+                    name: "{{ section.name }}"
+                });
+                sectionNameById[{{ section.id }}] = "{{ section.name }}";
+            {% endfor %}
+        {% endfor %}
+
+        {% for family in allUserFamilies %}
+            familieNamesById[{{ family.id }}] = "{{ family.name }}";
+        {% endfor %}
+
+        {% if media is not null %}
+            currentMedia = {
+                id: {{ media.id }}
+            };
+        {% endif %}
+
+        {% if section is not null %}
+            currentSectionId = {{ section.id }};
+        {% endif %}
+
+        {% if family is not null %}
+            currentFamilyId = {{ family.id }};
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block body %}
+    <a class="btn back-btn" href="{{ referer }}">Retour</a>
+    <h1>
+        Diaporama sur
+        {% if family %}
+            {% if section %}
+                la rubrique {{ section.name }}
+            {% else %}
+                la famille {{ family.name }}
+            {% endif %}
+        {% else %}
+            toutes les photos
+        {% endif %}
+    </h1>
+
+    <p style="color: red" id="error">
+
+    </p>
+
+    <div id="control">
+        <div id="selects">
+            <label for="family">
+                La famille :
+                <select id="family">
+                    <option value="0">Toutes les familles</option>
+                    {% for eachFamily in allUserFamilies %}
+                        <option
+                                value="{{ eachFamily.id }}"
+                                {% if family is not null and family.id == eachFamily.id %}
+                                    selected
+                                {% endif %}
+                        >{{ eachFamily.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label for="section">
+                La rubrique :
+                <select id="section">
+                    {% if family is null %}
+                        <option value="0">Choisissez d'abord une famille</option>
+                    {% elseif sectionsByFamily[family.id]|length > 0 %}
+                        <option value="0">Toutes les rubriques</option>
+                        {% for eachSection in sectionsByFamily[family.id] %}
+                            <option
+                                    value="{{ eachSection.id }}"
+                                    {% if section is not null and section.id == eachSection.id %}
+                                        selected
+                                    {% endif %}
+                            >{{ eachSection.name }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="0">Aucune rubrique</option>
+                    {% endif %}
+                </select>
+            </label>
+            <label>
+                Ordre :
+                <select id="diapo_order">
+                    <option value="chronologic" selected>Chronologique</option>
+                    <option value="random">Aléatoire</option>
+                </select>
+            </label>
+            <label>
+                En boucle :
+                <input id="to_loop" type="checkbox" checked/>
+            </label>
+            <label>
+                délai :
+                <select id="delay">
+                    {% for i in range(1,10) %}
+                        <option value="{{ i }}" {% if i == 3 %}selected{% endif %}>{{ i }}</option>
+                    {% endfor %}
+                </select>
+                secondes
+            </label>
+        </div>
+
+        <div id="buttons">
+            <a class="btn" id="btn_prev">Précédent</a>
+            <a class="btn btn-diapo" id="play_stop_button"><img src="/images/play.png"></a>
+            <a class="btn" id="btn_next">Suivant</a>
+        </div>
+    </div>
+
+    <div id="image" {% if media is null %}style="display: none;"{% endif %}>
+        {% if media is not null %}
+            <h2>{{ media.name }}</h2>
+            <span class="path">
+                <a class="family" title="Famille {{ media.familyName }}" href="{{ path('section_index', {'familySlug': media.familySlug}) }}">{{ media.familyName }}</a>
+                <span>></span>
+                <a class="section" title="Rubrique {{ media.sectionName }}" href="{{ path('media_index', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug}) }}">{{ media.sectionName }}</a>
+            </span>
+            <span class="date">
+                {{ media.date|date("d/m/Y") }}
+            </span>
+            <a class="media_link" target="_blank" href="{{ path('media_view', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}">
+                <img src="{{ path('media_read', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}"/>
+            </a>
+        {% else %}
+            <h2></h2>
+            <span class="path">
+                <a class="family" title="" href="#"></a>
+                <span>></span>
+                <a class="section" title="" href="#"></a>
+            </span>
+            <span class="date">
+            </span>
+            <a class="media_link" target="_blank" href="#">
+                <img src=""/>
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -50,6 +50,11 @@ Media.init(
             type: DataTypes.STRING(140),
             allowNull: true
         },
+        nbViews: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false
+        },
         type: {
             type: DataTypes.STRING(7),
             allowNull: false

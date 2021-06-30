@@ -25,6 +25,7 @@
     {% endif %}
 
     {% if family.Sections|length > 0 %}
+        <a class="btn diaporama-btn" href="{{ path('diaporama_show') }}?familySlug={{ family.slug }}">Diaporama</a><br/><br/>
         <input type="text" placeholder="Rechercher une section" id="input_search">
         <h2>Les rubriques :</h2>
         <ul id="section_list">

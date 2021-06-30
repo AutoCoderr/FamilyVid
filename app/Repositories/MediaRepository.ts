@@ -4,6 +4,7 @@ import CommentModel from "../Models/Comment";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
 import {col, fn, Op} from "sequelize";
+import Section from "../Entities/Section";
 
 export default class MediaRepository extends RepositoryManager {
     static model = MediaModel;
@@ -20,11 +21,90 @@ export default class MediaRepository extends RepositoryManager {
         })
     }
 
+    static findForDiaporama(sectionsIds: Array<number>) {
+        return super.findAllByParams({
+            where: {
+                SectionId: {[Op.in]: sectionsIds},
+                type: "picture"
+            },
+            order: [
+                ["date","ASC"],
+                ["id","ASC"]
+            ],
+            include: SectionModel
+        })
+    }
+
+    static async findNextMedia(media: Media) {
+        const out = await super.findAllByParams({
+            where: {
+                [Op.or]: [
+                    {
+                        date: {[Op.gt]: media.getDate()}
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                date: {[Op.gte]: media.getDate()}
+                            },
+                            {
+                                id: {[Op.gt]: media.getId()}
+                            }
+                        ]
+                    }
+                ] ,
+                id: { [Op.ne]: media.getId() },
+                SectionId: (<Section>media.getSection()).getId()
+            },
+            order: [
+                ["date","ASC"],
+                ["id","ASC"]
+            ],
+            limit: 1
+        });
+        return out.length == 1 ? out[0] : null;
+    }
+
+    static async findPreviousMedia(media: Media) {
+        const out = await super.findAllByParams({
+            where: {
+                [Op.or]: [
+                    {
+                        date: {[Op.lt]: media.getDate()}
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                date: {[Op.lte]: media.getDate()}
+                            },
+                            {
+                                id: {[Op.lt]: media.getId()}
+                            }
+                        ]
+                    }
+                    ] ,
+
+                id: { [Op.ne]: media.getId() },
+                SectionId: (<Section>media.getSection()).getId()
+            },
+            order: [
+                ["date","DESC"],
+                ["id","DESC"]
+            ],
+            limit: 1
+        });
+        return out.length == 1 ? out[0] : null;
+    }
+
     static findAllBySectionIdAndSearchFilters(sectionsId: Array<number>|number,search,sort,sortBy,toDisplay){
         if (!(sectionsId instanceof Array)) {
             sectionsId = [sectionsId];
         }
-        const searchDate = search.replace(/\//g,"-");
+        let searchDate = search.replace(/\//g,"-");
+        if (search.match(/^((0[1-9])|([1-2][0-9])|(3[0-1]))\/((0[1-9])|(1[0-2]))\/[0-9]{4}$/g)) {
+            searchDate = search.split("/")[2] + "-" + search.split("/")[1] + "-" + search.split("/")[0]
+        }
+        const keyWords = search.split(" ").map(word => "%"+word+"%");
         search = "%"+search+"%";
         let date: Date = new Date(searchDate);
         let endDate;
@@ -48,14 +128,18 @@ export default class MediaRepository extends RepositoryManager {
                     {
                         name: {[Op.iLike]: search}
                     },
-                    {
-                        tags: {[Op.iLike]: search}
-                    },
                         (!isNaN(date.getTime()) &&
                             {
                                 date: {[Op.between]: [date,endDate]}
                             }
-                        )
+                        ),
+                    {
+                        [Op.and]: keyWords.map(keyWord => {
+                           return {
+                               tags: {[Op.iLike]: keyWord}
+                           }
+                        })
+                    }
                 ],
                 SectionId: {[Op.in]: sectionsId},
                 ...(toDisplay != "all" ? {type: toDisplay} : {})
