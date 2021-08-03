@@ -15,6 +15,7 @@ export default class UserFixture {
         user.setLastname("BOUVET");
         user.setEmail("julienbouvet78@hotmail.com");
         user.addRole("USER");
+        user.setActive(true);
         user.setPassword("1234");
 
         await user.save();
@@ -25,7 +26,6 @@ export default class UserFixture {
                 break;
             }
         }
-
         for (let i=1;i<=20;i++) {
             const user = new User();
             user.setFirstname("test"+i);
@@ -33,6 +33,8 @@ export default class UserFixture {
             user.setEmail("test"+i+"@test.com");
             user.addRole("USER");
             user.setPassword("1234");
+            user.setActive(true);
+
             await user.save();
 
             const nbFamilies = Helpers.rand(1,2);

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import Command from "../../../Core/Command";
+import Migration from "../../../Core/Migration";
 
 
 export default class FixtureLoad extends Command {
@@ -7,28 +8,29 @@ export default class FixtureLoad extends Command {
     static description = "Executer les fixtures";
 
     static async action(_) {
-        if (!await this.validQuestion("Êtes vous sûre de vouloir appliquer ces fixtures (O/n) ? : ",["y","yes","o","oui"])) {
+        if (!await this.validQuestion("Attention, si vous chargez les fixtures, la base de donnée actuelle sera supprimé, voulez vous le faire? (Y/n) ? : ",["y","yes","o","oui"])) {
             return;
         }
-        const path = __dirname+"/../../../Fixtures";
-        const files = fs.readdirSync(path).filter(file => file.endsWith(".js"));
+        await Migration.drop();
 
-        let fixtureLoadeds = {};
-        for (const file of files) {
-            const fixture = require(path+"/"+file).default;
+        const path = __dirname+"/../../../Fixtures";
+        const fixtures = fs.readdirSync(path)
+            .filter(file => file.endsWith(".js"))
+            .map(file => require(path+"/"+file).default);
+
+        await this.execFixtures(fixtures);
+
+        console.log("\n\nAll fixtures executed");
+    }
+
+    static async execFixtures(fixtures, fixtureLoadeds = {}) {
+        for (const fixture of fixtures) {
             if (!fixtureLoadeds[fixture.name]) {
                 if (fixture.execBefore !== undefined) {
                     if (!(fixture.execBefore instanceof Array)) {
                         fixture.execBefore = [fixture.execBefore];
                     }
-                    for (const fixtureToload of fixture.execBefore) {
-                        if (!fixtureLoadeds[fixtureToload.name]) {
-                            console.log("\nExec "+fixtureToload.name);
-                            await fixtureToload.action();
-                            console.log(fixtureToload.name+" executed");
-                            fixtureLoadeds[fixtureToload.name] = true;
-                        }
-                    }
+                    await this.execFixtures(fixture.execBefore,fixtureLoadeds)
                 }
                 console.log("\nExec "+fixture.name);
                 await fixture.action()
@@ -36,6 +38,5 @@ export default class FixtureLoad extends Command {
                 fixtureLoadeds[fixture.name] = true;
             }
         }
-        console.log("\n\nAll fixtures executed");
     }
 }

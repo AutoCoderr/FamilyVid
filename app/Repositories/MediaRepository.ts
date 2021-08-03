@@ -148,7 +148,8 @@ export default class MediaRepository extends RepositoryManager {
                 [
                     sortBy == "name" ? fn('lower', col("Media."+sortBy)) : sortBy,
                     sort
-                ]
+                ],
+                ["id", "ASC"]
             ],
             include: SectionModel
         })
