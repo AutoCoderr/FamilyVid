@@ -35,7 +35,7 @@ export default class MediaRepository extends RepositoryManager {
         })
     }
 
-    static async findNextMedia(media: Media) {
+    static async findPreviousMedia(media: Media) {
         const out = await super.findAllByParams({
             where: {
                 [Op.or]: [
@@ -65,7 +65,7 @@ export default class MediaRepository extends RepositoryManager {
         return out.length == 1 ? out[0] : null;
     }
 
-    static async findPreviousMedia(media: Media) {
+    static async findNextMedia(media: Media) {
         const out = await super.findAllByParams({
             where: {
                 [Op.or]: [

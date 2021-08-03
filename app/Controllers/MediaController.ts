@@ -214,6 +214,26 @@ export default class MediaController extends Controller {
         }
     }
 
+    rotate = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this, true);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+            if (media.getType() !== "picture") {
+                return this.res.json({status: "failed", errors: ["Vous ne pouvez pivoter que les images"]});
+            }
+            if (this.req.session.tokens &&
+                this.req.session.tokens['rotate-'+media.getId()] === this.req.body.csrf_token) {
+                    await FileUploadService.rotateMedia(family,section,media,this.req.body.type);
+                    this.res.json({status: "success"});
+            } else {
+                this.res.json({status: "failed", errors: ["Token csrf incorrect"]});
+            }
+        }
+    }
+
     search = async () => {
         const {familySlug,sectionSlug} = this.req.params;
 

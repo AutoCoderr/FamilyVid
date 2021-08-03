@@ -2,13 +2,47 @@
 
 {% block title %}Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/media_edit.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/media_rotate.js"></script>
+    <script>
+        familySlug = "{{ familySlug }}";
+        sectionSlug = "{{ media.Section.slug }}";
+        mediaSlug = "{{ media.slug }}"
+    </script>
+{% endblock %}
+
 {% block body %}
     <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionSlug': media.Section.slug}) }}">Retour</a>
-    <h1>Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}</h1>
+    <h1>{{ media.name }} ({{ media.type == "video" ? 'vidéo' : 'photo' }})</h1>
+    <div>
+        <a class="btn" href="{{ path('media_view', {'familySlug': familySlug, 'sectionSlug': media.Section.slug, 'mediaSlug': media.slug}) }}">Voir</a>
+    </div>
+    <h2>Editer</h2>
     {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
 
+    {% if media.type == 'picture' %}
+        <div class="rotate_img_section">
+            <h2>Pivoter</h2>
+            <ul class="errors"></ul>
+            <img class="image_rotate_show" src="{{ path('media_read', {'familySlug': familySlug, 'sectionSlug': media.Section.slug, 'mediaSlug': media.slug}) }}"/>
+            <form class="media_rotate_form" action="{{ path('media_rotate', {'familySlug': familySlug, 'sectionSlug': media.Section.slug, 'mediaSlug': media.slug}) }}" method="POST">
+                {{ csrf_token('rotate-'~media.id, session) }}
+                <button type="submit" class="btn" name="type" value="anti-clockwise">
+                    <img src="/images/rotate.png"/>
+                </button>
+                <button type="submit" class="btn" name="type" value="clockwise">
+                    <img src="/images/rotate.png"/>
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
     {% if deplaceMediaForm is defined %}
-        <h2>Déplacer la {{ media.type == 'video' ? 'vidéo' : 'photo' }}</h2>
+        <h2>Déplacer</h2>
         {% include 'Modals/forms.html.twig' with {'form': deplaceMediaForm} %}
     {% endif %}
 
