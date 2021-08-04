@@ -51,6 +51,9 @@
                             value="{{ field.value }}"
                         {% endif %}
                     {% endif %}
+                    {% if field.type == "file" and field.multiple is defined and field.multiple %}
+                    multiple="multiple"
+                    {% endif %}
                     {% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
                     {% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
                     {% if field.class is defined %}class="{{ field.class }}"{% endif %}

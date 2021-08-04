@@ -81,6 +81,10 @@ textarea {
     display: inline-block;
 }
 
+.grayed {
+    background-color: #888888 !important;
+}
+
 .btn, form input[type=button] {
     cursor: pointer;
     padding: 5px 25px;

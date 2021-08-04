@@ -80,6 +80,6 @@
         <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer</a>
     {% else %}
         <h2>Il semblerait qu'il n'y ait pas de photo/video dans cette rubrique</h2>
-        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer en une!</a>
+        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créez en!</a>
     {% endif %}
 {% endblock %}
