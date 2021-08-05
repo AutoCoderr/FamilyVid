@@ -13,6 +13,9 @@ export default class SectionRepository extends RepositoryManager {
         return super.findOne(id,[
             FamilyModel,
             {model: MediaModel, as: "Medias"}
+        ], [
+            [{model: MediaModel, as: "Medias"}, 'date', 'DESC'],
+            [{model: MediaModel, as: "Medias"}, 'id', 'ASC']
         ]);
     }
 
@@ -22,6 +25,10 @@ export default class SectionRepository extends RepositoryManager {
             include: [
                 FamilyModel,
                 {model: MediaModel, as: "Medias"}
+            ],
+            order: [
+                [{model: MediaModel, as: "Medias"}, 'date', 'DESC'],
+                [{model: MediaModel, as: "Medias"}, 'id', 'ASC']
             ]
         })
     }

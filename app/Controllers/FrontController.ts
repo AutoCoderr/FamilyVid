@@ -6,15 +6,48 @@ import Media from "../Entities/Media";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import SectionRepository from "../Repositories/SectionRepository";
-import FamilyRepository from "../Repositories/FamilyRepository";
-import CheckService from "../Services/CheckService";
 
 export default class FrontController extends Controller {
     index = async () => {
-        if (this.req.session.user != undefined) {
-            this.req.session.user = await (await <Promise<User>>this.getUser()).serialize();
+        const user = await <Promise<User>>this.getUser(true);
+        let pictureA: null|Media = null,
+            pictureB: null|Media = null;
+        if (user) { //@ts-ignore
+            let pictures: Array<Media> = (<Array<Family>>user.getFamilies()).reduce((acc, family) => //@ts-ignore
+                    [
+                        ...acc, //@ts-ignore
+                        ...(<Array<Section>>family.getSections()).reduce((acc, section) => //@ts-ignore
+                                [
+                                    ...acc, //@ts-ignore
+                                    ...(<Array<Media>>section.getMedias())
+                                        .filter(media => media.getType() === "picture")
+                                        .reduce((acc, media) => //@ts-ignore
+                                                [
+                                                    ...acc,
+                                                    ((media) => { //@ts-ignore
+                                                        media.sectionSlug = section.getSlug(); //@ts-ignore
+                                                        media.familySlug = family.getSlug();
+                                                        return media;
+                                                    })(media)
+                                                ]
+                                            , [])
+                                ]
+                            , [])
+                    ]
+                , []);
+            if (pictures.length > 1) {
+                pictureA = pictures[Helpers.rand(0, pictures.length - 1)];
+                do {
+                    pictureB = pictures[Helpers.rand(0, pictures.length - 1)];
+                } while (pictureB.getId() === pictureA.getId());
+            } else if (pictures.length === 1) {
+                pictureA = pictures[0];
+            }
+
+            this.req.session.user = await user.serialize();
         }
-        this.render("index.html.twig");
+
+        this.render("index.html.twig", {pictureA,pictureB});
     }
 
     global = async () => {
@@ -73,8 +106,4 @@ export default class FrontController extends Controller {
         });
         this.res.json(medias);
     }
-}
-
-function rand(a,b) {
-    return a+Math.floor(Math.random()*(b-a+1));
 }

@@ -1,6 +1,7 @@
 import env from "../Core/env.js";
 import * as fs from "fs-extra";
 import * as path from "path";
+import * as Jimp from 'jimp';
 
 import Media from "../Entities/Media";
 import Section from "../Entities/Section";
@@ -14,6 +15,12 @@ export default class FileUploadService {
     }
 
     static filesPath = path.resolve(__dirname+"/../"+env.UPLOAD_DIR);
+
+    static async rotateMedia(family: Family, section: Section, media: Media, type: 'clockwise'|'anti-clockwise') {
+        const filePath = this.filesPath+"/"+family.getSlug()+"/"+section.getSlug()+"/"+media.getSlug()+"."+media.getFileExtension();
+        const image = await Jimp.read(filePath);
+        image.rotate(type == "clockwise" ? -90 : 90).write(filePath);
+    }
 
     static async deleteSection(family: Family, section: Section) {
         const familyPath = this.filesPath+"/"+family.getSlug();

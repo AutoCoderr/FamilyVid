@@ -39,16 +39,14 @@ export default class MediaController extends Controller {
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
-                if (await validator.isValid()) {
+                if (await validator.isValid(false)) {
                     if(await FileUploadService.uploadMedia(this.getDatas(),section,await this.getUser())) {
-                        this.setFlash("media_success", "Photo/video ajoutée avec succès!");
-                        this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                        this.res.json({status: "success"});
                     } else {
-                        validator.setFlashErrors("Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier");
-                        this.redirect(this.req.header('Referer'));
+                        this.res.json({status: "failed", errors: ["Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier"]});
                     }
                 } else {
-                    this.redirect(this.req.header('Referer'));
+                    this.res.json({status: "failed", errors: validator.getErrors()});
                 }
             } else {
                 this.generateToken();
@@ -211,6 +209,26 @@ export default class MediaController extends Controller {
             const {media, section, family} = mediaSectionAndFamily;
 
             FileUploadService.readMedia(family,section,media,this.res)
+        }
+    }
+
+    rotate = async () => {
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
+
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this, true);
+
+        if (mediaSectionAndFamily) {
+            const {media, section, family} = mediaSectionAndFamily;
+            if (media.getType() !== "picture") {
+                return this.res.json({status: "failed", errors: ["Vous ne pouvez pivoter que les images"]});
+            }
+            if (this.req.session.tokens &&
+                this.req.session.tokens['rotate-'+media.getId()] === this.req.body.csrf_token) {
+                    await FileUploadService.rotateMedia(family,section,media,this.req.body.type);
+                    this.res.json({status: "success"});
+            } else {
+                this.res.json({status: "failed", errors: ["Token csrf incorrect"]});
+            }
         }
     }
 

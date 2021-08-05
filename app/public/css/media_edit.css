@@ -1,0 +1,12 @@
+.rotate_img_section form img {
+    width: 20px; height: 20px
+}
+
+.rotate_img_section form [value='anti-clockwise'] img {
+    transform: scaleX(-1)
+}
+
+.image_rotate_show {
+    width: auto;
+    height: 50px;
+}
