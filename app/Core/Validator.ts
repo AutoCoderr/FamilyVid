@@ -84,8 +84,7 @@ export default class Validator {
 				if (this.datas[name] != "") {
 					let repository = require("../Repositories/" + field.uniq.table + "Repository").default;
 
-					let where = field.uniq.where ? field.uniq.where : {};
-					where[field.uniq.column] = this.datas[name];
+					const where = {...(field.uniq.where || {}), [field.uniq.column]: this.datas[name].trim()}
 					const elem = await repository.findOneByParams({where: where});
 					if (elem != null) {
 						errors.push(field.uniq.msgError);

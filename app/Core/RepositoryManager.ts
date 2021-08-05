@@ -5,7 +5,7 @@ export default class RepositoryManager {
     static model: null|typeof Model = null;
     static entity: null|typeof EntityManager = null;
 
-    static async findOne(id, include: null|typeof Model|Array<typeof Model|{model: typeof Model, as: string}> = null, order: null|Array<Array<typeof Model|{model: typeof Model, as: string}|string>> = null) : Promise<any> {
+    static async findOne(id, include: any = null, order: null|Array<Array<typeof Model|{model: typeof Model, as: string}|string>> = null) : Promise<any> {
         let params: any = {where: {id: id}};
         if (include != null) {
             params.include = include;
