@@ -75,9 +75,11 @@ export default class Controller {
         return true;
     }
 
-    async getUser(): Promise<null|User> {
+    async getUser(sectionsAndFamilies = false): Promise<null|User> {
         if (typeof(this.req.session.user) == "undefined") return null;
-        return await UserRepository.findOne(this.req.session.user.id);
+        return sectionsAndFamilies ?
+            await UserRepository.findOneWithSectionsAndMedias(this.req.session.user.id) :
+            await UserRepository.findOne(this.req.session.user.id);
     }
 
     async render(file,params = {}) {

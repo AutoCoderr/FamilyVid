@@ -2,16 +2,12 @@ import { sequelize } from "./DB";
 import * as fs from "fs-extra";
 
 export default class Migration {
-    static tables: Array<any> = [];
+    static path = __dirname+"/../Models";
 
     static async migrate() {
-        if (this.tables.length == 0) {
-            const files = fs.readdirSync(__dirname+"/../Models").filter(file => file.endsWith(".js"));
-            for (const file of files) {
-                const model = require(__dirname+"/../Models/"+file).default;
-                this.tables.push(model)
-            }
-        }
+        fs.readdirSync(this.path)
+            .filter(file => file.endsWith(".js"))
+            .map(file => require(this.path+"/"+file).default);
 
         let nbRetry = 0;
         const maxRetry = 30;
@@ -29,6 +25,13 @@ export default class Migration {
             }
         }
         console.log(syncSuccessful ? "Database synchronized!" : "All database connections retry failed");
+    }
+
+    static drop() {
+        return Promise.all(fs.readdirSync(this.path)
+            .filter(file => file.endsWith(".js"))
+            .map(file => require(this.path+"/"+file).default)
+            .map(model => model.destroy({where:{}})));
     }
 }
 

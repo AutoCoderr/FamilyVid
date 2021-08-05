@@ -26,6 +26,8 @@ export default class MediaFixture {
                     media.setDate(date);
                     media.setType(Helpers.rand(0,1) == 1 ? "video": "picture");
                     media.setSection(section);
+                    media.setFileExtension(media.getType() === "video" ? 'mp4' : 'jpg')
+                    media.setNbViews(0);
                     await media.save();
                 }
             }
