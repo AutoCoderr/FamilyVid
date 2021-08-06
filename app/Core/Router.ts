@@ -45,12 +45,10 @@ export default async function Router(app) {
                     for (const method of methods) {
                         app[method](prefix_route+config.route , async (req,res) => {
                             const controller = new C(req,res);
-                            if (await controller.canAccess()) {
-                                controller[action]().catch(e => {
-                                    res.send("ERROR 500");
-                                    throw e;
-                                });
-                            }
+                            controller[action]().catch(e => {
+                                res.send("ERROR 500");
+                                throw e;
+                            });
                         });
                     }
                 } else {
