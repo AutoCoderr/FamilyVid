@@ -83,7 +83,7 @@ export default class Validator {
 			this.form.fields == null ||
 			this.form.fields instanceof Array) this.form.fields = {};
 
-		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
+		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).filter(key => this.form.fields[key].type != "param").length) {
 			return ["Tentative de hack!!"];
 		}
 

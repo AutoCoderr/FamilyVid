@@ -1,0 +1,14 @@
+{
+  "prefix": "diaporama_",
+  "prefix_route": "/diaporama",
+
+  "routes": {
+    "show": {
+      "route": "/"
+    },
+    "search": {
+      "route": "/search",
+      "method": "POST"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "prefix": "user_",
+  "prefix_route": "/user",
+
+  "routes": {
+    "all": {
+      "route": "/all"
+    },
+    "me": {
+      "route": "/me",
+      "methods": ["GET","POST"]
+    },
+    "search": {
+      "route": "/search",
+      "method": "POST"
+    }
+  }
+}
