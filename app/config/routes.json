@@ -200,11 +200,11 @@
         "method": "POST"
       },
       "delete": {
-        "route": "/delete",
+        "route": "/delete/:commentId",
         "method": "POST"
       },
       "edit": {
-        "route": "/edit",
+        "route": "/edit/:commentId",
         "method": "POST"
       }
     }

@@ -25,7 +25,7 @@ export default async function DeplaceSectionMediasAndDelete(family: Family, sect
                 label: "Déplacer les photos/vidéos vers",
                 type: "select",
                 options: options,
-                entity: Section.name,
+                entity: Section,
                 msgError: "Cette rubrique n'existe pas"
             },
         }
