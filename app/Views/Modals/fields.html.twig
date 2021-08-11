@@ -42,7 +42,7 @@
                     type="{{ field.type }}"
                     name="{{ name }}"
                     id="{{ form.config.actionName }}_{{ name }}"
-                    {% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+                    {% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName][name] %}
                         value="{{ flash.datas[form.config.actionName][name] }}"
                     {% elseif field.value is defined %}
                         {% if field.type == "checkbox" %}
