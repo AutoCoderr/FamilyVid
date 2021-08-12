@@ -1,8 +1,10 @@
 import Helpers from "../Core/Helpers";
 import User from "../Entities/User";
 import Family from "../Entities/Family";
+import FamilyDemandEntity from "../Entities/FamilyDemand";
+import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 
-export default function FamilyDemand(userId,familyId) {
+export default function FamilyDemand(applicantId: number, userId: null|number = null,familyId: null|number = null) {
     return {
         config: {
             action: Helpers.getPath("family_demand"),
@@ -11,7 +13,8 @@ export default function FamilyDemand(userId,familyId) {
             actionName: "family_demand",
             msgError: "Echec de l'envoie de la demande",
             formClass: "form-btn",
-            submitClass: "btn"
+            submitClass: "btn",
+            entity: FamilyDemandEntity
         },
         fields: {
             visible: {
@@ -20,17 +23,37 @@ export default function FamilyDemand(userId,familyId) {
                 required: false,
                 value: false
             },
-            user: {
-                type: "hidden",
-                value: userId,
-                entity: User.name,
-                msgError: "Cet utilisateur n'existe pas"
-            },
             family: {
                 type: "hidden",
                 value: familyId,
-                entity: Family.name,
+                entity: Family,
+                required: true,
                 msgError: "Cette famille n'existe pas"
+            },
+            user: {
+                type: "hidden",
+                value: userId,
+                entity: User,
+                required: true,
+                msgError: "Cet utilisateur n'existe pas",
+                valid: (user: User,datas) =>
+                    (<Array<Family>>user.getFamilies()).find(family => family.getId() == datas.family.getId() && family.getVisible()) == undefined ?
+                        "L'utilisateur "+user.getFirstname()+" "+user.getLastname()+" n'apparait pas comme étant dans la famille "+datas.family.getName() :
+                        true
+            },
+            applicant: {
+                depend_on: ["user","family"],
+                value: applicantId,
+                entity: User,
+                type: "param",
+                required: true,
+                valid: async (applicant: User,datas) =>
+                    (<Array<Family>>applicant.getFamilies()).find(family => family.getId() == datas.family.getId()) != undefined ?
+                        "Vous vous trouvez déjà dans la famille " + datas.family.getName() :
+
+                        await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user.getId(),datas.family.getId()) != null ?
+                            "Vous avez déjà demandé à "+datas.user.getFirstname()+" "+datas.user.getLastname()+" de vous faire rentrer dans la famille "+datas.family.getName() :
+                            true
             }
         }
     }

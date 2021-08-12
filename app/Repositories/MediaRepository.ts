@@ -53,7 +53,6 @@ export default class MediaRepository extends RepositoryManager {
                         ]
                     }
                 ] ,
-                id: { [Op.ne]: media.getId() },
                 SectionId: (<Section>media.getSection()).getId()
             },
             order: [
@@ -83,8 +82,6 @@ export default class MediaRepository extends RepositoryManager {
                         ]
                     }
                     ] ,
-
-                id: { [Op.ne]: media.getId() },
                 SectionId: (<Section>media.getSection()).getId()
             },
             order: [

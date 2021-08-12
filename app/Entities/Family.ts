@@ -21,8 +21,9 @@ export default class Family extends EntityManager {
     Users: null|Array<User> = [];
     Sections: null|Array<Section> = [];
 
-    setName(name: string) {
+    async setName(name: string) {
         this.name = name;
+        await this.setSlugFrom('name');
     }
     getName() {
         return Helpers.escapeHtml(this.name);

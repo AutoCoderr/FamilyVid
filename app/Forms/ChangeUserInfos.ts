@@ -1,6 +1,7 @@
 import Helpers from "../Core/Helpers";
+import User from "../Entities/User";
 
-export default function ChangeUserInfos(){
+export default function ChangeUserInfos(userId){
     return {
         config: {
             action: Helpers.getPath("user_me"),
@@ -9,7 +10,9 @@ export default function ChangeUserInfos(){
             actionName: "change_user_info",
             msgError: "Modification échouée",
             formClass: "form-btn",
-            submitClass: "btn"
+            submitClass: "btn",
+            entity: User,
+            id: userId
         },
         fields: {
             firstname: {

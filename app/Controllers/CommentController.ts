@@ -15,24 +15,16 @@ export default class CommentController extends Controller {
 
         if (mediaSectionAndFamily) {
             const {media} = mediaSectionAndFamily;
-            const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
+            const commentForm = CommentForm(familySlug,sectionSlug,media,this.req.session.user.id);
             const validator = new Validator(this.req,commentForm);
 
-            if (validator.isSubmitted() && await validator.isValid()) {
-                const datas = this.getDatas();
-                const user = await <Promise<User>>this.getUser();
+            if (validator.isSubmitted() && await validator.isValid(false)) {
 
-                const comment = new Comment();
-                comment.setContent(datas.content);
-                comment.setUpdated(false);
-                comment.setMedia(media);
-                comment.setUser(user);
-
-                await comment.save();
+                const comment = await validator.save();
 
                 this.res.json({status: "success", id: comment.getId()});
             } else {
-                this.res.json({status: "failed", errors: validator.getFlashErrors()});
+                this.res.json({status: "failed", errors: validator.getErrors()});
             }
             return;
         }
@@ -40,17 +32,13 @@ export default class CommentController extends Controller {
     }
 
     delete = async () => {
-        const datas = this.getDatas();
-        if (datas.comment == undefined) {
-            this.res.json({status: "failed", errors: ["Commentaire non renseigné"]});
-            return;
-        }
+        const {commentId} = this.req.params;
 
-        const commentDeleteForm = CommentDelete(datas.comment);
+        const commentDeleteForm = CommentDelete(commentId);
         const validator = new Validator(this.req,commentDeleteForm);
         if (validator.isSubmitted()) {
-            if (await validator.isValid()) {
-                const comment: Comment = validator.getDatas().comment;
+            if (await validator.isValid(false)) {
+                const comment = <Comment>validator.entity;
 
                 if (comment.getUserId() != this.req.session.user.id) {
                     this.res.json({status: "failed", errors: ["Vous n'êtes pas l'auteur de ce commentaire"]});
@@ -60,7 +48,7 @@ export default class CommentController extends Controller {
                 await comment.delete();
                 this.res.json({status: "success"})
             } else {
-                this.res.json({status: "failed", errors: validator.getFlashErrors()});
+                this.res.json({status: "failed", errors: validator.getErrors()});
                 delete this.req.session.flash;
             }
             return;
@@ -69,32 +57,24 @@ export default class CommentController extends Controller {
     }
 
     edit = async () => {
-        const datas = this.getDatas();
-        if (datas.comment == undefined) {
-            this.res.json({status: "failed", errors: ["Commentaire non renseigné"]});
-            return;
-        }
+        const {commentId} = this.req.params;
 
-        const commentEditForm = CommentEdit(datas.comment);
+        const commentEditForm = CommentEdit(commentId);
         const validator = new Validator(this.req,commentEditForm);
 
         if (validator.isSubmitted()) {
-            if (await validator.isValid()) {
-                const comment: Comment = validator.getDatas().comment;
-
+            if (await validator.isValid(false)) {
+                const comment = <Comment>validator.entity;
                 if (comment.getUserId() != this.req.session.user.id) {
                     this.res.json({status: "failed", errors: ["Vous n'êtes pas l'auteur de ce commentaire"]});
                     return;
                 }
 
-                comment.setUpdated(true);
-                comment.setContent(datas.content);
-                await comment.save();
+                await validator.save();
 
                 this.res.json({status: "success"});
             } else {
-                this.res.json({status: "failed", errors: validator.getFlashErrors()});
-                delete this.req.session.flash;
+                this.res.json({status: "failed", errors: validator.getErrors()});
             }
             return;
         }

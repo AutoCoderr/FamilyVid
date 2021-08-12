@@ -94,13 +94,9 @@ export default class FileUploadService {
         return true;
     }
 
-    static async renameSection(family: Family, section: Section, newName: string) {
+    static async renameSection(family: Family, section: Section, oldSlug: string) {
         const familyPath = this.filesPath+"/"+family.getSlug();
-        const sectionPath = familyPath+"/"+section.getSlug();
-
-        section.setName(newName);
-        await section.setSlugFrom("name");
-        await section.save();
+        const sectionPath = familyPath+"/"+oldSlug;
 
         const newSectionPath = familyPath+"/"+section.getSlug();
 
@@ -109,18 +105,15 @@ export default class FileUploadService {
         }
     }
 
-    static async renameMedia(family: Family, section: Section, media: Media, newName: string) {
+    static async renameMedia(family: Family, section: Section, media: Media, oldSlug) {
         const familyPath = this.filesPath+"/"+family.getSlug();
         const sectionPath = familyPath+"/"+section.getSlug();
-        const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
+        const mediaPath = sectionPath+"/"+oldSlug+"."+media.getFileExtension();
 
         if (!await fs.exists(mediaPath)) {
             console.log("'"+mediaPath+"' not found, can't rename media");
             return false;
         }
-
-        media.setName(newName);
-        await media.setSlugFrom("name");
 
         const newMediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();
 
@@ -128,36 +121,9 @@ export default class FileUploadService {
         return true;
     }
 
-    static uploadMedia(datas,section: Section,user: null|User) {
+    static uploadMedia(datas, media: Media) {
         return new Promise(async resolve => {
-            const splitFilename = datas.file.name.split(".");
-            const filename = splitFilename.slice(0,splitFilename.length-1).join(".");
-            const ext = splitFilename.slice(-1)[0];
-            if (datas.name == "" && filename.length > 50) {
-                resolve(false);
-                return;
-            }
-
-            let media = new Media();
-            media.setNbViews(0);
-            media.setDate(datas.date);
-            media.setName(datas.name != "" ? datas.name : filename);
-            media.setUser(user);
-            await media.setSlugFrom("name");
-            media.setFileExtension(ext);
-            if (datas.tags) {
-                media.setTags(datas.tags);
-            }
-
-            for (const mediaType in this.mediaTypeByMimeType) {
-                if (this.mediaTypeByMimeType[mediaType].includes(datas.file.mimetype)) {
-                    media.setType(mediaType);
-                    break;
-                }
-            }
-            media.setSection(section);
-            await media.save();
-
+            const section: Section = datas.section;
             const familyPath = this.filesPath+"/"+(<Family>section.getFamily()).getSlug();
             const sectionPath = familyPath+"/"+section.getSlug();
             const mediaPath = sectionPath+"/"+media.getSlug()+"."+media.getFileExtension();

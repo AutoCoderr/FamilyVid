@@ -1,17 +1,18 @@
 import Helpers from "../Core/Helpers";
-import User from "../Entities/User";
 import Family from "../Entities/Family";
 
-export default function FamilyChangeDisplay(familySlug) {
+export default function FamilyChangeDisplay(family: Family) {
     return {
         config: {
-            action: Helpers.getPath("family_change_display", {slug: familySlug}),
+            action: Helpers.getPath("family_change_display", {slug: family.getSlug()}),
             method: "POST",
             submit: "Valider",
             actionName: "family_change_display",
             msgError: "Echec de la modification",
             formClass: "form-btn",
-            submitClass: "btn"
+            submitClass: "btn",
+            entity: Family,
+            entityInstance: family
         },
         fields: {
             visible: {

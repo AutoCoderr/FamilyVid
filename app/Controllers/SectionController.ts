@@ -80,8 +80,7 @@ export default class SectionController extends Controller {
 
                 if (validatorDeplaceMedias.isSubmitted()) {
                     if (await validatorDeplaceMedias.isValid()) {
-                        const datas = this.getDatas();
-                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        const newSection: Section = validatorDeplaceMedias.getDatas().section;
 
                         if (!await FileUploadService.moveAllMedia(section,newSection)) {
                             validatorDeplaceMedias.setFlashErrors(["Déplacement des photos/videos de la rubrique échoué"]);
@@ -117,14 +116,16 @@ export default class SectionController extends Controller {
         if (sectionAndFamily) {
             const {family,section} = sectionAndFamily;
 
-            const sectionForm = SectionForm(family, sectionSlug);
+            const sectionForm = SectionForm(family, section);
             const validator = new Validator(this.req,sectionForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
+                    const oldSlug = <string>(<Section>validator.entity).getSlug();
 
-                    await FileUploadService.renameSection(family,section,datas.name);
+                    await validator.save();
+
+                    await FileUploadService.renameSection(family,<Section>validator.entity,oldSlug);
 
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
@@ -152,14 +153,9 @@ export default class SectionController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
 
-                    const section = new Section();
-                    section.setName(datas.name);
-                    await section.setSlugFrom("name");
-                    section.setFamily(family);
+                    await validator.save();
 
-                    await section.save();
                     this.setFlash("section_success", "Rubrique créée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
                 } else {

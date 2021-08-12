@@ -10,8 +10,6 @@ export default function DenyDemand(demandId) {
             msgError: "Refus échoué",
             formClass: "form-btn",
             submitClass: "btn"
-        },
-        fields: {
         }
     }
 }

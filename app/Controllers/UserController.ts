@@ -21,25 +21,22 @@ export default class UserController extends Controller {
     }
 
     me = async () => {
-        const user = await <Promise<User>>this.getUser();
-        this.req.session.user = await user.serialize();
+        //const user = await <Promise<User>>this.getUser();
+        //this.req.session.user = await user.serialize();
         let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id,false);
 
-        const userInfosForm = ChangeUserInfos();
+        const userInfosForm = ChangeUserInfos(this.req.session.user.id);
         const userInfosValidator = new Validator(this.req,userInfosForm);
         if (userInfosValidator.isSubmitted()) {
             if (await userInfosValidator.isValid()) {
-                const datas = this.getDatas();
-                user.setFirstname(datas.firstname);
-                user.setLastname(datas.lastname);
-
-                await user.save();
+                await userInfosValidator.save();
                 this.setFlash("me_success", "Informations modifiées avec succès!");
             }
 
             this.redirect(this.req.header('Referer'));
             return;
         }
+        const user = await <Promise<User>>Helpers.getEntityFromForm(userInfosForm);
 
         const userPasswordForm = ChangeUserPassword();
         const userPasswordValidator = new Validator(this.req,userPasswordForm);
