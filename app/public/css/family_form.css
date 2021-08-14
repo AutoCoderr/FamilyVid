@@ -1,0 +1,16 @@
+.family-form {
+	display: none;
+	background-color: #EDE18D;
+}
+
+#form-demand-prototype {
+	display: none;
+}
+
+td {
+	vertical-align: top;
+}
+
+li {
+	margin-bottom: 20px;
+}

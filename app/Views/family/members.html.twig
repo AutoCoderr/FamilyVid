@@ -2,37 +2,80 @@
 
 {% block title %}Membres de la famille {{ family.name }}{% endblock %}
 
+{% if not userIsMember %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="/css/family_form.css">
+    {% endblock %}
+{% endif %}
+
 {% block javascripts %}
+    {% if not userIsMember %}
+        <script async src="/js/family_form.js"></script>
+    {% endif %}
     <script src="/js/search_user.js"></script>
     <script>
         allUser = false;
         familySlug = "{{ family.slug }}";
         userId = {{ session.user.id }};
+        userIsMember = {{ userIsMember ? "true" : "false" }};
     </script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ userIsMember ? path("section_index", {'familySlug': family.slug}) : path("family_index") }}">Retour</a>
     <h1>Membres de la famille {{ family.name }}</h1>
+
+    {% if flash.faileds is defined %}
+        <ul>
+            {% for error in flash.faileds %}
+                <li style="color: red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if flash.success is defined %}
+        <p style="color: green">{{ flash.success }}</p>
+    {% endif %}
+
     <input type="text" placeholder="Tapez un mot clé..." id="input_search">
     <table>
         <thead>
         <tr>
             <th>Prénom</th>
             <th>Nom</th>
-            <th>Email</th>
+            {% if userIsMember %}
+                <th>Email</th>
+            {% endif %}
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        {% for user in family.Users %}
+        {% for member in members %}
             <tr>
-                <td>{{ user.firstname }}</td>
-                <td>{{ user.lastname }}</td>
-                <td>{{ user.email }} {% if session.user.id == user.id %}(vous){% endif %}</td>
+                <td>{{ member.firstname }}</td>
+                <td>{{ member.lastname }}</td>
+                {% if userIsMember %}
+                    <td>{{ member.email }} {% if session.user.id == member.id %}(vous){% endif %}</td>
+                {% endif %}
+                <td>
+                    <a class="btn" href="{{ member.id == session.user.id ? path('family_list_mines') : path('family_list', {'userId': member.id}) }}">
+                        Voir {{ member.id == session.user.id ? "mes" : "ses"}} familles ({{ member.nbfamilies }})
+                    </a>
+                    {% if not userIsMember %}
+                        <a class="btn" href="javascript:displayDemandForm('family-demand-{{ member.id }}')">Demander à rejoindre</a>
+                        <div class="family-form" id="family-demand-{{ member.id }}">
+                            {% include 'Modals/forms.html.twig' with {'form': forms[member.id]} %}
+                        </div>
+                    {% endif %}
+                </td>
             </tr>
         {% else %}
             <tr><td colspan="4">Aucun utilisateur trouvé</td></tr>
         {% endfor %}
         </tbody>
     </table>
+    {% if not userIsMember%}
+        <div id="form-demand-prototype">
+            {% include 'Modals/forms.html.twig' with {'form': formPrototype} %}
+        </div>
+    {% endif %}
 {% endblock %}
