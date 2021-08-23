@@ -4,6 +4,15 @@
 
   "routes":{
 
+    "index": {
+      "route": "/"
+    },
+
+    "search": {
+      "route": "/search",
+      "method": "POST"
+    },
+
     "new": {
       "route": "/new",
       "methods": ["GET","POST"]

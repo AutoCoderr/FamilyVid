@@ -75,9 +75,9 @@ if (env.SSL_ENABLED) {
         const httpsServer = https.createServer(credentials, app);
         httpsServer.listen(443);
 
-    })().then(() => Router(app));
+    })().then(() => Router(app)).then(() => console.log("Routes loadeds"));
 } else {
-    Router(app);
+    Router(app).then(() => console.log("Routes loadeds"));
 }
 
 console.log("Server started");

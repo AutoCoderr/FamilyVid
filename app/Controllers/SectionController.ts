@@ -17,7 +17,7 @@ import FileUploadService from "../Services/FileUploadService";
 export default class SectionController extends Controller {
     index = async () => {
         const {familySlug} = this.req.params;
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug,true,true);
 
         if (CheckService.checkFamily(family,this)) {
             this.render("section/index.html.twig", {family});
@@ -145,7 +145,7 @@ export default class SectionController extends Controller {
 
     new = async () => {
         const {familySlug} = this.req.params;
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true);
 
         if (CheckService.checkFamily(family,this)) {
             const sectionForm = SectionForm(family);
@@ -172,16 +172,14 @@ export default class SectionController extends Controller {
         const {search} = this.req.body;
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true);
 
         if (CheckService.checkFamily(family,this,true)) {
             let sections = await SectionRepository.findAllByFamilyAndSearch(family.getId(),search);
-            sections = sections.map(section => {
-                return {
+            sections = sections.map(section => ({
                     slug: section.getSlug(),
                     name: section.getName()
-                }
-            });
+                }));
             this.res.json(sections);
         }
     }
@@ -189,7 +187,7 @@ export default class SectionController extends Controller {
     global = async () => {
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug,true,true);
 
         if (CheckService.checkFamily(family,this)) {
             const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
@@ -213,7 +211,7 @@ export default class SectionController extends Controller {
     global_search = async () => {
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true, true);
 
         if (CheckService.checkFamily(family,this,true)) {
             const {search,sort,sortBy,toDisplay} = this.req.body;

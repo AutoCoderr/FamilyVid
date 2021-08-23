@@ -9,7 +9,7 @@ export default class MediaFixture {
     static execBefore = SectionFixture;
 
     static action = async () => {
-        const families: Array<Family> = await FamilyRepository.findAll();
+        /*const families: Array<Family> = await FamilyRepository.findAll();
         const dates = ["1999-08-10","1997-12-17","2000-01-15","1998-06-18"];
         for (const family of families) {
             for (const section of <Array<Section>>family.getSections()) {
@@ -18,11 +18,10 @@ export default class MediaFixture {
                     let media = new Media();
                     const date = dates[Helpers.rand(0,dates.length-1)];
                     if (Helpers.rand(1,3) == 1) {
-                        media.setName(date);
+                        await media.setName(date);
                     } else {
-                        media.setName(randomString());
+                        await media.setName(randomString());
                     }
-                    await media.setSlugFrom("name");
                     media.setDate(date);
                     media.setType(Helpers.rand(0,1) == 1 ? "video": "picture");
                     media.setSection(section);
@@ -31,19 +30,6 @@ export default class MediaFixture {
                     await media.save();
                 }
             }
-        }
+        }*/
     }
-}
-
-function randomString(nb = 7) {
-    const alphas = "abcdefghijklmnopqrstuvwxyz";
-    let str = "";
-    for (let i=0;i<nb;i++) {
-        if (Helpers.rand(1,3) == 1) {
-            str += alphas[Helpers.rand(0,alphas.length-1)].toUpperCase();
-        } else {
-            str += alphas[Helpers.rand(0,alphas.length-1)];
-        }
-    }
-    return str;
 }

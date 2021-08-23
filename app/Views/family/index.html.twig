@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les familles{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/search_families.js"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>Rechercher une famille</h1>
+    <input type="text" placeholder="Rechercher..." id="family-search">
+    <div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Faites une recherche</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h2>Vous pouvez créer une famille</h2>
+    <a class="btn" href="{{ path('family_new') }}">Créer une famille</a>
+{% endblock %}

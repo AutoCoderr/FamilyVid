@@ -12,6 +12,7 @@ export default class FixtureLoad extends Command {
             return;
         }
         await Migration.drop();
+        console.log("Base donnée supprimée");
 
         const path = __dirname+"/../../../Fixtures";
         const fixtures = fs.readdirSync(path)
