@@ -1,9 +1,8 @@
 import RepositoryManager from "../Core/RepositoryManager";
 import SectionModel from "../Models/Section";
-import CommentModel from "../Models/Comment";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
-import {col, fn, Op} from "sequelize";
+import {col, fn, Op, where} from "sequelize";
 import Section from "../Entities/Section";
 
 export default class MediaRepository extends RepositoryManager {
@@ -53,7 +52,6 @@ export default class MediaRepository extends RepositoryManager {
                         ]
                     }
                 ] ,
-                id: { [Op.ne]: media.getId() },
                 SectionId: (<Section>media.getSection()).getId()
             },
             order: [
@@ -83,8 +81,6 @@ export default class MediaRepository extends RepositoryManager {
                         ]
                     }
                     ] ,
-
-                id: { [Op.ne]: media.getId() },
                 SectionId: (<Section>media.getSection()).getId()
             },
             order: [
@@ -125,20 +121,14 @@ export default class MediaRepository extends RepositoryManager {
         return super.findAllByParams({
             where: {
                 [Op.or]: [
-                    {
-                        name: {[Op.iLike]: search}
-                    },
+                    where(fn('unaccent',col('Media.name')), Op.iLike, fn('unaccent',search)),
                         (!isNaN(date.getTime()) &&
                             {
                                 date: {[Op.between]: [date,endDate]}
                             }
                         ),
                     {
-                        [Op.and]: keyWords.map(keyWord => {
-                           return {
-                               tags: {[Op.iLike]: keyWord}
-                           }
-                        })
+                        [Op.and]: keyWords.map(keyWord =>  where(fn('unaccent',col('tags')), Op.iLike, fn('unaccent',keyWord)),)
                     }
                 ],
                 SectionId: {[Op.in]: sectionsId},

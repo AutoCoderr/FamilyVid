@@ -11,8 +11,6 @@ export default function DeleteMedia(familySlug,sectionSlug,mediaSlug) {
             confirmOnSubmit: "Êtes vous sûre de vouloir supprimer cette photo/vidéo? Il n'y a pas de corbeille",
             formClass: "form-btn",
             submitClass: "btn"
-        },
-        fields: {
         }
     }
 }

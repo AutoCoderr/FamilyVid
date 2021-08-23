@@ -20,8 +20,9 @@ export default class Section extends EntityManager {
 
     Medias : null|Array<Media> = [];
 
-    setName(name: string) {
+    async setName(name: string) {
         this.name = name;
+        await this.setSlugFrom("name");
     }
     getName() {
         return Helpers.escapeHtml(this.name);

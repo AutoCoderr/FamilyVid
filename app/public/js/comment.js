@@ -63,7 +63,7 @@ function comment_created(res,form) {
 
         const formDelete = container.querySelector(".delete-comment-form");
         formDelete.setAttribute("id", "form_delete_comment_" + res.id);
-        formDelete.comment.value = res.id;
+        formDelete.action = formDelete.action.split("/").slice(0,-1).join("/")+"/"+res.id;
         formDelete.actionName.value = "delete_comment_"+res.id;
 
         form_listener(formDelete, comment_deleted,null,"Voulez vous vraiment supprimer ce commentaire?");
@@ -72,7 +72,7 @@ function comment_created(res,form) {
 
         const formEdit = container.querySelector(".edit-comment-form");
         formEdit.setAttribute("id", "form_edit_comment_" + res.id);
-        formEdit.comment.value = res.id;
+        formEdit.action = formEdit.action.split("/").slice(0,-1).join("/")+"/"+res.id;
         formEdit.actionName.value = "edit_comment_"+res.id;
 
         form_listener(formEdit, comment_edited, can_edit);
@@ -91,7 +91,7 @@ function can_create(form) {
 
 function comment_edited(res,form) {
     if (res.status === "success") {
-        const id = form.comment.value,
+        const id = form.action.split("/").slice(-1)[0],
             commentBody =  document.querySelector("#comment_"+id+" .body"),
             commentInfos =  document.querySelector("#comment_"+id+" .header .infos");
 
@@ -102,17 +102,17 @@ function comment_edited(res,form) {
 
         form.style.display = "none";
         commentBody.style.display = "block";
-    } else {
+
         throw new Error(res.errors.join("\n-----------------\n"));
     }
 }
 
 function can_edit(form) {
-    const id = form.comment.value,
+    const id = form.action.split("/").slice(-1)[0],
         commentBody =  document.querySelector("#comment_"+id+" .body"),
         textAreaValue = form.content.value;
 
-    if (trim(commentBody.innerText) === textAreaValue) {
+    if (commentBody.innerText.trim() === textAreaValue) {
         form.style.display = "none";
         commentBody.style.display = "block";
         return false;
@@ -131,24 +131,8 @@ function displayEdit(id) {
         form.style.display = "block";
         commentBody.style.display = "none";
 
-        form.querySelector("textarea").value = trim(commentBody.innerText);
+        form.querySelector("textarea").value = commentBody.innerText.trim();
     }
-}
-
-function trim(str) {
-    let i=0;
-    while(str[i] === " " || str[i] === "\t" || str[i] === "\n") {
-        i += 1;
-    }
-    str = str.substring(i,str.length);
-
-    i = str.length-1;
-    while(str[i] === " " || str[i] === "\t" || str[i] === "\n") {
-        i -= 1;
-    }
-
-    str = str.substring(0,i+1);
-    return str;
 }
 
 function addMissingZero(num, nb = 2) {

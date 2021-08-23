@@ -7,17 +7,16 @@ export default class SectionFixture {
     static execBefore = FamilyFixture;
 
     static action = async () => {
-        const families: Array<Family> = await FamilyRepository.findAll();
+        /*const families: Array<Family> = await FamilyRepository.findAll();
         const sectionsPerFamily = ["Truc machin","Bidule chouette","Saperlipopette"];
         for (const family of families) {
             for (const sectionName of sectionsPerFamily) {
                 let section = new Section();
-                section.setName(sectionName);
-                await section.setSlugFrom("name");
+                await section.setName(sectionName);
                 section.setFamily(family);
 
                 await section.save();
             }
-        }
+        }*/
     }
 }

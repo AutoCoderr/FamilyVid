@@ -29,8 +29,9 @@ export default class Media extends EntityManager {
 
     Comments: null|Array<Comment> = [];
 
-    setName(name: string) {
+    async setName(name: string) {
         this.name = name;
+        await this.setSlugFrom("name");
     }
     getName() {
         return Helpers.escapeHtml(this.name);

@@ -35,12 +35,13 @@ export default class MediaController extends Controller {
 
         if (sectionAndFamily) {
             const {section} = sectionAndFamily;
-            const mediaForm = MediaForm(familySlug,sectionSlug);
+            const mediaForm = MediaForm(familySlug,section,null,this.req.session.user.id);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid(false)) {
-                    if(await FileUploadService.uploadMedia(this.getDatas(),section,await this.getUser())) {
+                    await validator.save();
+                    if(await FileUploadService.uploadMedia(validator.getDatas(),<Media>validator.entity)) {
                         this.res.json({status: "success"});
                     } else {
                         this.res.json({status: "failed", errors: ["Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier"]});
@@ -63,19 +64,16 @@ export default class MediaController extends Controller {
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const mediaForm = MediaForm(familySlug,sectionSlug,mediaSlug);
+            const mediaForm = MediaForm(familySlug,section,media,this.req.session.user.id);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
+                    const oldSlug = (<Media>validator.entity).getSlug();
 
-                    media.setDate(datas.date);
-                    if (datas.tags) {
-                        media.setTags(datas.tags);
-                    }
+                    await validator.save();
 
-                    if (media.getName() != datas.name && !(await FileUploadService.renameMedia(family, section, media, datas.name))) {
+                    if ((<Media>validator.entity).getSlug() != oldSlug && !(await FileUploadService.renameMedia(family, section, media, oldSlug))) {
                         validator.setFlashErrors(["La photo/video ne peut pas être renommée"]);
                         this.redirect(this.req.header('Referer'));
                         return;
@@ -91,14 +89,13 @@ export default class MediaController extends Controller {
             }
             let deplaceMediaForm;
             if ((<Array<Section>>family.getSections()).length > 1) {
-                deplaceMediaForm = await DeplaceMedia(family, section, mediaSlug);
+                deplaceMediaForm = await DeplaceMedia(family, section, media);
                 const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
 
                 if (deplaceMediaValidator.isSubmitted()) {
                     if (await deplaceMediaValidator.isValid()) {
-                        const datas = this.getDatas();
 
-                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        const newSection: Section = deplaceMediaValidator.getDatas().section;
 
                         if (!await FileUploadService.moveMedia(family,section,newSection,media)) {
                             deplaceMediaValidator.setFlashErrors(["La photo/video ne peut pas être déplacée"]);
@@ -164,7 +161,7 @@ export default class MediaController extends Controller {
             const {media, section, family} = mediaSectionAndFamily;
             const comments: Array<Comment> = await CommentRepository.findAllByMediaId(media.getId());
 
-            const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
+            const commentForm = CommentForm(familySlug,sectionSlug,media,this.req.session.user.id);
 
             let commentDeleteForms: any = {};
             let commentEditForms: any = {};
