@@ -103,7 +103,7 @@ function comment_edited(res,form) {
         form.style.display = "none";
         commentBody.style.display = "block";
 
-+        throw new Error(res.errors.join("\n-----------------\n"));
+        throw new Error(res.errors.join("\n-----------------\n"));
     }
 }
 
