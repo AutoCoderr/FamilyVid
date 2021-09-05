@@ -127,6 +127,9 @@
     <div id="image" {% if media is null %}style="display: none;"{% endif %}>
         {% if media is not null %}
             <h2>{{ media.name }}</h2>
+            <span class="author_name">
+                Auteur : {{ media.author }}
+            </span>
             <span class="path">
                 <a class="family" title="Famille {{ media.familyName }}" href="{{ path('section_index', {'familySlug': media.familySlug}) }}">{{ media.familyName }}</a>
                 <span>></span>
@@ -140,6 +143,7 @@
             </a>
         {% else %}
             <h2></h2>
+            <span class="author_name"></span>
             <span class="path">
                 <a class="family" title="" href="#"></a>
                 <span>></span>

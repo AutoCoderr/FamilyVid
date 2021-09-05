@@ -1,5 +1,6 @@
 import RepositoryManager from "../Core/RepositoryManager";
 import SectionModel from "../Models/Section";
+import UserModel from "../Models/User";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
 import {col, fn, Op, where} from "sequelize";
@@ -13,10 +14,10 @@ export default class MediaRepository extends RepositoryManager {
         return super.findOne(id,SectionModel);
     }
 
-    static findOneBySlug(slug) {
+    static findOneBySlug(slug, withUser = false) {
         return super.findOneByParams({
             where: { slug: slug },
-            include: SectionModel
+            include: [SectionModel, ...(withUser ? [UserModel] : [])]
         })
     }
 
@@ -30,7 +31,7 @@ export default class MediaRepository extends RepositoryManager {
                 ["date","ASC"],
                 ["id","ASC"]
             ],
-            include: SectionModel
+            include: [SectionModel,UserModel]
         })
     }
 
