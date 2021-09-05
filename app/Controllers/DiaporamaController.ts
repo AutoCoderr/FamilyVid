@@ -39,7 +39,7 @@ export default class DiaporamaController extends Controller {
 
         let media: any|Media = null;
         if (mediaSlug) {
-            media = await MediaRepository.findOneBySlug(mediaSlug);
+            media = await MediaRepository.findOneBySlug(mediaSlug,true);
             if (media == null || !allUserFamilies.map(family => family.getId()).includes((<Section>media.getSection()).getFamilyId())) {
                 return this.returnFailedError("Photo inexistante ou inaccessible");
             } else if (media.getType() == "video") {
@@ -58,7 +58,8 @@ export default class DiaporamaController extends Controller {
                 sectionSlug: media.getSection().getSlug(),
                 familySlug: mediaFamilySlug,
                 sectionName: media.getSection().getName(),
-                familyName: mediaFamilyName
+                familyName: mediaFamilyName,
+                author: media.getUser() != null ? media.getUser().getFirstname()+" "+media.getUser().getLastname() : "inconnu"
             }
         }
 
@@ -128,7 +129,8 @@ export default class DiaporamaController extends Controller {
                 sectionSlug: (<Section>picture.getSection()).getSlug(),
                 familySlug: familyBySection[<number>(<Section>picture.getSection()).getId()].getSlug(),
                 sectionName: (<Section>picture.getSection()).getName(),
-                familyName: familyBySection[<number>(<Section>picture.getSection()).getId()].getName()
+                familyName: familyBySection[<number>(<Section>picture.getSection()).getId()].getName(),
+                author: picture.getUser() != null ? picture.getUser()?.getFirstname()+" "+picture.getUser()?.getLastname() : "inconnu"
             };
         })
 
