@@ -1,6 +1,4 @@
-/*import User from "../Models/User";
-import Produit from "../Models/Produit";
-import Exemplaire from "../Models/Exemplaire";*/
+import { sequelize } from "./DB";
 import * as fs from "fs-extra";
 
 export default class Migration {
@@ -8,9 +6,9 @@ export default class Migration {
 
     static async migrate() {
         if (this.tables.length == 0) {
-            const migrationsOrder = JSON.parse(fs.readFileSync(__dirname+"/migrationsOrder.json"));
-            for (const modelName of migrationsOrder) {
-                const model = require(__dirname+"/../Models/"+modelName+".js").default;
+            const files = fs.readdirSync(__dirname+"/../Models").filter(file => file.endsWith(".js"));
+            for (const file of files) {
+                const model = require(__dirname+"/../Models/"+file).default;
                 this.tables.push(model)
             }
         }
@@ -20,25 +18,20 @@ export default class Migration {
         let syncSuccessful = false;
 
         while (nbRetry < maxRetry && !syncSuccessful) {
-            let nbSyncedTables = 0;
-            for (let table of this.tables) {
-                try {
-                    await table.sync();
-                    nbSyncedTables += 1;
-                } catch (e) {
-                    console.log("Connection to database failed, retry")
-                    await wait(500);
-                    break;
-                }
+            try {
+                await sequelize.sync({alter: true});
+                syncSuccessful = true;
+            }  catch (e) {
+                console.log("Database synchronization failed, retry");
+                await sleep(500);
+                nbRetry += 1;
             }
-            if (nbSyncedTables == this.tables.length) syncSuccessful = true;
-            nbRetry += 1;
         }
         console.log(syncSuccessful ? "Database synchronized!" : "All database connections retry failed");
     }
 }
 
-function wait(ms: number) {
+function sleep(ms: number) {
     return new Promise(resolve => {
        setTimeout(resolve,ms);
     });
