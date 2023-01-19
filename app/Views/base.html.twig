@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>{% block title %}Test{% endblock %}</title>
+        <title>{% block title %}Family Vid{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}{% endblock %}
         <meta charset="UTF-16">
@@ -8,16 +8,14 @@
     <body>
         <header>
             <nav>
-                <div>Test</div>
+                <div><a href="{{ path('index') }}">Family Vid</a></div>
                 <ul>
-                    <li><a href="{{ path('test_coucou', {'prenom': 'toto'}) }}">Coucou</a></li>
-                    <li><a href="{{ path('test_exemplaires') }}">Exemplaires</a></li>
                     {% if session.user is defined %}
-                        <li><a href="{{ path('test_logout') }}">Se déconnecter</a></li>
+                        <li><a href="{{ path('security_logout') }}">Se déconnecter</a></li>
                         <li>{{ session.user.firstname }} {{ session.user.lastname }}</li>
                     {% else %}
-                        <li><a href="{{ path('test_register') }}">Inscription</a></li>
-                        <li><a href="{{ path('test_login') }}">Connexion</a></li>
+                        <li><a href="{{ path('security_register') }}">Inscription</a></li>
+                        <li><a href="{{ path('security_login') }}">Connexion</a></li>
                     {% endif %}
                 </ul>
             </nav>
