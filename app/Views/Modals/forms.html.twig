@@ -1,0 +1,36 @@
+{% if session is defined %}
+	{% if session.errors is defined and session.errors[form.config.actionName] is defined %}
+		{% set errors = session.errors[form.config.actionName] %}
+	{% endif %}
+
+	{% if session.datas[form.config.actionName] is defined and session.datas[form.config.actionName]|keys|length > 0 %}
+		{% set datas = session.datas[form.config.actionName] %}
+	{% endif %}
+{% endif %}
+
+<form action="{{ form.config.action }}" method="{{ form.config.method }}">
+	{% for name in form.fields|keys %}
+		{% set field = form.fields[name] %}
+		<label>{{ field.label }} :</label>
+		<input
+			type="{{ field.type }}"
+			name="{{ name }}"
+			value="{% if datas is defined %}{{ datas[name] }}{% endif %}"
+			minLength="{%  if field.minLength is defined %}{{ field.minLength }}{% endif %}"
+			maxLength="{%  if field.maxLength is defined %}{{ field.maxLength }}{% endif %}"
+			{% if field.required is defined and field.required %} required='required'{% endif %}
+		/><br/>
+	{% endfor %}
+	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>
+	<input type="submit" value="{{ form.config.submit }}"/>
+</form>
+
+{% if errors is defined %}
+	<ul>
+	{% for error in errors %}
+		<li style="color: red;">{{ error }}</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{{ destroySessionForm(form.config.actionName,session) }}

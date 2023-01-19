@@ -1,0 +1,10 @@
+{% extends 'base_test.html.twig' %}
+
+{% block body %}
+<h1>Les exemplaires :</h1>
+<ul>
+    {% for exemplaire in exemplaires %}
+        <li>{{ exemplaire.units }} exemplaires de {{ exemplaire.Produit.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
