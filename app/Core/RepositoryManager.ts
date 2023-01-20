@@ -13,6 +13,10 @@ export default class RepositoryManager {
         return await this.findOneByParams(params);
     }
 
+    static findAll() {
+        return this.findAllByParams({});
+    }
+
     static async findAllByParams(params): Promise<any> {// @ts-ignore
         const elems = await this.model.findAll(params);
         for (let i=0;i<elems.length;i++) {// @ts-ignore

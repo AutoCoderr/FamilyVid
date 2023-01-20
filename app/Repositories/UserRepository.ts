@@ -1,3 +1,5 @@
+import {Op} from "sequelize";
+
 import UserModel from "../Models/User";
 import User from "../Entities/User";
 import RepositoryManager from "../Core/RepositoryManager";
@@ -16,6 +18,15 @@ export default class UserRepository extends RepositoryManager {
             },
             include: FamilyModel
         });
+    }
+
+    static findAllExceptOne(id) {
+        return super.findAllByParams({
+            where: {
+                id: {[Op.ne]: id}
+            },
+            include: FamilyModel
+        })
     }
 
     static findOne(id) {

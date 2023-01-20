@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Familles de {{ user.firstname }} {{ user.lastname }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/family-list.css">
+{% endblock %}
+{% block javascripts %}
+    <script src="/js/family-list.js"></script>
+{% endblock %}
+
+{% block body %}
+    <h1>Familles de {{ user.firstname }} {{ user.lastname }}</h1>
+
+    {% if user.Families|length > 0 %}
+    <ul>
+        {% for family in user.Families %}
+            <li class="family" id="family-{{ family.id }}">
+                <span>{{ family.name }}</span><a href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
+                <div>
+                    {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <h2>Cet utilisateur n'a aucune famille visible</h2>
+    {% endif %}
+{% endblock %}

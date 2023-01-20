@@ -8,6 +8,8 @@ export default class Family extends EntityManager {
 
     name: null|string = null;
 
+    visible: null|boolean = null;
+
     Users: null|Array<User> = [];
 
     setName(name: string) {
@@ -15,6 +17,13 @@ export default class Family extends EntityManager {
     }
     getName() {
         return this.name;
+    }
+
+    getVisible() {
+        if (this.visible == null && this.ModelInstance != null) { // @ts-ignore
+            this.visible = this.ModelInstance.dataValues.User_Families.dataValues.visible;
+        }
+        return this.visible;
     }
 
     getUsers() {

@@ -23,10 +23,17 @@ export default function Router(app) {
                 }
 
                 if (typeof(controller[action]) != "undefined") {
-                    let methods = ["get"];
+                    let methods: string|Array<string> = ["get"];
                     if (config.methods != undefined) {
-                        methods = config.methods.map(method => method.toLowerCase());
+                        methods = config.methods;
                     }
+                    if (typeof(methods) === "string") {
+                        methods = [methods];
+                    }
+                    if (methods instanceof Array) {
+                        methods = methods.map(method => method.toLowerCase());
+                    }
+
                     for (const method of methods) {
                         app[method](prefix_route+config.route , (req,res) => {
                             const controller = new C(req,res);

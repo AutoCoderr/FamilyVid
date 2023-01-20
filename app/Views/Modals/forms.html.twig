@@ -11,7 +11,9 @@
 <form action="{{ form.config.action }}" method="{{ form.config.method }}">
 	{% for name in form.fields|keys %}
 		{% set field = form.fields[name] %}
-		<label>{{ field.label }} :</label>
+		{% if field.type != "hidden" %}
+			<label>{{ field.label }} :</label>
+		{% endif %}
 		<input
 			type="{{ field.type }}"
 			name="{{ name }}"
@@ -27,7 +29,10 @@
 			{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
 			{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
 			{% if field.required is defined and field.required %} required='required'{% endif %}
-		/><br/>
+		/>
+		{% if field.type != "hidden" %}
+			<br/>
+		{% endif %}
 	{% endfor %}
 	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>
 	<input type="submit" value="{{ form.config.submit }}"/>

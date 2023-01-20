@@ -39,6 +39,26 @@
       "new": {
         "route": "/new",
         "methods": ["GET","POST"]
+      },
+
+      "list": {
+        "route": "/list/:id"
+      },
+
+      "demand": {
+        "route": "/demand/:userId/:familyId",
+        "methods": "POST"
+      }
+
+    }
+  },
+  "UserController": {
+    "prefix": "user_",
+
+    "routes": {
+
+      "list": {
+        "route": "/users"
       }
 
     }
