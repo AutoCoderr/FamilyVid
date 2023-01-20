@@ -3,6 +3,7 @@ import { sequelize } from "../Core/DB";
 
 import env from "../Core/env.js";
 import User from "./User";
+import User_Families from "./User_Families";
 const {DB_PREFIX} = env;
 
 export interface IFamily {
@@ -33,5 +34,5 @@ Family.init(
     }
 );
 
-Family.belongsToMany(User, { through: DB_PREFIX+"User_Families" });
-User.belongsToMany(Family, { through: DB_PREFIX+"User_Families" });
+Family.belongsToMany(User, { through: User_Families });
+User.belongsToMany(Family, { through: User_Families });

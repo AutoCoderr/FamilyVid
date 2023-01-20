@@ -15,9 +15,17 @@
 		<input
 			type="{{ field.type }}"
 			name="{{ name }}"
-			value="{% if datas is defined %}{{ datas[name] }}{% endif %}"
-			minLength="{%  if field.minLength is defined %}{{ field.minLength }}{% endif %}"
-			maxLength="{%  if field.maxLength is defined %}{{ field.maxLength }}{% endif %}"
+			{% if datas is defined %}
+				value="{{ datas[name] }}"
+			{% elseif field.default is defined %}
+				{% if field.type == "checkbox" %}
+					{{ field.default ? "checked" : "" }}
+				{% else %}
+					value="{{ field.default }}"
+				{% endif %}
+			{% endif %}
+			{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
+			{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
 			{% if field.required is defined and field.required %} required='required'{% endif %}
 		/><br/>
 	{% endfor %}
