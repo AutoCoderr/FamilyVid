@@ -66,7 +66,7 @@ export default class FamilyController extends Controller {
             return;
         }
 
-        let demand = await FamilyDemandRepository.findByApplicantIdUserIdAndFamilyId(applicant.getId(),userId,familyId);
+        let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),userId,familyId);
         if (demand != null) {
             this.setFlash("family_demand_failed","Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de rentrer dans la famille "+family.getName());
             this.redirect(this.req.header('Referer'));

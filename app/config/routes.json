@@ -60,6 +60,9 @@
 
       "all": {
         "route": "/all"
+      },
+      "me": {
+        "route": "/me"
       }
 
     }
