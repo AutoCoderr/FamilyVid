@@ -19,8 +19,8 @@ export default class Family extends EntityManager {
         return this.name;
     }
 
-    getVisible() {
-        if (this.visible == null && this.ModelInstance != null) { // @ts-ignore
+    getVisible() { // @ts-ignore
+        if (this.visible == null && this.ModelInstance != null && this.ModelInstance.dataValues.User_Families != undefined) { // @ts-ignore
             this.visible = this.ModelInstance.dataValues.User_Families.dataValues.visible;
         }
         return this.visible;

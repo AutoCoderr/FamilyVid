@@ -54,11 +54,12 @@
   },
   "UserController": {
     "prefix": "user_",
+    "prefix_route": "/user",
 
     "routes": {
 
-      "list": {
-        "route": "/users"
+      "all": {
+        "route": "/all"
       }
 
     }

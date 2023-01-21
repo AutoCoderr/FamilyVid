@@ -11,4 +11,14 @@ export default class FamilyDemandRepository extends RepositoryManager {
     static findOne(id) {
         return super.findOne(id,[UserModel,FamilyModel]);
     }
+
+    static findByApplicantIdUserIdAndFamilyId(ApplicantId,UserId,FamilyId) {
+        return super.findOneByParams({
+            where: {
+                ApplicantId,
+                UserId,
+                FamilyId
+            }
+        })
+    }
 }

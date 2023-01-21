@@ -12,6 +12,13 @@
 {% block body %}
     <h1>Familles de {{ user.firstname }} {{ user.lastname }}</h1>
 
+    {% if flash.family_demand_failed is defined %}
+        <p style="color: red">{{ flash.family_demand_failed }}</p>
+    {% endif %}
+    {% if flash.family_demand_success is defined %}
+        <p style="color: green">{{ flash.family_demand_success }}</p>
+    {% endif %}
+
     {% if user.Families|length > 0 %}
     <ul>
         {% for family in user.Families %}

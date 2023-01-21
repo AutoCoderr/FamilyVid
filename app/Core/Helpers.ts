@@ -69,16 +69,6 @@ export default class Helpers {
         return "#nothing";
     }
 
-    static destroySessionForm(actionName,session) {
-        if (typeof(session.errors) != "undefined") {
-            delete session.errors[actionName];
-        }
-        if (typeof(session.datas) != "undefined") {
-            delete session.datas[actionName];
-        }
-        return "";
-    }
-
     static serializeEntityArray(entities: Array<any>) {
         return Promise.all(entities.map(exemplaire => exemplaire.serialize()));
     }
