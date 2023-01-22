@@ -42,11 +42,11 @@
       },
 
       "list": {
-        "route": "/list/:id"
+        "route": "/list/:userId"
       },
 
       "demand": {
-        "route": "/demand/send/:userId/:familyId",
+        "route": "/demand/send",
         "methods": "POST"
       },
 
