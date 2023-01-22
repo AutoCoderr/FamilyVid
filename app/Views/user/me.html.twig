@@ -5,6 +5,6 @@
 {% block body %}
     <h1>Vous informations personnelles</h1>
     <div>
-            <a href="#">Demandes de cooptations ({{ demands|length }})</a>
+            <a href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
     </div>
 {% endblock %}

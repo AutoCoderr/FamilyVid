@@ -46,8 +46,22 @@
       },
 
       "demand": {
-        "route": "/demand/:userId/:familyId",
+        "route": "/demand/send/:userId/:familyId",
         "methods": "POST"
+      },
+
+      "demands": {
+        "route": "/demands"
+      },
+
+      "accept_demand": {
+        "route": "/demand/accept/:id",
+        "method": "POST"
+      },
+
+      "deny_demand": {
+        "route": "/demand/deny/:id",
+        "method": "POST"
       }
 
     }
