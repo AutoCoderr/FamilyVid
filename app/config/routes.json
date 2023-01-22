@@ -45,6 +45,15 @@
         "route": "/list/:userId"
       },
 
+      "list_mines": {
+        "route": "/list"
+      },
+
+      "change_display": {
+        "route": "/change_display/:id",
+        "method": "POST"
+      },
+
       "demand": {
         "route": "/demand/send",
         "methods": "POST"
