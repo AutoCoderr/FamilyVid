@@ -1,0 +1,56 @@
+nav {
+    border-bottom: 3px solid #C8AF00;
+}
+.bg-yellow {
+    background-color: #E0C300 !important;
+}
+
+main {
+    padding: 20px;
+    text-align: center;
+    background-color: #FFF298;
+    height: 100%;
+}
+
+main * {
+    margin: 0 auto;
+}
+
+h1 {
+    margin-bottom: 40px;
+}
+
+li {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
+nav a, nav a:hover{
+    color: black
+}
+
+input:not([type="submit"]) {
+    border-radius: 20px;
+    border: 1px solid black;
+}
+
+input[type="submit"] {
+    background-color: #D3BB00;
+}
+
+.btn-custom {
+    padding: 5px 25px;
+    background-color: #C3AB00;
+    border-radius: 30px;
+    color: black;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.btn-custom:hover {
+    background-color: #9B8801;
+    text-decoration: none;
+    color: black;
+}
