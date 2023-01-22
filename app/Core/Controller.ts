@@ -1,6 +1,7 @@
 import EntityManager from "./EntityManager";
 import Helpers from "./Helpers";
 import UserRepository from "../Repositories/UserRepository";
+import User from "../Entities/User";
 const fs = require("fs-extra");
 
 export default class Controller {
@@ -20,6 +21,10 @@ export default class Controller {
         if (params == null) params = {};
         let url = Helpers.getPath(routeName, params);
         if (url == "#nothing") url = "/";
+        this.redirect(url,permanently);
+    }
+
+    redirect(url, permanently = false) {
         this.res.redirect(permanently ? 301 : 302, url);
     }
 
@@ -66,7 +71,7 @@ export default class Controller {
         return true;
     }
 
-    async getUser() {
+    async getUser(): Promise<null|User> {
         if (typeof(this.req.session.user) == "undefined") return null;
         return await UserRepository.findOne(this.req.session.user.id);
     }
@@ -83,6 +88,13 @@ export default class Controller {
                 }
             }
         }
-        this.res.render(file,{...params, session: this.req.session});
+        this.res.render(file,{...params, session: this.req.session, flash: this.res.locals});
+    }
+
+    setFlash(key: string, msgs: string|Array<string>) {
+        if (this.req.session.flash == undefined) {
+            this.req.session.flash = {};
+        }
+        this.req.session.flash[key] = msgs;
     }
 }

@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une famille{% endblock %}
+
+{% block body %}
+    <h1>Créer votre famille!</h1>
+    {% include 'Modals/forms.html.twig' with {'form': formFamily} %}
+{% endblock %}

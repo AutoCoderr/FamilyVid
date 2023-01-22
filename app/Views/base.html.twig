@@ -12,7 +12,7 @@
                 <ul>
                     {% if session.user is defined %}
                         <li><a href="{{ path('security_logout') }}">Se déconnecter</a></li>
-                        <li>{{ session.user.firstname }} {{ session.user.lastname }}</li>
+                        <li><a href="{{ path('user_me') }}">{{ session.user.firstname }} {{ session.user.lastname }}</a></li>
                     {% else %}
                         <li><a href="{{ path('security_register') }}">Inscription</a></li>
                         <li><a href="{{ path('security_login') }}">Connexion</a></li>
