@@ -109,7 +109,7 @@ export default class FamilyController extends Controller {
             await (<User>demand.getApplicant()).addFamily(<Family>demand.getFamily(), <boolean>demand.getVisible());
             await demand.delete();
 
-            this.setFlash("demand_success", "La demandé a été acceptée avec succès!");
+            this.setFlash("demand_success", "La demande a été acceptée avec succès!");
             this.redirect(this.req.header('Referer'));
         }
     }
@@ -122,7 +122,7 @@ export default class FamilyController extends Controller {
         if (this.checkDemand(demand)) {
             await demand.delete();
 
-            this.setFlash("demand_success", "La demandé a été refusée avec succès!");
+            this.setFlash("demand_success", "La demande a été refusée avec succès!");
             this.redirect(this.req.header('Referer'));
         }
     }
