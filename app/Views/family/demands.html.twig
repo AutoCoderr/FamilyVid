@@ -20,10 +20,10 @@
                         {{ demand.Applicant.firstname }} {{ demand.Applicant.lastname }} souhaite rejoindre la famille {{ demand.Family.name }}
                     </span>
                     <form action="{{ path('family_accept_demand', {'id': demand.id}) }}" method="post">
-                        <input class="btn-custom" type="submit" value="Accepter">
+                        <input class="btn" type="submit" value="Accepter">
                     </form>
                     <form action="{{ path('family_deny_demand', {'id': demand.id}) }}" method="post">
-                        <input class="btn-custom" type="submit" value="Refuser">
+                        <input class="btn" type="submit" value="Refuser">
                     </form>
                 </li>
             {% endfor %}

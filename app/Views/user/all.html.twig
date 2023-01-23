@@ -19,7 +19,7 @@
                     <td>{{ user.firstname }}</td>
                     <td>{{ user.lastname }}</td>
                     <td>{{ user.email }}</td>
-                    <td><a class="btn-custom" href="{{ path('family_list', {'userId': user.id}) }}">Voir ses familles ({{ user.Families|length }})</a></td>
+                    <td><a class="btn" href="{{ path('family_list', {'userId': user.id}) }}">Voir ses familles ({{ user.Families|length }})</a></td>
                 </tr>
             {% else %}
                 <tr><td colspan="4">Aucun utilisateur trouvé</td></tr>
