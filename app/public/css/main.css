@@ -16,13 +16,18 @@ main * {
     margin: 0 auto;
 }
 
-h1 {
-    margin-bottom: 40px;
-}
-
-li {
+main li {
     list-style-type: none;
     margin-left: -40px;
+}
+
+h1 {
+    margin-bottom: 40px;
+    text-decoration: underline;
+}
+h2 {
+    margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 nav a, nav a:hover{
@@ -32,10 +37,23 @@ nav a, nav a:hover{
 input:not([type="submit"]) {
     border-radius: 20px;
     border: 1px solid black;
+    padding: 3px 7px;
 }
 
 input[type="submit"] {
+    margin-top: 10px;
     background-color: #D3BB00;
+    border: 1px solid black;
+}
+
+th,td {
+    text-align: center;
+}
+th {
+    padding: 15px 10px;
+}
+td {
+    padding: 5px 10px;
 }
 
 .btn-custom {
@@ -44,8 +62,7 @@ input[type="submit"] {
     border-radius: 30px;
     color: black;
     vertical-align: middle;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin: 10px;
     display: inline-block;
 }
 
@@ -53,4 +70,46 @@ input[type="submit"] {
     background-color: #9B8801;
     text-decoration: none;
     color: black;
+}
+
+.dropdown-custom {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-custom ul {
+    display: none;
+    position: absolute;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+    background-color: #E0C300;
+}
+
+.dropdown-custom ul li {
+    list-style-type: none;
+}
+.dropdown-custom ul li:hover {
+    background-color: #C0A300;
+}
+.dropdown-custom ul li a {
+    text-decoration: none;
+}
+
+.dropdown-custom:hover ul{
+    display: block;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-top: -12px;
+    margin-left: 5px;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }

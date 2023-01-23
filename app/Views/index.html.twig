@@ -21,6 +21,7 @@
             {% endif %}
         {% else %}
             <h2>Connectez vous pour accéder à votre compte!</h2>
+            <a class="btn-custom" href="{{ path('security_register') }}">S'inscrire</a>
             <a class="btn-custom" href="{{ path('security_login') }}">Se connecter</a>
         {% endif %}
     </div>
