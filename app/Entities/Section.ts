@@ -1,6 +1,7 @@
 import EntityManager from "../Core/EntityManager";
 import SectionModel from "../Models/Section";
 import Family from "./Family";
+import Media from "./Media";
 
 export default class Section extends EntityManager {
 
@@ -10,6 +11,8 @@ export default class Section extends EntityManager {
 
     Family: null|Family = null;
     FamilyId : null|number = null;
+
+    Medias : null|Array<Media> = [];
 
     setName(name: string) {
         this.name = name;
@@ -27,6 +30,17 @@ export default class Section extends EntityManager {
             this.Family = (new Family()).hydrate(this.Family);
         }
         return this.Family;
+    }
+
+    getMedias() {
+        if (this.Medias instanceof Array) {
+            for (let i=0;i<this.Medias.length;i++) {
+                if (!(this.Medias[i] instanceof Media)) {
+                    this.Medias[i] = (new Media()).hydrate(this.Medias[i]);
+                }
+            }
+        }
+        return this.Medias;
     }
 
 }

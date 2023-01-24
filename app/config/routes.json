@@ -86,6 +86,9 @@
       "new": {
         "route": "/:familyId/new",
         "methods": ["GET","POST"]
+      },
+      "view": {
+        "route": "/:familyId/view/:sectionId"
       }
     }
   },
