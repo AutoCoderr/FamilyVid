@@ -2,10 +2,14 @@
 
 {% block title %}Mes informations{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/user_me.css">
+{% endblock %}
+
 {% block body %}
     <h1>Vous informations personnelles</h1>
-    <div>
-        <a href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
-        <a href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
+    <div class="infos-container">
+        <a class="families-link btn" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
+        <a class="demands-link btn" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
     </div>
 {% endblock %}

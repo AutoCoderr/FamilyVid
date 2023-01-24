@@ -1,6 +1,8 @@
 <html>
     <head>
         <title>{% block title %}Family Vid{% endblock %}</title>
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="/css/navbar.css">
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}{% endblock %}
         <meta charset="UTF-16">
@@ -8,16 +10,42 @@
     <body>
         <header>
             <nav>
-                <div><a href="{{ path('index') }}">Family Vid</a></div>
-                <ul>
-                    {% if session.user is defined %}
-                        <li><a href="{{ path('security_logout') }}">Se déconnecter</a></li>
-                        <li><a href="{{ path('user_me') }}">{{ session.user.firstname }} {{ session.user.lastname }}</a></li>
-                    {% else %}
-                        <li><a href="{{ path('security_register') }}">Inscription</a></li>
-                        <li><a href="{{ path('security_login') }}">Connexion</a></li>
-                    {% endif %}
-                </ul>
+                <div class="navbar-left-part">
+                    <a class="navbar-brand" href="{{ path('index') }}">
+                        Family Vid
+                    </a>
+                </div>
+                <div class="navbar-right-part">
+                    <ul class="navbar-menu">
+                        {% if session.user %}
+                            <li>
+                                <div class="dropdown">
+                                    <a class="nav-link" href="{{ path('user_me') }}">{{ session.user.firstname }} {{ session.user.lastname }} <i class="arrow down"></i></a>
+                                    <ul>
+                                        <li><a href="{{ path('family_list_mines') }}">Mes familles</a></li>
+                                        <li><a href="{{ path('family_demands') }}">Demandes</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="{{ path('security_logout') }}">
+                                    Se déconnecter
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a class="nav-link" href="{{ path('security_register') }}">
+                                    S'inscrire
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="{{ path('security_login') }}">
+                                    Se connecter
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </nav>
         </header>
         <main>

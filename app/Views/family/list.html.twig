@@ -3,10 +3,10 @@
 {% block title %}Familles de {{ user.firstname }} {{ user.lastname }}{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/family-list.css">
+    <link rel="stylesheet" href="/css/family_list.css">
 {% endblock %}
 {% block javascripts %}
-    <script src="/js/family-list.js"></script>
+    <script async src="/js/family_list.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -23,7 +23,7 @@
     <ul>
         {% for family in user.Families %}
             <li class="family" id="family-{{ family.id }}">
-                <span>{{ family.name }}</span><a href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
+                <span>{{ family.name }}</span><a class="btn-custom" href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
                 <div>
                     {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
                 </div>

@@ -15,7 +15,7 @@ export default class FamilyController extends Controller {
         let validator = new Validator(this.req,formFamily);
 
         if (validator.isSubmitted()) {
-            if (validator.isValid()) {
+            if (await validator.isValid()) {
                 const datas = this.getDatas();
 
                 let family = new Family();
