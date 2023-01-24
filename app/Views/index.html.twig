@@ -2,6 +2,11 @@
 
 {% block body %}
     <h1>Bienvenue sur Family Vid!</h1>
+
+    {% if flash.show_family_failed is defined %}
+        <p style="color: red">{{ flash.show_family_failed }}</p>
+    {% endif %}
+
     <div>
         {% if session.user %}
             {% if session.user.Families|length == 0 %}
@@ -12,7 +17,10 @@
                 <h2>Voici vos familles</h2>
                 <ul>
                     {% for family in session.user.Families %}
-                        <li>{{ family.name }}</li>
+                        <li>
+                            <span>{{ family.name }}</span>
+                            <a class="btn" href="{{ path('section_index', {'familyId': family.id}) }}">Voir</a>
+                        </li>
                     {% endfor %}
                 </ul>
                 <h2>Vous pouvez aussi rejoindre de nouvelles familles</h2>

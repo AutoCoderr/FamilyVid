@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Famille {{ family.name }}{% endblock %}
+
+{% block body %}
+    <h1>Famille {{ family.name }}</h1>
+
+    {% if family.Sections|length > 0 %}
+        <h2>Les rubriques :</h2>
+        <ul>
+            {% for section in family.Sections %}
+                <li>{{ section.name }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Vous pouvez aussi en créer une nouvelle</h2>
+        <a class="btn" href="#">Créer</a>
+    {% else %}
+        <h2>Il n'y aucune rubrique dans cette famille</h2>
+        <a class="btn" href="#">Créez en une!</a>
+    {% endif %}
+{% endblock %}
