@@ -77,21 +77,28 @@
   },
   "SectionController": {
     "prefix": "section_",
-    "prefix_route": "/family/sections",
+    "prefix_route": "/family/:familyId/sections",
 
     "routes": {
       "index": {
-        "route": "/:familyId"
+        "route": "/"
       },
       "new": {
-        "route": "/:familyId/new",
+        "route": "/new",
         "methods": ["GET","POST"]
+      }
+    }
+  },
+  "MediaController": {
+    "prefix": "media_",
+    "prefix_route": "/family/:familyId/sections/:sectionId",
+
+    "routes": {
+      "index": {
+        "route": "/"
       },
-      "view": {
-        "route": "/:familyId/view/:sectionId"
-      },
-      "new_media": {
-        "route": "/:familyId/new_media/:sectionId",
+      "new": {
+        "route": "/new",
         "methods": ["GET","POST"]
       }
     }
