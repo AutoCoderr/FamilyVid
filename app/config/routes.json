@@ -89,6 +89,10 @@
       },
       "view": {
         "route": "/:familyId/view/:sectionId"
+      },
+      "new_media": {
+        "route": "/:familyId/new_media/:sectionId",
+        "methods": ["GET","POST"]
       }
     }
   },

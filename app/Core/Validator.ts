@@ -105,6 +105,10 @@ export default class Validator {
 		}
 	}
 
+	checkSelect(field,value) {
+		return Object.keys(field.options).includes(value);
+	}
+
 
 	checkPassword(field,password) {
 		return !((typeof(field.confirmWith) != "undefined" &&

@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout de photo/vidéo{% endblock %}
+
+{% block body %}
+    <h1>Ajout de photo/vidéo</h1>
+
+    {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
+{% endblock %}
