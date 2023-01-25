@@ -27,7 +27,12 @@
 			>
 				<option value="0">Choisissez</option>
 				{% for value in field.options|keys %}
-					<option value="{{ value }}">{{ field.options[value] }}</option>
+					<option
+							value="{{ value }}"
+							{% if field.value is defined and field.value == value %}selected{% endif %}
+					>
+						{{ field.options[value] }}
+					</option>
 				{% endfor %}
 			</select>
 		{% else %}
@@ -36,11 +41,11 @@
 					name="{{ name }}"
 					{% if datas is defined %}
 						value="{{ datas[name] }}"
-					{% elseif field.default is defined %}
+					{% elseif field.value is defined %}
 						{% if field.type == "checkbox" %}
-							{{ field.default ? "checked" : "" }}
+							{{ field.value ? "checked" : "" }}
 						{% else %}
-							value="{{ field.default }}"
+							value="{{ field.value }}"
 						{% endif %}
 					{% endif %}
 					{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}

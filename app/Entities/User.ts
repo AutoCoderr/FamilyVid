@@ -76,7 +76,7 @@ export default class User extends EntityManager {
                 }
             }
             this.Families.sort((A,B) => {
-               return <string>A.getName() > <string>B.getName() ? 1 : -1;
+               return (<string>A.getName()).toLowerCase() > (<string>B.getName()).toLowerCase() ? 1 : -1;
             });
         }
         return this.Families;

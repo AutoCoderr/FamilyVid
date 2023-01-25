@@ -16,7 +16,7 @@ export default function FamilyDemand(userId,familyId) {
                 type: "checkbox",
                 label: "Visible pour les autres",
                 required: false,
-                default: false
+                value: false
             },
             user: {
                 type: "hidden",

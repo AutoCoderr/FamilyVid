@@ -1,11 +1,11 @@
 import Helpers from "../Core/Helpers";
 
-export default function Section(familyId) {
+export default function Section(familyId, sectionId = null) {
     return {
         config: {
-            action: Helpers.getPath("section_new", {familyId}),
+            action:  sectionId == null ? Helpers.getPath("section_new", {familyId}) : Helpers.getPath("section_edit", {familyId,sectionId}),
             method: "POST",
-            submit: "Créer",
+            submit: sectionId == null ? "Créer" : "Modifier",
             actionName: "section_create",
             msgError: "Echec de la création de la rubrique"
         },

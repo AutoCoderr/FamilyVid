@@ -23,7 +23,7 @@ export default function Family() {
                 type: "checkbox",
                 label: "Visible pour les autres",
                 required: false,
-                default: false
+                value: false
             }
         }
     }
