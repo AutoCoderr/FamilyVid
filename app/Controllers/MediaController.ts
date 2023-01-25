@@ -7,6 +7,8 @@ import SectionRepository from "../Repositories/SectionRepository";
 import MediaForm from "../Forms/Media";
 import Media from "../Entities/Media";
 import FamilyCheckService from "../Services/FamilyCheckService";
+import MediaRepository from "../Repositories/MediaRepository";
+import Helpers from "../Core/Helpers";
 
 export default class MediaController extends Controller {
 
@@ -63,6 +65,67 @@ export default class MediaController extends Controller {
             } else {
                 this.render("section/new_media.html.twig", {mediaForm})
             }
+        }
+    }
+
+    edit = async () => {
+        const {familyId,sectionId,mediaId} = this.req.params;
+
+        const media: null|Media = await MediaRepository.findOne(mediaId);
+        if (media == null) {
+            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez éditer n'existe pas");
+            this.redirectToRoute("media_index", {familyId,sectionId})
+            return;
+        }
+
+        const section: Section = <Section>media.getSection();
+
+        // Get family by repository, to get other relations entity (the users)
+        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
+
+        if (FamilyCheckService.checkFamily(family,this)) {
+            const mediaForm = MediaForm(familyId,sectionId,mediaId);
+            const validator = new Validator(this.req,mediaForm);
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    const datas = this.getDatas();
+
+                    media.setDate(datas.date);
+                    media.setName(datas.name);
+                    media.setType(datas.type);
+
+                    await media.save();
+
+                    this.redirectToRoute("media_index", {familyId,sectionId});
+                } else {
+                    this.redirect(this.req.header('Referer'));
+                }
+            } else {
+                Helpers.hydrateForm(media, mediaForm);
+                this.render("media/edit.html.twig", {media, mediaForm});
+            }
+        }
+    }
+
+    delete = async () => {
+        const {familyId,sectionId,mediaId} = this.req.params;
+
+        const media: null|Media = await MediaRepository.findOne(mediaId);
+        if (media == null) {
+            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez supprimer n'existe pas");
+            this.redirectToRoute("media_index", {familyId,sectionId})
+            return;
+        }
+
+        const section: Section = <Section>media.getSection();
+
+        // Get family by repository, to get other relations entity (the users)
+        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
+
+        if (FamilyCheckService.checkFamily(family,this)) {
+            await media.delete();
+
+            this.redirectToRoute('media_index',{familyId,sectionId});
         }
     }
 }

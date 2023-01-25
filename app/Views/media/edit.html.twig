@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}{% endblock %}
+
+{% block body %}
+    <h1>Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}</h1>
+
+    {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
+{% endblock %}

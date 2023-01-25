@@ -6,8 +6,8 @@ export default function Section(familyId, sectionId = null) {
             action:  sectionId == null ? Helpers.getPath("section_new", {familyId}) : Helpers.getPath("section_edit", {familyId,sectionId}),
             method: "POST",
             submit: sectionId == null ? "Créer" : "Modifier",
-            actionName: "section_create",
-            msgError: "Echec de la création de la rubrique"
+            actionName: sectionId == null ? "section_create" : "section_edit",
+            msgError: "Echec de "+(sectionId == null ? "la création" : "l'édition")+" de la rubrique"
         },
         fields: {
             name: {

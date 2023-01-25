@@ -1,13 +1,13 @@
 import Helpers from "../Core/Helpers";
 
-export default function Media(familyId,sectionId) {
+export default function Media(familyId,sectionId, mediaId = null) {
 	return {
 		config: {
-			action: Helpers.getPath("media_new", {familyId,sectionId}),
+			action: mediaId == null ? Helpers.getPath("media_new", {familyId,sectionId}) : Helpers.getPath("media_edit", {familyId,sectionId,mediaId}),
 			method: "POST",
-			submit: "Ajouter",
-			actionName: "create_media",
-			msgError: "Erreur lors de l'ajout du media"
+			submit: mediaId == null ? "Ajouter" : "Modifier",
+			actionName: mediaId == null ? "create_media" : "edit_media",
+			msgError: "Erreur lors de "+(mediaId == null ? "l'ajout" : "la modification")+" du media"
 		},
 		fields: {
 			name: {
