@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer {{ section.name }}{% endblock %}
+
+{% block body %}
+	<h1>Editer {{ section.name }}</h1>
+
+	{% include 'Modals/forms.html.twig' with {'form': sectionForm} %}
+{% endblock %}

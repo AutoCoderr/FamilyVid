@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Famille {{ family.name }}{% endblock %}
+
+{% block body %}
+    <h1>Famille {{ family.name }}</h1>
+
+    {% if flash.section_success is defined %}
+        <p style="color: green">{{ flash.section_success }}</p>
+    {% endif %}
+    {% if flash.section_failed is defined %}
+        <p style="color: green">{{ flash.section_failed }}</p>
+    {% endif %}
+
+    {% if family.Sections|length > 0 %}
+        <h2>Les rubriques :</h2>
+        <ul>
+            {% for section in family.Sections %}
+                <li>
+                    <span>{{ section.name }}</span>
+                    <a class="btn" href="{{ path('media_index', {'sectionId': section.id, 'familyId': family.id}) }}">Voir</a>
+                    <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familyId': family.id}) }}">Editer</a>
+                    {% include 'section/_delete_form.html.twig' with {'sectionId': section.id, 'familyId': family.id} %}
+                </li>
+            {% endfor %}
+        </ul>
+        <h2>Vous pouvez aussi en créer une nouvelle</h2>
+        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créer</a>
+    {% else %}
+        <h2>Il n'y aucune rubrique dans cette famille</h2>
+        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créez en une!</a>
+    {% endif %}
+{% endblock %}

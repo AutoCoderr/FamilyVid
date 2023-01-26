@@ -10,31 +10,54 @@
 
 <form action="{{ form.config.action }}" method="{{ form.config.method }}">
 	<table class="form-table">
+
 	{% for name in form.fields|keys %}
+
 		{% set field = form.fields[name] %}
+
 		{% if field.type != "hidden" %}
 			<tr><td>
 			<label>{{ field.label }} :</label></td><td>
 		{% endif %}
-		<input
-			type="{{ field.type }}"
-			name="{{ name }}"
-			{% if datas is defined %}
-				value="{{ datas[name] }}"
-			{% elseif field.default is defined %}
-				{% if field.type == "checkbox" %}
-					{{ field.default ? "checked" : "" }}
-				{% else %}
-					value="{{ field.default }}"
-				{% endif %}
-			{% endif %}
-			{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
-			{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
-			{% if field.required is defined and field.required %} required='required'{% endif %}
-		/>
+
+		{% if field.type == 'select' %}
+			<select
+					name="{{ name }}"
+					{% if field.required is defined and field.required %} required='required'{% endif %}
+			>
+				<option value="0">Choisissez</option>
+				{% for value in field.options|keys %}
+					<option
+							value="{{ value }}"
+							{% if field.value is defined and field.value == value %}selected{% endif %}
+					>
+						{{ field.options[value] }}
+					</option>
+				{% endfor %}
+			</select>
+		{% else %}
+			<input
+					type="{{ field.type }}"
+					name="{{ name }}"
+					{% if datas is defined %}
+						value="{{ datas[name] }}"
+					{% elseif field.value is defined %}
+						{% if field.type == "checkbox" %}
+							{{ field.value ? "checked" : "" }}
+						{% else %}
+							value="{{ field.value }}"
+						{% endif %}
+					{% endif %}
+					{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
+					{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
+					{% if field.required is defined and field.required %} required='required'{% endif %}
+			/>
+		{% endif %}
+
 		{% if field.type != "hidden" %}
 			</td></tr>
 		{% endif %}
+
 	{% endfor %}
 	</table>
 	<input name="action" type="hidden" value="{{ form.config.actionName }}"/>

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import EntityManager from "./EntityManager";
 const fs = require("fs-extra");
 
 export default class Helpers {
@@ -71,5 +72,29 @@ export default class Helpers {
 
     static serializeEntityArray(entities: Array<any>) {
         return Promise.all(entities.map(exemplaire => exemplaire.serialize()));
+    }
+
+    static addMissingZero(num: string|number, nb = 2) {
+        if (typeof(num) == "number") num = num.toString();
+
+        while (num.length < nb) {
+            num = '0'+num;
+        }
+        return num;
+    }
+
+    static hydrateForm(entity: EntityManager, form) {
+        for (const name in form.fields) {
+            if (typeof(entity["get"+this.ucFirst(name)]) == "function") {
+                let value = entity["get"+this.ucFirst(name)]();
+                if (!(value instanceof Array) && !(value instanceof EntityManager)) {
+                    if (value instanceof Date) {
+                        value = value.getFullYear() + "-" + this.addMissingZero(value.getMonth() + 1) + "-" + this.addMissingZero(value.getDate());
+                    }
+                    form.fields[name].value = value;
+                }
+            }
+        }
+        return form;
     }
 };

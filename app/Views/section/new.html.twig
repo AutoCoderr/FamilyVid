@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création de rubrique{% endblock %}
+
+{% block body %}
+    <h1>Créer une rubrique</h1>
+
+    {% include 'Modals/forms.html.twig' with {'form': sectionForm} %}
+{% endblock %}
