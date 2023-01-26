@@ -105,6 +105,11 @@ export default class Validator {
 		}
 	}
 
+	checkDate(field,value) {
+		const regexDate = new RegExp("^[0-9]{4}-(0[1-9])|(1[0-2])-((0[1-9])|([1-2][0-9])|(3[0-1]))$");
+		return regexDate.test(value);
+	}
+
 	checkSelect(field,value) {
 		return Object.keys(field.options).includes(value);
 	}
@@ -126,9 +131,8 @@ export default class Validator {
 	}
 
 	checkEmail(field,email) {
-		let regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
-		let res = regex.test(email);
-		return res;
+		const regex = RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
+		return regex.test(email);
 	}
 
 	thereIsASpecialChar(str) {
