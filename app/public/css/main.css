@@ -68,3 +68,9 @@ td {
     text-decoration: none;
     color: black;
 }
+
+.back-btn {
+    position: absolute;
+    top: 70px;
+    left: 20%;
+}

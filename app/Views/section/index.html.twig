@@ -3,6 +3,7 @@
 {% block title %}Famille {{ family.name }}{% endblock %}
 
 {% block body %}
+    <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
     <h1>Famille {{ family.name }}</h1>
 
     {% if flash.section_success is defined %}

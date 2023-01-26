@@ -91,7 +91,7 @@ export default class SectionController extends Controller {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
-                this.render("section/new.html.twig", {sectionForm});
+                this.render("section/new.html.twig", {sectionForm,familyId: family.id});
             }
         }
     }

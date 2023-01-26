@@ -63,7 +63,7 @@ export default class MediaController extends Controller {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
-                this.render("section/new_media.html.twig", {mediaForm})
+                this.render("media/new.html.twig", {mediaForm,sectionId,familyId})
             }
         }
     }

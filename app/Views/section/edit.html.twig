@@ -3,6 +3,7 @@
 {% block title %}Editer {{ section.name }}{% endblock %}
 
 {% block body %}
+	<a class="btn back-btn" href="{{ path('section_index', {'familyId': section.Family.id}) }}">Retour</a>
 	<h1>Editer {{ section.name }}</h1>
 
 	{% include 'Modals/forms.html.twig' with {'form': sectionForm} %}
