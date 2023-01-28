@@ -2,9 +2,14 @@
 
 {% block title %}Les utilisateurs{% endblock %}
 
+{% block javascripts %}
+    <script src="/js/search_user.js"></script>
+{% endblock %}
+
 {% block body %}
     <a class="btn back-btn" href="{{ path('index') }}">Accueil</a>
     <h1>Tout les utilisateurs</h1>
+    <input type="text" placeholder="Tapez un mot clé..." id="input_search">
     <table>
         <thead>
             <tr>
