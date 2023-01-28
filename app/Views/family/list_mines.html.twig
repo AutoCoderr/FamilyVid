@@ -41,4 +41,6 @@
     {% else %}
         <h2>Cet utilisateur n'a aucune famille visible</h2>
     {% endif %}
+    <a class="btn" href="{{ path('user_all') }}">Rejoindre</a>
+    <a class="btn" href="{{ path('family_new') }}">Créer</a>
 {% endblock %}

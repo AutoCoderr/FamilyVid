@@ -91,7 +91,7 @@ export default class FamilyController extends Controller {
 
                 for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
                     if (eachFamily.getId() == family.getId()) {
-                        this.setFlash("family_demand_failed",["Vous vous trouvez déjà dans la famille "+family.getName()]);
+                        this.setFlash("family_demand_faileds",["Vous vous trouvez déjà dans la famille "+family.getName()]);
                         this.redirect(this.req.header('Referer'));
                         return;
                     }
@@ -99,7 +99,7 @@ export default class FamilyController extends Controller {
 
                 let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user,datas.family);
                 if (demand != null) {
-                    this.setFlash("family_demand_failed",["Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName()]);
+                    this.setFlash("family_demand_faileds",["Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName()]);
                     this.redirect(this.req.header('Referer'));
                     return;
                 }
@@ -111,9 +111,9 @@ export default class FamilyController extends Controller {
                 familyDemand.setVisible(datas.visible != undefined);
                 await familyDemand.save();
 
-                this.setFlash("family_demand_success",["Votre demande a été envoyée!"]);
+                this.setFlash("family_demand_success","Votre demande a été envoyée!");
             } else {
-                this.setFlash("family_demand_failed", this.req.session.flash.errors[familyDemandForm.config.actionName]);
+                this.setFlash("family_demand_faileds", this.req.session.flash.errors[familyDemandForm.config.actionName]);
                 delete this.req.session.flash.errors[familyDemandForm.config.actionName];
             }
         }

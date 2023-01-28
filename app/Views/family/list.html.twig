@@ -10,10 +10,15 @@
 {% endblock %}
 
 {% block body %}
+    <a class="btn back-btn" href="{{ path('user_all') }}">Retour</a>
     <h1>Familles de {{ user.firstname }} {{ user.lastname }}</h1>
 
-    {% if flash.family_demand_failed is defined %}
-        <p style="color: red">{{ flash.family_demand_failed }}</p>
+    {% if flash.family_demand_faileds is defined %}
+        <ul>
+            {% for error in flash.family_demand_faileds %}
+                <li style="color: red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
     {% if flash.family_demand_success is defined %}
         <p style="color: green">{{ flash.family_demand_success }}</p>
