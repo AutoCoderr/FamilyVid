@@ -11,4 +11,9 @@ export default class FamilyRepository extends RepositoryManager {
     static findOne(id) {
         return super.findOne(id,[UserModel,SectionModel]);
     }
+
+    static findAll() {
+        return super.findAll(SectionModel);
+    }
+
 }

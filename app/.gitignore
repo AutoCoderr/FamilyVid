@@ -4,8 +4,9 @@ package-lock.json
 /Controllers/*.js
 /Models/*.js
 /Entities/*.js
-/Core/*.js
 /Forms/*.js
 /Services/*.js
+/Fixtures/*.js
+/Core/*.js
 !/Core/env.js
 /node_modules
