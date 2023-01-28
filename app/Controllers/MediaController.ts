@@ -124,7 +124,7 @@ export default class MediaController extends Controller {
 
         if (FamilyCheckService.checkFamily(family,this)) {
             await media.delete();
-
+            this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
             this.redirectToRoute('media_index',{familyId,sectionId});
         }
     }

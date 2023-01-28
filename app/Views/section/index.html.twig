@@ -21,7 +21,6 @@
                     <span>{{ section.name }}</span>
                     <a class="btn" href="{{ path('media_index', {'sectionId': section.id, 'familyId': family.id}) }}">Voir</a>
                     <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familyId': family.id}) }}">Editer</a>
-                    {% include 'section/_delete_form.html.twig' with {'sectionId': section.id, 'familyId': family.id} %}
                 </li>
             {% endfor %}
         </ul>

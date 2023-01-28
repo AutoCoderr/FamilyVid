@@ -72,24 +72,31 @@ export default class Validator {
 				continue;
 
 			} else if (typeof(field.uniq) != "undefined") {
-				let repository = require("../Repositories/"+field.uniq.table+"Repository").default;
+				if (this.datas[name] != "") {
+					let repository = require("../Repositories/" + field.uniq.table + "Repository").default;
 
-				let where = field.uniq.where ? field.uniq.where : {};
-				where[field.uniq.column] = this.datas[name];
-				const elem = await repository.findOneByParams({where: where});
-				if (elem != null) {
+					let where = field.uniq.where ? field.uniq.where : {};
+					where[field.uniq.column] = this.datas[name];
+					const elem = await repository.findOneByParams({where: where});
+					if (elem != null) {
+						errors.push(field.uniq.msgError);
+					}
+				} else {
 					errors.push(field.uniq.msgError);
 				}
 				continue;
 			}
 
 			if (typeof(field.entity) != "undefined") {
-				let repository = require("../Repositories/"+field.entity+"Repository").default;
-
 				let id = this.datas[name]
-				const elem = await repository.findOne(id);
-				if (elem == null) {
+				if (!this.isNumber(id)) {
 					errors.push(field.msgError);
+				} else {
+					const repository = require("../Repositories/"+field.entity+"Repository").default;
+					const elem = await repository.findOne(id);
+					if (elem == null) {
+						errors.push(field.msgError);
+					}
 				}
 			}
 		}
@@ -173,6 +180,15 @@ export default class Validator {
 			}
 		}
 		return false;
+	}
+
+	isNumber(num) {
+		return typeof(num) == "number" ||
+			(
+				typeof(num) == "string" && (
+					parseInt(num).toString() == num && num != "NaN"
+				)
+		)
 	}
 
 }
