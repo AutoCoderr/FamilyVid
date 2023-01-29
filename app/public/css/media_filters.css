@@ -1,0 +1,7 @@
+#search-headband {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    width: 50%;
+}

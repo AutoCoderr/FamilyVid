@@ -120,6 +120,10 @@
       "delete": {
         "route": "/delete/:mediaId",
         "method": "POST"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
       }
     }
   },
