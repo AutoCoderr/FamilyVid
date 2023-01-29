@@ -3,13 +3,14 @@
 {% block title %}{{ section.name }}{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/media_filters.css">
+    <link rel="stylesheet" href="/css/media_index.css">
 {% endblock %}
 {% block javascripts %}
     <script src="/js/media_search.js"></script>
     <script>
         familyId = {{ section.Family.id }};
         sectionId = {{ section.id }};
+        globalSearch = false;
     </script>
 {% endblock %}
 
@@ -67,7 +68,7 @@
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Editer</a>
+                        <a class="btn" href="{{ path('media_edit', {'familyId': section.Family.id, 'sectionId': section.id, 'mediaId': media.id}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}

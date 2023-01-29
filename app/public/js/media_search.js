@@ -7,9 +7,11 @@ let sort = "ASC"; // 'ASC' or 'DESC'
 let familyId;
 let sectionId;
 
+let globalSearch;
+
 function searchMedias() {
     const data = {search,sortBy,toDisplay,sort};
-    return fetch("/family/"+familyId+"/sections/"+sectionId+"/search", {
+    return fetch(globalSearch ? "/family/"+familyId+"/sections/global/search" : "/family/"+familyId+"/sections/"+sectionId+"/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -41,12 +43,22 @@ function generateMediaList(medias) {
             tdType.innerText = media.type === "video" ? "Vidéo" : "Photo";
             tr.appendChild(tdType);
 
+            if (globalSearch) {
+                const tdSection = document.createElement("td");
+                const linkSection = document.createElement("a");
+
+                linkSection.href = "/family/"+familyId+"/sections/"+media.sectionId+"/";
+                linkSection.innerText = media.sectionName;
+                tdSection.appendChild(linkSection);
+                tr.appendChild(tdSection);
+            }
+
             const tdButtons = document.createElement("td");
             const editButton = document.createElement("a");
 
             editButton.classList.add("btn");
             editButton.href = "/family/"+familyId+"/sections/"+sectionId+"/edit/"+media.id;
-            editButton.innerText = "Editer";
+            editButton.innerText = "Modifier";
 
             tdButtons.appendChild(editButton);
             tr.appendChild(tdButtons);
@@ -57,7 +69,7 @@ function generateMediaList(medias) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
 
-        td.colSpan = 4;
+        td.colSpan = globalSearch ? 5 : 4;
         td.innerText = "Aucun média n'a été trouvé";
 
         tr.appendChild(td);

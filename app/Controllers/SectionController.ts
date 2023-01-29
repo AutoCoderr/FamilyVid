@@ -7,6 +7,8 @@ import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
 import FamilyCheckService from "../Services/FamilyCheckService";
 import Helpers from "../Core/Helpers";
+import MediaRepository from "../Repositories/MediaRepository";
+import Media from "../Entities/Media";
 
 export default class SectionController extends Controller {
     index = async () => {
@@ -109,6 +111,55 @@ export default class SectionController extends Controller {
                 return {id: section.id, name: section.name}
             });
             this.res.json(sections);
+        }
+    }
+
+    global = async () => {
+        const {familyId} = this.req.params;
+
+        const family: Family = await FamilyRepository.findOne(familyId);
+
+        if (FamilyCheckService.checkFamily(family,this)) {
+            const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
+                section.getId()
+            );
+            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionsId,"","ASC","date", "all");
+            medias = medias.map(media => {
+                return {
+                    id: media.getId(),
+                    name: media.getName(),
+                    date: Helpers.formatDate(<Date>media.getDate()),
+                    type: media.getType(),
+                    sectionId: media.getSection().getId(),
+                    sectionName: media.getSection().getName()
+                }
+            });
+            this.render("section/global.html.twig", {family,medias})
+        }
+    }
+
+    global_search = async () => {
+        const {familyId} = this.req.params;
+
+        const family: Family = await FamilyRepository.findOne(familyId);
+
+        if (FamilyCheckService.checkFamily(family,this,true)) {
+            const {search,sort,sortBy,toDisplay} = this.req.body;
+            const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
+                section.getId()
+            );
+            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionsId,search,sort,sortBy,toDisplay);
+            medias = medias.map(media => {
+                return {
+                    id: media.getId(),
+                    name: media.getName(),
+                    date: Helpers.formatDate(<Date>media.getDate()),
+                    type: media.getType(),
+                    sectionId: media.getSection().getId(),
+                    sectionName: media.getSection().getName()
+                }
+            });
+            this.res.json(medias);
         }
     }
 }
