@@ -75,6 +75,11 @@
 
       "members": {
         "route": "/:id/members"
+      },
+
+      "members_search": {
+        "route": "/:id/members/search",
+        "method": "POST"
       }
 
     }
