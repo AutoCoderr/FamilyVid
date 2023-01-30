@@ -43,13 +43,7 @@ export default class SecurityController extends Controller {
 
                 const user: User = await UserRepository.findOneByEmailAndPassword(datas.email,datas.password);
                 if (user == null) {
-                    if(typeof(this.req.session.flash) == "undefined") {
-                        this.req.session.flash = {};
-                    }
-                    if(typeof(this.req.session.flash.errors) == "undefined") {
-                        this.req.session.flash.errors = {};
-                    }
-                    this.req.session.flash.errors[formLogin.config.actionName] = [formLogin.config.msgError];
+                    validator.setFlashErrors([formLogin.config.msgError])
                     this.redirect(this.req.header('Referer'));
                 } else {
                     this.loginAndRedirect(user);

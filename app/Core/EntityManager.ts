@@ -50,7 +50,7 @@ export default class EntityManager {
             for (let attr in entryObject) {
                 entry[attr] = this[attr];
             }
-            entry.save();
+            await entry.save();
             this.ModelInstance = entry;
             return this;
         }
