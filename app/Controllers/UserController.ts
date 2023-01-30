@@ -6,7 +6,7 @@ import User from "../Entities/User";
 
 export default class UserController extends Controller {
     all = async () => {
-        let users = await UserRepository.findAllExceptOne(this.req.session.user.id);
+        let users = await UserRepository.findAllBySearchExceptOne(this.req.session.user.id);
 
         users = await Helpers.serializeEntityArray(users);
 
@@ -22,6 +22,21 @@ export default class UserController extends Controller {
         let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id,false);
 
         this.render("user/me.html.twig", {demands});
+    }
+
+    search = async () => {
+        const {search} = this.req.body;
+        let users: any = await UserRepository.findAllBySearchExceptOne(this.req.session.user.id, search);
+        users = await Helpers.serializeEntityArray(users);
+        users = users.map(user => {
+           return {
+               id: user.id,
+               firstname: user.firstname,
+               lastname: user.lastname,
+               email: user.email,
+               nbFamily: user.Families.filter(family => family.visible).length}
+        });
+        this.res.json(users);
     }
 
 

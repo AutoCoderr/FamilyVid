@@ -128,4 +128,31 @@ export default class MediaController extends Controller {
             this.redirectToRoute('media_index',{familyId,sectionId});
         }
     }
+
+    search = async () => {
+        const {sectionId} = this.req.params;
+
+        const section: null|Section = await SectionRepository.findOne(sectionId);
+        if (section == null) {
+            this.res.json({error: "La section dans laquelle vous souhaitez ajouter un media n'existe pas"})
+            return;
+        }
+
+        // Get family by repository, to get other relations entity (the users)
+        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
+
+        if (FamilyCheckService.checkFamily(family,this,true)) {
+            const {search,sort,sortBy,toDisplay} = this.req.body;
+            let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
+            medias = medias.map(media => {
+                return {
+                    id: media.getId(),
+                    name: media.getName(),
+                    date: Helpers.formatDate(<Date>media.getDate()),
+                    type: media.getType()
+                }
+            });
+            this.res.json(medias);
+        }
+    }
 }
