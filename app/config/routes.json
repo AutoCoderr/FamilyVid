@@ -152,7 +152,8 @@
         "route": "/all"
       },
       "me": {
-        "route": "/me"
+        "route": "/me",
+        "methods": ["GET","POST"]
       },
       "search": {
         "route": "/search",

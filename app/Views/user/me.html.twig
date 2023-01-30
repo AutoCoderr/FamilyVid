@@ -8,8 +8,16 @@
 
 {% block body %}
     <h1>Vous informations personnelles</h1>
+
+    {% if flash.me_success is defined %}
+        <p style="color: green">{{ flash.me_success }}</p>
+    {% endif %}
+
     <div class="infos-container">
         <a class="families-link btn" href="{{ path('family_list_mines') }}">Mes familles ({{ session.user.Families|length }})</a>
         <a class="demands-link btn" href="{{ path('family_demands') }}">Demandes de cooptations ({{ demands|length }})</a>
     </div>
+    <h2>Vos informations personnelles :</h2>
+    Email : {{ session.user.email }}
+    {% include 'Modals/forms.html.twig' with {'form': userInfosForm} %}
 {% endblock %}
