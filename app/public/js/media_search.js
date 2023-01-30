@@ -11,7 +11,7 @@ let globalSearch;
 
 function searchMedias() {
     const data = {search,sortBy,toDisplay,sort};
-    return fetch(globalSearch ? "/family/"+familyId+"/sections/global/search" : "/family/"+familyId+"/sections/"+sectionId+"/search", {
+    return fetch(globalSearch ? "/family/"+familyId+"/sections/global/search" : "/family/"+familyId+"/sections/"+sectionId+"/medias/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function generateMediaList(medias) {
                 const tdSection = document.createElement("td");
                 const linkSection = document.createElement("a");
 
-                linkSection.href = "/family/"+familyId+"/sections/"+media.sectionId+"/";
+                linkSection.href = "/family/"+familyId+"/sections/"+media.sectionId+"/medias/";
                 linkSection.innerText = media.sectionName;
                 tdSection.appendChild(linkSection);
                 tr.appendChild(tdSection);
@@ -57,7 +57,7 @@ function generateMediaList(medias) {
             const editButton = document.createElement("a");
 
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familyId+"/sections/"+sectionId+"/edit/"+media.id;
+            editButton.href = "/family/"+familyId+"/sections/"+sectionId+"/medias/"+media.id+"/edit/";
             editButton.innerText = "Modifier";
 
             tdButtons.appendChild(editButton);

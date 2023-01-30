@@ -11,7 +11,10 @@
 
 {% block body %}
     <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
-    <a class="btn right-top-button" href="{{ path('section_global', {'familyId': family.id}) }}">Rechercher dans toutes les rubriques</a>
+    <div class="right-top-buttons">
+        <a class="btn" href="{{ path('section_global', {'familyId': family.id}) }}">Rechercher dans toutes les rubriques</a>
+        <a class="btn" href="{{ path('family_members', {'id': family.id}) }}">Les membres</a>
+    </div>
     <h1>Famille {{ family.name }}</h1>
 
     {% if flash.section_success is defined %}

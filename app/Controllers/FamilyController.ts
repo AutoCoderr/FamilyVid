@@ -8,6 +8,7 @@ import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
+import FamilyCheckService from "../Services/FamilyCheckService";
 
 export default class FamilyController extends Controller {
     new = async () => {
@@ -175,5 +176,13 @@ export default class FamilyController extends Controller {
         return true;
     }
 
+    members = async () => {
+        const {id} = this.req.params;
 
+        let family: Family = await FamilyRepository.findOne(id);
+
+        if(FamilyCheckService.checkFamily(family,this)) {
+            this.render("family/members.html.twig", {family});
+        }
+    }
 }
