@@ -59,6 +59,7 @@ export default class UserController extends Controller {
             this.redirect(this.req.header('Referer'));
             return;
         }
+        this.generateToken();
         Helpers.hydrateForm(user,userInfosForm);
         this.render("user/me.html.twig", {demands,userInfosForm,userPasswordForm});
     }

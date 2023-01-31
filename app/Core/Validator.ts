@@ -13,10 +13,10 @@ export default class Validator {
 	}
 
 	isSubmitted() {
-		return (this.datas.action == this.form.config.actionName);
+		return (this.datas.actionName == this.form.config.actionName);
 	}
 	async isValid() {
-		delete this.datas.action;
+		delete this.datas.actionName;
 		this.fillCheckboxs();
 		const errors = await this.checkFields();
 		if (errors.length == 0) return true;
@@ -27,6 +27,11 @@ export default class Validator {
 
 	async checkFields() {
 		let errors: Array<string> = [];
+
+		if (this.req.session.token != undefined && this.datas.token != this.req.session.token) {
+			return ["Token invalide!"];
+		}
+		delete this.datas.token;
 
 		if (Object.keys(this.datas).length !== Object.keys(this.form.fields).length) {
 			return ["Tentative de hack!!"];
