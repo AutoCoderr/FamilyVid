@@ -9,6 +9,7 @@ import FamilyCheckService from "../Services/FamilyCheckService";
 import Helpers from "../Core/Helpers";
 import MediaRepository from "../Repositories/MediaRepository";
 import Media from "../Entities/Media";
+import DeleteSection from "../Forms/DeleteSection";
 
 export default class SectionController extends Controller {
     index = async () => {
@@ -32,8 +33,17 @@ export default class SectionController extends Controller {
         const family: Family = await FamilyRepository.findOne((<Family>section.getFamily()).getId());
 
         if (FamilyCheckService.checkFamily(family,this)) {
-            await section.delete();
-            this.setFlash("section_success", "Rubrique supprimée avec succès!");
+            const deleteSectionForm = DeleteSection(family.id,sectionId);
+            const validator = new Validator(this.req,deleteSectionForm);
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    await section.delete();
+                    this.setFlash("section_success", "Rubrique supprimée avec succès!");
+                } else {
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+            }
             this.redirectToRoute("section_index", {familyId});
         }
     }
@@ -66,7 +76,9 @@ export default class SectionController extends Controller {
             } else {
                 this.generateToken();
                 Helpers.hydrateForm(section, sectionForm);
-                this.render("section/edit.html.twig", {sectionForm, section});
+
+                const deleteSectionForm = DeleteSection(family.getId(),sectionId);
+                this.render("section/edit.html.twig", {sectionForm,deleteSectionForm, section});
             }
         }
 

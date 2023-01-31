@@ -7,7 +7,9 @@ export default function Register() {
 			method: "POST",
 			submit: "S'inscrire",
 			actionName: "register",
-			msgError: "Erreur lors de l'inscription"
+			msgError: "Erreur lors de l'inscription",
+			formClass: "form-btn",
+			submitClass: "btn"
 		},
 		fields: {
 			firstname: {

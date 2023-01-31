@@ -27,13 +27,7 @@
                 <a class="btn" href="{{ path('section_index', {'familyId': family.id}) }}">Voir</a>
                 <a class="btn" href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
                 <div>
-                    <form id="form-family-change-display-{{ family.id }}" action="{{ path('family_change_display', {'id': family.id}) }}" method="post">
-                        <label>
-                            Visible pour les autres
-                        </label>
-                        <input type="checkbox" name="visible" {% if family.visible %}checked{% endif %}>
-                        <a class="btn" href="javascript:document.getElementById('form-family-change-display-{{ family.id }}').submit()">Valider</a>
-                    </form>
+                    {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
                 </div>
             </li>
         {% endfor %}

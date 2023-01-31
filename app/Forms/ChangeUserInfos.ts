@@ -7,7 +7,9 @@ export default function ChangeUserInfos(){
             method: "POST",
             submit: "Modifier",
             actionName: "change_user_info",
-            msgError: "Modification échouée"
+            msgError: "Modification échouée",
+            formClass: "form-btn",
+            submitClass: "btn"
         },
         fields: {
             firstname: {
