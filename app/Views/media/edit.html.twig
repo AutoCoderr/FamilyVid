@@ -5,8 +5,13 @@
 {% block body %}
     <a class="btn back-btn" href="{{ path('media_index', {'familyId': media.Section.FamilyId, 'sectionId': media.Section.id}) }}">Retour</a>
     <h1>Editer la {{ media.type == 'video' ? 'vidéo' : 'photo' }} {{ media.name }}</h1>
-
     {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
+
+    {% if deplaceMediaForm is defined %}
+        <h2>Déplacer la {{ media.type == 'video' ? 'vidéo' : 'photo' }}</h2>
+        {% include 'Modals/forms.html.twig' with {'form': deplaceMediaForm} %}
+    {% endif %}
+
     <br/>
     <br/>
     {% include 'Modals/forms.html.twig' with {'form': deleteMediaForm} %}
