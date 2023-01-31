@@ -8,7 +8,7 @@ import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
-import FamilyCheckService from "../Services/FamilyCheckService";
+import CheckService from "../Services/CheckService";
 import DenyDemand from "../Forms/DenyDemand";
 import AcceptDemand from "../Forms/AcceptDemand";
 import FamilyChangeDisplay from "../Forms/FamilyChangeDisplay";
@@ -228,7 +228,7 @@ export default class FamilyController extends Controller {
 
         let family: Family = await FamilyRepository.findOne(id);
 
-        if(FamilyCheckService.checkFamily(family,this)) {
+        if(CheckService.checkFamily(family,this)) {
             this.render("family/members.html.twig", {family});
         }
     }
@@ -238,7 +238,7 @@ export default class FamilyController extends Controller {
 
         let family: Family = await FamilyRepository.findOne(id);
 
-        if(FamilyCheckService.checkFamily(family,this, true)) {
+        if(CheckService.checkFamily(family,this, true)) {
             const {search} = this.req.body;
             let users = (<Array<User>>family.getUsers())
                 .filter(user => { // filter to get users which match with the search
