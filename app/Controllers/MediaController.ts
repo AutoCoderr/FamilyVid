@@ -6,25 +6,20 @@ import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
 import MediaForm from "../Forms/Media";
 import Media from "../Entities/Media";
-import FamilyCheckService from "../Services/FamilyCheckService";
+import CheckService from "../Services/CheckService";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
+import DeleteMedia from "../Forms/DeleteMedia";
+import DeplaceMedia from "../Forms/DeplaceMedia";
 
 export default class MediaController extends Controller {
 
     index = async () => {
         const {sectionId,familyId} = this.req.params;
-        let section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "Cette section n'existe pas");
-            this.redirectToRoute("section_index", {familyId});
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {section} = sectionAndFamily;
             this.render("media/index.html.twig", {section});
         }
     }
@@ -32,19 +27,13 @@ export default class MediaController extends Controller {
     new = async () => {
         const {sectionId,familyId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.setFlash("section_failed", "La section dans laquelle vous souhaitez ajouter un media n'existe pas");
-            this.redirectToRoute("section_index", {familyId})
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
+        if (sectionAndFamily) {
+            const {section} = sectionAndFamily;
             const mediaForm = MediaForm(familyId,sectionId);
             const validator = new Validator(this.req,mediaForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
@@ -63,6 +52,7 @@ export default class MediaController extends Controller {
                     this.redirect(this.req.header('Referer'));
                 }
             } else {
+                this.generateToken();
                 this.render("media/new.html.twig", {mediaForm,sectionId,familyId})
             }
         }
@@ -71,21 +61,14 @@ export default class MediaController extends Controller {
     edit = async () => {
         const {familyId,sectionId,mediaId} = this.req.params;
 
-        const media: null|Media = await MediaRepository.findOne(mediaId);
-        if (media == null) {
-            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez éditer n'existe pas");
-            this.redirectToRoute("media_index", {familyId,sectionId})
-            return;
-        }
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
 
-        const section: Section = <Section>media.getSection();
+        if (mediaSectionAndFamily) {
+            const {media,section,family} = mediaSectionAndFamily;
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
-
-        if (FamilyCheckService.checkFamily(family,this)) {
             const mediaForm = MediaForm(familyId,sectionId,mediaId);
             const validator = new Validator(this.req,mediaForm);
+
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
                     const datas = this.getDatas();
@@ -100,48 +83,75 @@ export default class MediaController extends Controller {
                 } else {
                     this.redirect(this.req.header('Referer'));
                 }
-            } else {
-                Helpers.hydrateForm(media, mediaForm);
-                this.render("media/edit.html.twig", {media, mediaForm});
+                return;
             }
+            let deplaceMediaForm;
+            if ((<Array<Section>>family.getSections()).length > 1) {
+                deplaceMediaForm = await DeplaceMedia(familyId, sectionId, mediaId);
+                const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
+
+                if (deplaceMediaValidator.isSubmitted()) {
+                    if (await deplaceMediaValidator.isValid()) {
+                        const datas = this.getDatas();
+
+                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        media.setSection(newSection);
+                        await media.save();
+
+                        this.setFlash("media_success", "La " + (media.getType() == "video" ? "vidéo" : "photo") + " a été déplacée dans la rubrique '" + newSection.getName() + "'");
+                        this.redirectToRoute("media_index", {familyId, sectionId});
+                    } else {
+                        this.redirect(this.req.header('Referer'));
+                    }
+                    return;
+                }
+            }
+
+
+            this.generateToken();
+            Helpers.hydrateForm(media, mediaForm);
+
+            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            this.render("media/edit.html.twig",
+                {
+                    media,
+                    mediaForm,
+                    deleteMediaForm,
+                    ...((<Array<Section>>family.getSections()).length > 1 ? {deplaceMediaForm} : {})
+                });
         }
     }
 
     delete = async () => {
         const {familyId,sectionId,mediaId} = this.req.params;
 
-        const media: null|Media = await MediaRepository.findOne(mediaId);
-        if (media == null) {
-            this.setFlash("media_failed", "La photo/vidéo que vous souhaitez supprimer n'existe pas");
-            this.redirectToRoute("media_index", {familyId,sectionId})
-            return;
-        }
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familyId,sectionId,mediaId,this);
 
-        const section: Section = <Section>media.getSection();
+        if (mediaSectionAndFamily) {
+            const {media,section,family} = mediaSectionAndFamily;
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne(section.getFamilyId());
+            const deleteMediaForm = DeleteMedia(family.getId(),section.getId(),media.getId());
+            const validator = new Validator(this.req,deleteMediaForm);
 
-        if (FamilyCheckService.checkFamily(family,this)) {
-            await media.delete();
-            this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    await media.delete();
+                    this.setFlash("media_success", "La photo/vidéo a été supprimée avec succès!");
+                } else {
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+            }
             this.redirectToRoute('media_index',{familyId,sectionId});
         }
     }
 
     search = async () => {
-        const {sectionId} = this.req.params;
+        const {familyId,sectionId} = this.req.params;
 
-        const section: null|Section = await SectionRepository.findOne(sectionId);
-        if (section == null) {
-            this.res.json({error: "La section dans laquelle vous souhaitez ajouter un media n'existe pas"})
-            return;
-        }
+        const sectionAndFamily = await CheckService.checkSectionAndFamily(familyId,sectionId, this, true);
 
-        // Get family by repository, to get other relations entity (the users)
-        const family = await <Promise<Family>>FamilyRepository.findOne((<Family>section.getFamily()).getId());
-
-        if (FamilyCheckService.checkFamily(family,this,true)) {
+        if (sectionAndFamily) {
             const {search,sort,sortBy,toDisplay} = this.req.body;
             let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionId,search,sort,sortBy,toDisplay);
             medias = medias.map(media => {

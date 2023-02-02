@@ -26,6 +26,13 @@ h2 {
     margin-bottom: 10px;
 }
 
+hr {
+    color: #E3CB00;
+    width: 30%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 nav a, nav a:hover{
     color: black
 }

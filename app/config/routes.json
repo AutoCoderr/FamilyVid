@@ -104,6 +104,10 @@
         "route": "/:sectionId/delete",
         "method": "POST"
       },
+      "delete_with_media": {
+        "route": "/:sectionId/delete/medias",
+        "methods": ["GET","POST"]
+      },
       "search": {
         "route": "/search",
         "method": "POST"
@@ -152,7 +156,8 @@
         "route": "/all"
       },
       "me": {
-        "route": "/me"
+        "route": "/me",
+        "methods": ["GET","POST"]
       },
       "search": {
         "route": "/search",

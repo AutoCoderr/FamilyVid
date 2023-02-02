@@ -7,7 +7,9 @@ export default function Section(familyId, sectionId = null) {
             method: "POST",
             submit: sectionId == null ? "Créer" : "Modifier",
             actionName: sectionId == null ? "section_create" : "section_edit",
-            msgError: "Echec de "+(sectionId == null ? "la création" : "l'édition")+" de la rubrique"
+            msgError: "Echec de "+(sectionId == null ? "la création" : "l'édition")+" de la rubrique",
+            formClass: "form-btn",
+            submitClass: "btn"
         },
         fields: {
             name: {

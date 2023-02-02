@@ -7,7 +7,9 @@ export default function Family() {
             method: "POST",
             submit: "Créer",
             actionName: "family_create",
-            msgError: "Echec de la création de famille"
+            msgError: "Echec de la création de famille",
+            formClass: "form-btn",
+            submitClass: "btn"
         },
         fields: {
             name: {

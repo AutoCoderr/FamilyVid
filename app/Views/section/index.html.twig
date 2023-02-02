@@ -21,7 +21,7 @@
         <p style="color: green">{{ flash.section_success }}</p>
     {% endif %}
     {% if flash.section_failed is defined %}
-        <p style="color: green">{{ flash.section_failed }}</p>
+        <p style="color: red">{{ flash.section_failed }}</p>
     {% endif %}
 
     {% if family.Sections|length > 0 %}

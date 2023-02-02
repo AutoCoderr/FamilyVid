@@ -8,7 +8,11 @@ import FamilyDemand from "../Entities/FamilyDemand";
 import FamilyRepository from "../Repositories/FamilyRepository";
 import FamilyDemandRepository from "../Repositories/FamilyDemandRepository";
 import User from "../Entities/User";
-import FamilyCheckService from "../Services/FamilyCheckService";
+import CheckService from "../Services/CheckService";
+import DenyDemand from "../Forms/DenyDemand";
+import AcceptDemand from "../Forms/AcceptDemand";
+import FamilyChangeDisplay from "../Forms/FamilyChangeDisplay";
+import Helpers from "../Core/Helpers";
 
 export default class FamilyController extends Controller {
     new = async () => {
@@ -35,7 +39,7 @@ export default class FamilyController extends Controller {
             }
             return;
         }
-
+        this.generateToken();
         this.render("family/new.html.twig", {formFamily});
     }
 
@@ -50,23 +54,42 @@ export default class FamilyController extends Controller {
         for (let family of user.Families) {
             forms[family.id] = FamilyDemandForm(user.id,family.id);
         }
-
+        this.generateToken();
         this.render("family/list.html.twig", {user, forms})
     }
 
     list_mines = async () => {
-        this.req.session.user = await (await <Promise<User>>this.getUser()).serialize();
-        this.render("family/list_mines.html.twig");
+        const user: User = await <Promise<User>>this.getUser();
+        this.req.session.user = await user.serialize();
+        let forms = {};
+        for (const family of <Array<Family>>user.getFamilies()) {
+            const form = FamilyChangeDisplay(family.getId());
+            Helpers.hydrateForm(family,form);
+            forms[<number>family.getId()] = form;
+        }
+        this.generateToken();
+        this.render("family/list_mines.html.twig", {forms});
     }
 
     change_display = async () => {
         const {id} = this.req.params;
+
         const me = await <Promise<User>>this.getUser();
         for (const family of <Array<Family>>me.getFamilies()) {
             if (family.getId() == id) {
-                const datas = this.getDatas();
-                await family.setVisible(datas.visible != undefined);
-                this.setFlash("change_display_family_success", "La famille "+family.getName()+" sera "+(datas.visible != undefined ? "visible" : "invisible")+" pour les autres");
+
+                const changeDisplayform = FamilyChangeDisplay(id);
+                const validator = new Validator(this.req,changeDisplayform);
+                if (validator.isSubmitted()) {
+                    if (await validator.isValid()) {
+                        const datas = this.getDatas();
+                        await family.setVisible(datas.visible != undefined);
+                        this.setFlash("change_display_family_success", "La famille "+family.getName()+" sera "+(datas.visible != undefined ? "visible" : "invisible")+" pour les autres");
+                    } else {
+                        this.setFlash("change_display_family_failed", this.req.session.flash.errors[changeDisplayform.config.actionName][0]);
+                        delete this.req.session.flash.errors[changeDisplayform.config.actionName];
+                    }
+                }
                 this.redirect(this.req.header('Referer'));
                 return;
             }
@@ -123,9 +146,15 @@ export default class FamilyController extends Controller {
     }
 
     demands = async () => {
-        let demands = await FamilyDemandRepository.findByUserId(this.req.session.user.id);
-
-        this.render("family/demands.html.twig", {demands});
+        let demands: Array<FamilyDemand> = await FamilyDemandRepository.findByUserId(this.req.session.user.id);
+        let denyForms: any = {};
+        let acceptForms: any = {};
+        for (const demand of demands) {
+            denyForms[<number>demand.getId()] = DenyDemand(demand.getId());
+            acceptForms[<number>demand.getId()] = AcceptDemand(demand.getId());
+        }
+        this.generateToken();
+        this.render("family/demands.html.twig", {demands,denyForms,acceptForms});
     }
 
     accept_demand = async () => {
@@ -134,10 +163,19 @@ export default class FamilyController extends Controller {
         const demand: FamilyDemand = await FamilyDemandRepository.findOne(id);
 
         if (this.checkDemand(demand)) {
-            await (<User>demand.getApplicant()).addFamily(<Family>demand.getFamily(), <boolean>demand.getVisible());
-            await demand.delete();
+            const acceptDemandForm = AcceptDemand(id);
+            const validator = new Validator(this.req,acceptDemandForm);
 
-            this.setFlash("demand_success", "La demande a été acceptée avec succès!");
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    await (<User>demand.getApplicant()).addFamily(<Family>demand.getFamily(), <boolean>demand.getVisible());
+                    await demand.delete();
+                    this.setFlash("demand_success", "La demande a été acceptée avec succès!");
+                } else {
+                    this.setFlash("demand_error", this.req.session.flash.errors[acceptDemandForm.config.actionName][0])
+                    delete this.req.session.flash.errors[acceptDemandForm.config.actionName];
+                }
+            }
             this.redirect(this.req.header('Referer'));
         }
     }
@@ -148,9 +186,18 @@ export default class FamilyController extends Controller {
         const demand: FamilyDemand = await FamilyDemandRepository.findOne(id);
 
         if (this.checkDemand(demand)) {
-            await demand.delete();
+            const denyDemandForm = DenyDemand(id);
+            const validator = new Validator(this.req,denyDemandForm);
 
-            this.setFlash("demand_success", "La demande a été refusée avec succès!");
+            if (validator.isSubmitted()) {
+                if (await validator.isValid()) {
+                    await demand.delete();
+                    this.setFlash("demand_success", "La demande a été refusée avec succès!");
+                } else {
+                    this.setFlash("demand_error", this.req.session.flash.errors[denyDemandForm.config.actionName][0])
+                    delete this.req.session.flash.errors[denyDemandForm.config.actionName];
+                }
+            }
             this.redirect(this.req.header('Referer'));
         }
     }
@@ -181,7 +228,7 @@ export default class FamilyController extends Controller {
 
         let family: Family = await FamilyRepository.findOne(id);
 
-        if(FamilyCheckService.checkFamily(family,this)) {
+        if(CheckService.checkFamily(family,this)) {
             this.render("family/members.html.twig", {family});
         }
     }
@@ -191,7 +238,7 @@ export default class FamilyController extends Controller {
 
         let family: Family = await FamilyRepository.findOne(id);
 
-        if(FamilyCheckService.checkFamily(family,this, true)) {
+        if(CheckService.checkFamily(family,this, true)) {
             const {search} = this.req.body;
             let users = (<Array<User>>family.getUsers())
                 .filter(user => { // filter to get users which match with the search
