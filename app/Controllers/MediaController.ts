@@ -40,6 +40,7 @@ export default class MediaController extends Controller {
                     let media = new Media();
                     media.setDate(datas.date);
                     media.setName(datas.name != "" ? datas.name : datas.date);
+                    await media.setSlugFrom("name");
                     media.setType(datas.type);
                     media.setSection(section);
 
@@ -75,6 +76,7 @@ export default class MediaController extends Controller {
 
                     media.setDate(datas.date);
                     media.setName(datas.name);
+                    await media.setSlugFrom("name");
                     media.setType(datas.type);
 
                     await media.save();

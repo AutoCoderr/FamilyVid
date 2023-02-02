@@ -22,6 +22,7 @@ export default class MediaFixture {
                     } else {
                         media.setName(randomString());
                     }
+                    await media.setSlugFrom("name");
                     media.setDate(date);
                     media.setType(Helpers.rand(0,1) == 1 ? "video": "picture");
                     media.setSection(section);
