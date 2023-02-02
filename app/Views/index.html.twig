@@ -19,7 +19,7 @@
                     {% for family in session.user.Families %}
                         <li>
                             <span>{{ family.name }}</span>
-                            <a class="btn" href="{{ path('section_index', {'familyId': family.id}) }}">Voir</a>
+                            <a class="btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Voir</a>
                         </li>
                     {% endfor %}
                 </ul>

@@ -4,14 +4,14 @@ let sortBy = "date"; // 'date' or 'name'
 let toDisplay = "all" // 'all', 'video', or 'picture'
 let sort = "ASC"; // 'ASC' or 'DESC'
 
-let familyId;
+let familySlug;
 let sectionId;
 
 let globalSearch;
 
 function searchMedias() {
     const data = {search,sortBy,toDisplay,sort};
-    return fetch(globalSearch ? "/family/"+familyId+"/sections/global/search" : "/family/"+familyId+"/sections/"+sectionId+"/medias/search", {
+    return fetch(globalSearch ? "/family/"+familySlug+"/sections/global/search" : "/family/"+familySlug+"/sections/"+sectionId+"/medias/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ function generateMediaList(medias) {
                 const tdSection = document.createElement("td");
                 const linkSection = document.createElement("a");
 
-                linkSection.href = "/family/"+familyId+"/sections/"+media.sectionId+"/medias/";
+                linkSection.href = "/family/"+familySlug+"/sections/"+media.sectionId+"/medias/";
                 linkSection.innerText = media.sectionName;
                 tdSection.appendChild(linkSection);
                 tr.appendChild(tdSection);
@@ -57,7 +57,7 @@ function generateMediaList(medias) {
             const editButton = document.createElement("a");
 
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familyId+"/sections/"+sectionId+"/medias/"+media.id+"/edit/";
+            editButton.href = "/family/"+familySlug+"/sections/"+(globalSearch ? media.sectionId : sectionId)+"/medias/"+media.id+"/edit/";
             editButton.innerText = "Modifier";
 
             tdButtons.appendChild(editButton);

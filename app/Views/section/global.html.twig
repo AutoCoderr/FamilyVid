@@ -8,13 +8,13 @@
 {% block javascripts %}
     <script src="/js/media_search.js"></script>
     <script>
-        familyId = {{ family.id }};
+		familySlug = "{{ family.slug }}";
         globalSearch = true;
     </script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('section_index', {'familyId': family.id}) }}">Retour</a>
+    <a class="btn back-btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Retour</a>
     <h1>Recherche globale - {{ family.name }}</h1>
 
     {% if medias|length > 0 %}
@@ -60,9 +60,9 @@
                     <td>{{ media.name }}</td>
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
-                    <td><a href="{{ path('media_index', {'familyId': family.id, 'sectionId': media.sectionId}) }}">{{ media.sectionName }}</a></td>
+                    <td><a href="{{ path('media_index', {'familySlug': family.slug, 'sectionId': media.sectionId}) }}">{{ media.sectionName }}</a></td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familyId': family.id, 'sectionId': media.sectionId, 'mediaId': media.id}) }}">Modifier</a>
+                        <a class="btn" href="{{ path('media_edit', {'familySlug': family.slug, 'sectionId': media.sectionId, 'mediaId': media.id}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}

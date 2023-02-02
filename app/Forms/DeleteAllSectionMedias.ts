@@ -1,9 +1,9 @@
 import Helpers from "../Core/Helpers";
 
-export default function DeleteAllSectionMedias(familyId, sectionId) {
+export default function DeleteAllSectionMedias(familySlug, sectionId) {
     return {
         config: {
-            action: Helpers.getPath("section_delete_with_media", {familyId,sectionId}),
+            action: Helpers.getPath("section_delete_with_media", {familySlug,sectionId}),
             method: "POST",
             submit: "Supprimer toutes les photos/vidéos",
             actionName: "delete_all_section_medias",

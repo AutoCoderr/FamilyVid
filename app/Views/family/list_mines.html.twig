@@ -24,7 +24,7 @@
         {% for family in session.user.Families %}
             <li class="family" id="family-{{ family.id }}">
                 <span>{{ family.name }}</span>
-                <a class="btn" href="{{ path('section_index', {'familyId': family.id}) }}">Voir</a>
+                <a class="btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Voir</a>
                 <a class="btn" href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
                 <div>
                     {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}

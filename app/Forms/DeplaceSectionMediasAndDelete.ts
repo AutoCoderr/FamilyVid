@@ -1,16 +1,17 @@
 import Helpers from "../Core/Helpers";
 import Section from "../Entities/Section";
 import SectionRepository from "../Repositories/SectionRepository";
+import Family from "../Entities/Family";
 
-export default async function DeplaceSectionMediasAndDelete(familyId, sectionId) {
+export default async function DeplaceSectionMediasAndDelete(family: Family, sectionId) {
     let options: any = {};
-    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(familyId,sectionId);
+    const sections: Array<Section> = await SectionRepository.findAllByFamilyIdExceptOne(family.getId(),sectionId);
     for (const section of sections) {
         options[<number>section.getId()] = section.getName();
     }
     return {
         config: {
-            action: Helpers.getPath("section_delete_with_media", {familyId,sectionId}),
+            action: Helpers.getPath("section_delete_with_media", {familySlug: family.getSlug(),sectionId}),
             method: "POST",
             submit: "Déplacer et supprimer",
             actionName: "deplace_section_medias_and_delete",
