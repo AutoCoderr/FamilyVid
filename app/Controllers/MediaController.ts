@@ -59,14 +59,14 @@ export default class MediaController extends Controller {
     }
 
     edit = async () => {
-        const {familySlug,sectionSlug,mediaId} = this.req.params;
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const mediaForm = MediaForm(familySlug,sectionSlug,mediaId);
+            const mediaForm = MediaForm(familySlug,sectionSlug,mediaSlug);
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
@@ -88,7 +88,7 @@ export default class MediaController extends Controller {
             }
             let deplaceMediaForm;
             if ((<Array<Section>>family.getSections()).length > 1) {
-                deplaceMediaForm = await DeplaceMedia(family, section, mediaId);
+                deplaceMediaForm = await DeplaceMedia(family, section, mediaSlug);
                 const deplaceMediaValidator = new Validator(this.req, deplaceMediaForm);
 
                 if (deplaceMediaValidator.isSubmitted()) {
@@ -113,7 +113,7 @@ export default class MediaController extends Controller {
             this.generateToken();
             Helpers.hydrateForm(media, mediaForm);
 
-            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getSlug(),media.getId());
+            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getSlug(),media.getSlug());
             this.render("media/edit.html.twig",
                 {
                     familySlug: family.getSlug(),
@@ -126,14 +126,14 @@ export default class MediaController extends Controller {
     }
 
     delete = async () => {
-        const {familySlug,sectionSlug,mediaId} = this.req.params;
+        const {familySlug,sectionSlug,mediaSlug} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaId,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
 
         if (mediaSectionAndFamily) {
             const {media,section,family} = mediaSectionAndFamily;
 
-            const deleteMediaForm = DeleteMedia(family.getId(),section.getSlug(),media.getId());
+            const deleteMediaForm = DeleteMedia(family.getSlug(),section.getSlug(),media.getSlug());
             const validator = new Validator(this.req,deleteMediaForm);
 
             if (validator.isSubmitted()) {
@@ -160,10 +160,10 @@ export default class MediaController extends Controller {
             let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(<number>section.getId(),search,sort,sortBy,toDisplay);
             medias = medias.map(media => {
                 return {
-                    id: media.getId(),
                     name: media.getName(),
                     date: Helpers.formatDate(<Date>media.getDate()),
-                    type: media.getType()
+                    type: media.getType(),
+                    slug: media.getSlug()
                 }
             });
             this.res.json(medias);

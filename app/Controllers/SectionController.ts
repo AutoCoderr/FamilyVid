@@ -178,9 +178,11 @@ export default class SectionController extends Controller {
 
         if (CheckService.checkFamily(family,this,true)) {
             let sections = await SectionRepository.findAllByFamilyAndSearch(family.getId(),search);
-            sections = await Helpers.serializeEntityArray(sections);
             sections = sections.map(section => {
-                return {id: section.id, name: section.name}
+                return {
+                    slug: section.getSlug(),
+                    name: section.getName()
+                }
             });
             this.res.json(sections);
         }
@@ -198,10 +200,10 @@ export default class SectionController extends Controller {
             let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionsId,"","ASC","date", "all");
             medias = medias.map(media => {
                 return {
-                    id: media.getId(),
                     name: media.getName(),
                     date: Helpers.formatDate(<Date>media.getDate()),
                     type: media.getType(),
+                    slug: media.getSlug(),
                     sectionSlug: media.getSection().getSlug(),
                     sectionName: media.getSection().getName()
                 }
@@ -223,10 +225,10 @@ export default class SectionController extends Controller {
             let medias: Array<Media|any> = await MediaRepository.findAllBySectionIdAndSearchFilters(sectionsId,search,sort,sortBy,toDisplay);
             medias = medias.map(media => {
                 return {
-                    id: media.getId(),
                     name: media.getName(),
                     date: Helpers.formatDate(<Date>media.getDate()),
                     type: media.getType(),
+                    slug: media.getSlug(),
                     sectionSlug: media.getSection().getSlug(),
                     sectionName: media.getSection().getName()
                 }

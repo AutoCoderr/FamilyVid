@@ -68,7 +68,7 @@
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaId': media.id}) }}">Modifier</a>
+                        <a class="btn" href="{{ path('media_edit', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}
