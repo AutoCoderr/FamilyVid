@@ -13,7 +13,7 @@ export default class EntityManager {
         return this.id;
     }
 
-    async setSlugFrom(column) {
+    async setSlugFrom(column, params = {}) {
         if (typeof(this[column]) == "undefined" || typeof(this['slug']) == "undefined" ) return null;
         let slug = this[column].toLowerCase();
 
@@ -36,7 +36,8 @@ export default class EntityManager {
         let found = await this.Model.findOne({
             where: {
                 slug: slug+(nb > 1 ? "-"+nb : ""),
-                ...(this.id != null ? { id: {[Op.ne]: this.id} } : {})
+                ...(this.id != null ? { id: {[Op.ne]: this.id} } : {}),
+                ...params
             }
         });
         while (found != null) {
@@ -44,7 +45,8 @@ export default class EntityManager {
             found = await this.Model.findOne({
                 where: {
                     slug: slug+(nb > 1 ? "-"+nb : ""),
-                    ...(this.id != null ? { id: {[Op.ne]: this.id} } : {})
+                    ...(this.id != null ? { id: {[Op.ne]: this.id} } : {}),
+                    ...params
                 }
             });
         }
