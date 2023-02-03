@@ -26,6 +26,10 @@ Family.init(
         name: {
             type: DataTypes.STRING(50),
             allowNull: false
+        },
+        slug: {
+            type: DataTypes.STRING(60),
+            allowNull: false
         }
     },
     {

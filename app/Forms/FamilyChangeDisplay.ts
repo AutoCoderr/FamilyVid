@@ -2,10 +2,10 @@ import Helpers from "../Core/Helpers";
 import User from "../Entities/User";
 import Family from "../Entities/Family";
 
-export default function FamilyChangeDisplay(familyId) {
+export default function FamilyChangeDisplay(familySlug) {
     return {
         config: {
-            action: Helpers.getPath("family_change_display", {id: familyId}),
+            action: Helpers.getPath("family_change_display", {slug: familySlug}),
             method: "POST",
             submit: "Valider",
             actionName: "family_change_display",

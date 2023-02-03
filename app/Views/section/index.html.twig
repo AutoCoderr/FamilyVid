@@ -5,15 +5,15 @@
 {% block javascripts %}
     <script src="/js/search_section.js"></script>
     <script>
-        familyId = {{ family.id }};
+		familySlug = "{{ family.slug }}";
     </script>
 {% endblock %}
 
 {% block body %}
     <a class="btn back-btn" href="{{ path('index') }}">Retour</a>
     <div class="right-top-buttons">
-        <a class="btn" href="{{ path('section_global', {'familyId': family.id}) }}">Rechercher dans toutes les rubriques</a>
-        <a class="btn" href="{{ path('family_members', {'id': family.id}) }}">Les membres ({{ family.Users|length }})</a>
+        <a class="btn" href="{{ path('section_global', {'familySlug': family.slug}) }}">Rechercher dans toutes les rubriques</a>
+        <a class="btn" href="{{ path('family_members', {'slug': family.slug}) }}">Les membres ({{ family.Users|length }})</a>
     </div>
     <h1>Famille {{ family.name }}</h1>
 
@@ -31,15 +31,15 @@
             {% for section in family.Sections %}
                 <li>
                     <span>{{ section.name }}</span>
-                    <a class="btn" href="{{ path('media_index', {'sectionId': section.id, 'familyId': family.id}) }}">Voir</a>
-                    <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familyId': family.id}) }}">Modifier</a>
+                    <a class="btn" href="{{ path('media_index', {'sectionSlug': section.slug, 'familySlug': family.slug}) }}">Voir</a>
+                    <a class="btn" href="{{ path('section_edit', {'sectionSlug': section.slug, 'familySlug': family.slug}) }}">Modifier</a>
                 </li>
             {% endfor %}
         </ul>
         <h2>Vous pouvez aussi en créer une nouvelle</h2>
-        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créer</a>
+        <a class="btn" href="{{ path('section_new', {'familySlug': family.slug}) }}">Créer</a>
     {% else %}
         <h2>Il n'y aucune rubrique dans cette famille</h2>
-        <a class="btn" href="{{ path('section_new', {'familyId': family.id}) }}">Créez en une!</a>
+        <a class="btn" href="{{ path('section_new', {'familySlug': family.slug}) }}">Créez en une!</a>
     {% endif %}
 {% endblock %}

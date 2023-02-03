@@ -1,8 +1,8 @@
-let familyId;
+let familySlug;
 
 function searchSections(search) {
     const data = {search};
-    return fetch("/family/"+familyId+"/sections/search", {
+    return fetch("/family/"+familySlug+"/sections/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -28,13 +28,13 @@ function generateSectionList(sections) {
 
             const showButton = document.createElement("a");
             showButton.classList.add("btn");
-            showButton.href = "/family/"+familyId+"/sections/"+section.id+"/medias/";
+            showButton.href = "/family/"+familySlug+"/sections/"+section.slug+"/medias/";
             showButton.innerText = "Voir";
             li.appendChild(showButton);
 
             const editButton = document.createElement("a");
             editButton.classList.add("btn");
-            editButton.href = "/family/"+familyId+"/sections/"+section.id+"/edit/";
+            editButton.href = "/family/"+familySlug+"/sections/"+section.slug+"/edit/";
             editButton.innerText = "Modifier";
             li.appendChild(editButton);
 
@@ -48,6 +48,7 @@ function generateSectionList(sections) {
 }
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    if (document.getElementById("input_search") == null) return;
     document.getElementById("input_search").addEventListener("input", async function() {
         generateSectionList(await searchSections(this.value));
     });

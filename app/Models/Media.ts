@@ -30,6 +30,10 @@ Media.init(
             type: DataTypes.STRING(50),
             allowNull: false
         },
+        slug: {
+            type: DataTypes.STRING(60),
+            allowNull: false
+        },
         date: {
             type: DataTypes.DATE,
             allowNull: false
@@ -37,7 +41,7 @@ Media.init(
         type: {
             type: DataTypes.STRING(7),
             allowNull: false
-        },
+        }
     },
     {
         tableName: DB_PREFIX+"media",

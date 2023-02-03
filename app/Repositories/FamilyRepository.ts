@@ -12,6 +12,13 @@ export default class FamilyRepository extends RepositoryManager {
         return super.findOne(id,[UserModel,SectionModel]);
     }
 
+    static findOneBySlug(slug) {
+        return super.findOneByParams({
+            where: { slug: slug },
+            include: [UserModel,SectionModel]
+        });
+    }
+
     static findAll() {
         return super.findAll(SectionModel);
     }

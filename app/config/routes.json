@@ -50,7 +50,7 @@
       },
 
       "change_display": {
-        "route": "/:id/change_display",
+        "route": "/:slug/change_display",
         "method": "POST"
       },
 
@@ -74,11 +74,11 @@
       },
 
       "members": {
-        "route": "/:id/members"
+        "route": "/:slug/members"
       },
 
       "members_search": {
-        "route": "/:id/members/search",
+        "route": "/:slug/members/search",
         "method": "POST"
       }
 
@@ -86,7 +86,7 @@
   },
   "SectionController": {
     "prefix": "section_",
-    "prefix_route": "/family/:familyId/sections",
+    "prefix_route": "/family/:familySlug/sections",
 
     "routes": {
       "index": {
@@ -97,15 +97,15 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/:sectionId/edit",
+        "route": "/:sectionSlug/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/:sectionId/delete",
+        "route": "/:sectionSlug/delete",
         "method": "POST"
       },
       "delete_with_media": {
-        "route": "/:sectionId/delete/medias",
+        "route": "/:sectionSlug/delete/medias",
         "methods": ["GET","POST"]
       },
       "search": {
@@ -123,7 +123,7 @@
   },
   "MediaController": {
     "prefix": "media_",
-    "prefix_route": "/family/:familyId/sections/:sectionId/medias",
+    "prefix_route": "/family/:familySlug/sections/:sectionSlug/medias",
 
     "routes": {
       "index": {
@@ -134,11 +134,11 @@
         "methods": ["GET","POST"]
       },
       "edit": {
-        "route": "/:mediaId/edit",
+        "route": "/:mediaSlug/edit",
         "methods": ["GET","POST"]
       },
       "delete": {
-        "route": "/:mediaId/delete",
+        "route": "/:mediaSlug/delete",
         "method": "POST"
       },
       "search": {
