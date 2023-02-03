@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ section.name }}{% endblock %}
+{% block title %}Recherche globale - {{ family.name }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="/css/media_index.css">
@@ -60,9 +60,9 @@
                     <td>{{ media.name }}</td>
                     <td>{{ media.date|date('Y-m-d') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
-                    <td><a href="{{ path('media_index', {'familySlug': family.slug, 'sectionId': media.sectionId}) }}">{{ media.sectionName }}</a></td>
+                    <td><a href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': media.sectionSlug}) }}">{{ media.sectionName }}</a></td>
                     <td>
-                        <a class="btn" href="{{ path('media_edit', {'familySlug': family.slug, 'sectionId': media.sectionId, 'mediaId': media.id}) }}">Modifier</a>
+                        <a class="btn" href="{{ path('media_edit', {'familySlug': family.slug, 'sectionSlug': media.sectionSlug, 'mediaId': media.id}) }}">Modifier</a>
                     </td>
                 </tr>
             {% endfor %}

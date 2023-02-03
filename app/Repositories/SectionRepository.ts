@@ -16,6 +16,16 @@ export default class SectionRepository extends RepositoryManager {
         ]);
     }
 
+    static findOneBySlug(slug) {
+        return super.findOneByParams({
+            where: {slug: slug},
+            include: [
+                FamilyModel,
+                {model: MediaModel, as: "Medias"}
+            ]
+        })
+    }
+
     static findAllByFamilyIdExceptOne(familyId,sectionId) {
         return super.findAllByParams({
            where: {

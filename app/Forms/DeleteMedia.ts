@@ -1,9 +1,9 @@
 import Helpers from "../Core/Helpers";
 
-export default function DeleteMedia(familySlug,sectionId,mediaId) {
+export default function DeleteMedia(familySlug,sectionSlug,mediaId) {
     return {
         config: {
-            action: Helpers.getPath("media_delete", {familySlug,sectionId,mediaId}),
+            action: Helpers.getPath("media_delete", {familySlug,sectionSlug,mediaId}),
             method: "POST",
             submit: "Supprimer",
             actionName: "delete_media",

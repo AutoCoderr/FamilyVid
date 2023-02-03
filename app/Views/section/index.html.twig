@@ -31,8 +31,8 @@
             {% for section in family.Sections %}
                 <li>
                     <span>{{ section.name }}</span>
-                    <a class="btn" href="{{ path('media_index', {'sectionId': section.id, 'familySlug': family.slug}) }}">Voir</a>
-                    <a class="btn" href="{{ path('section_edit', {'sectionId': section.id, 'familySlug': family.slug}) }}">Modifier</a>
+                    <a class="btn" href="{{ path('media_index', {'sectionSlug': section.slug, 'familySlug': family.slug}) }}">Voir</a>
+                    <a class="btn" href="{{ path('section_edit', {'sectionSlug': section.slug, 'familySlug': family.slug}) }}">Modifier</a>
                 </li>
             {% endfor %}
         </ul>
