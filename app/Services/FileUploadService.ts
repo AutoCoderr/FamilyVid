@@ -1,5 +1,7 @@
 import env from "../Core/env.js";
 import * as fs from "fs-extra";
+import * as path from "path";
+
 import Media from "../Entities/Media";
 import Section from "../Entities/Section";
 import Family from "../Entities/Family";
@@ -10,7 +12,7 @@ export default class FileUploadService {
         picture: ['image/png','image/jpeg','image/bmp']
     }
 
-    static filesPath = __dirname+"/../"+env.UPLOAD_DIR;
+    static filesPath = path.resolve(__dirname+"/../"+env.UPLOAD_DIR);
 
     static async deleteSection(family: Family, section: Section) {
         const familyPath = this.filesPath+"/"+family.getSlug();
@@ -21,7 +23,7 @@ export default class FileUploadService {
             fs.rmdirSync(sectionPath)
         }
 
-        if (fs.readdirSync(familyPath).length == 0) {
+        if (fs.existsSync(familyPath) && fs.readdirSync(familyPath).length == 0) {
             fs.rmdirSync(familyPath);
         }
 
@@ -157,5 +159,14 @@ export default class FileUploadService {
                 resolve(true);
             });
         });
+    }
+
+    static readMedia(family: Family, section: Section, media: Media, res) {
+        const mediaPath = this.filesPath+"/"+family.getSlug()+"/"+section.getSlug()+"/"+media.getSlug()+"."+media.getFileExtension();
+        if (!fs.existsSync(mediaPath)) {
+            res.send("Fichier introuvable");
+            return;
+        }
+        res.sendFile(mediaPath);
     }
 }

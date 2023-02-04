@@ -27,8 +27,10 @@ h2 {
 }
 
 hr {
-    color: #E3CB00;
-    width: 30%;
+    height: 2px;
+    background-color: #E3CB00;
+    border: none;
+    width: 50%;
     margin-top: 20px;
     margin-bottom: 20px;
 }
