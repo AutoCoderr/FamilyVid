@@ -9,4 +9,6 @@ package-lock.json
 /Fixtures/*.js
 /Core/*.js
 !/Core/env.js
+/Medias/*
+!/Medias/.gitkeep
 /node_modules

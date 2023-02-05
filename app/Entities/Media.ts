@@ -8,6 +8,7 @@ export default class Media extends EntityManager {
 
     name: null|string = null;
     slug: null|string = null;
+    fileExtension: null|string = null;
     date: null|Date = null;
     type: null|string = null;
 
@@ -23,6 +24,13 @@ export default class Media extends EntityManager {
 
     getSlug() {
         return this.slug;
+    }
+
+    getFileExtension() {
+        return this.fileExtension;
+    }
+    setFileExtension(fileExtension) {
+        this.fileExtension = fileExtension;
     }
 
     setDate(date: string) {
