@@ -35,7 +35,7 @@ export default function Register() {
 				maxLength: 50,
 				minLength: 3,
 				msgError: "Format d'email incorrect",
-				uniq: {table: "User", column: "email", msgError: "Compte déjà existant"}
+				uniq: {table: "User", column: "email", msgError: "Compte déjà existant", where: {active: true}}
 			},
 			password: {
 				type: "password",

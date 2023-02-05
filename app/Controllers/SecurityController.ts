@@ -4,6 +4,9 @@ import Register from "../Forms/Register";
 import Validator from "../Core/Validator";
 import Login from "../Forms/Login";
 import UserRepository from "../Repositories/UserRepository";
+import ConfirmationAccountService from "../Services/ConfirmationAccountService";
+import AccountConfirmationRepository from "../Repositories/AccountConfirmationRepository";
+import AccountConfirmation from "../Entities/AccountConfirmation";
 
 export default class SecurityController extends Controller {
 
@@ -21,9 +24,17 @@ export default class SecurityController extends Controller {
                 user.setEmail(datas.email);
                 user.addRole('USER');
                 user.setPassword(datas.password);
-
+                user.setActive(false);
                 await user.save();
-                this.loginAndRedirect(user);
+
+                if (!await ConfirmationAccountService.sendConfirmationMail(user,this.req.protocol,this.req.headers.host)) {
+                    await user.delete();
+                    console.log("Cannot send mail to "+user.getEmail());
+                    validator.setFlashErrors("Nous n'avons pas pus envoyer de mail de confirmation vers "+user.getEmail());
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+                this.render("security/need_confirmation.html.twig");
             } else {
                 this.redirect(this.req.header('Referer'));
             }
@@ -31,6 +42,27 @@ export default class SecurityController extends Controller {
         }
 
         this.render("security/register.html.twig", {formRegister});
+    }
+
+    confirm = async () => {
+        const {token} = this.req.params;
+        const confirmation: AccountConfirmation = await AccountConfirmationRepository.findOneByToken(token);
+        if (confirmation == null) {
+            this.render("security/confirmation.html.twig", {success: false});
+            return;
+        }
+        const user = <User>confirmation.getUser();
+        user.setActive(true);
+        await user.save();
+
+        await confirmation.delete();
+
+        const otherUsers: Array<User> = await UserRepository.findAllByEmailAndNotActive(user.getEmail());
+        for (const anotherUser of otherUsers) {
+            await anotherUser.delete();
+        }
+
+        this.render("security/confirmation.html.twig", {success: true, user});
     }
 
     login = async () => {
@@ -43,9 +75,14 @@ export default class SecurityController extends Controller {
 
                 const user: User = await UserRepository.findOneByEmailAndPassword(datas.email,datas.password);
                 if (user == null) {
-                    validator.setFlashErrors([formLogin.config.msgError])
+                    validator.setFlashErrors(formLogin.config.msgError)
                     this.redirect(this.req.header('Referer'));
                 } else {
+                    if (!user.getActive()) {
+                        validator.setFlashErrors("Vous devez valider le mail de confirmation");
+                        this.redirect(this.req.header('Referer'));
+                        return;
+                    }
                     this.loginAndRedirect(user);
                 }
             } else {

@@ -16,8 +16,11 @@
 
       "logout": {
         "route": "/logout"
-      }
+      },
 
+      "confirm": {
+        "route": "/confirm/:token"
+      }
     }
   },
   "FrontController": {

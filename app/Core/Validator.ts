@@ -192,7 +192,10 @@ export default class Validator {
 		)
 	}
 
-	setFlashErrors(errors: Array<string>) {
+	setFlashErrors(errors: string|Array<string>) {
+		if (!(errors instanceof Array)) {
+			errors = [errors];
+		}
 		if(typeof(this.req.session.flash) == "undefined") {
 			this.req.session.flash = {};
 		}
