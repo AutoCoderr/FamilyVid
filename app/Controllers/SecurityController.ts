@@ -4,9 +4,11 @@ import Register from "../Forms/Register";
 import Validator from "../Core/Validator";
 import Login from "../Forms/Login";
 import UserRepository from "../Repositories/UserRepository";
-import ConfirmationAccountService from "../Services/ConfirmationAccountService";
+import MailService from "../Services/MailService";
 import AccountConfirmationRepository from "../Repositories/AccountConfirmationRepository";
 import AccountConfirmation from "../Entities/AccountConfirmation";
+import ForgotPassword from "../Forms/ForgotPassword";
+import Helpers from "../Core/Helpers";
 
 export default class SecurityController extends Controller {
 
@@ -27,7 +29,7 @@ export default class SecurityController extends Controller {
                 user.setActive(false);
                 await user.save();
 
-                if (!await ConfirmationAccountService.sendConfirmationMail(user,this.req.protocol,this.req.headers.host)) {
+                if (!await MailService.sendConfirmationMail(user,this.req.protocol,this.req.headers.host)) {
                     await user.delete();
                     console.log("Cannot send mail to "+user.getEmail());
                     validator.setFlashErrors("Nous n'avons pas pus envoyer de mail de confirmation vers "+user.getEmail());
@@ -92,6 +94,41 @@ export default class SecurityController extends Controller {
         }
 
         this.render("security/login.html.twig", {formLogin});
+    }
+
+    forgot_password = async () => {
+        const forgotPasswordForm = ForgotPassword();
+        const validator = new Validator(this.req,forgotPasswordForm);
+
+        if (validator.isSubmitted()) {
+            if (await validator.isValid()) {
+                const datas = this.getDatas();
+
+                const user: User = await UserRepository.findOneByEmail(datas.email);
+                if (user == null) {
+                    validator.setFlashErrors("Aucun utilisateur ne correspond à cette adresse mail");
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+
+                const newPassword = Helpers.generateRandomString(20);
+
+                if (!await MailService.sendNewPasswordMail(user,newPassword)) {
+                    validator.setFlashErrors("Envoie du mail contenant le nouveau mot de passe échoué");
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+
+                user.setPassword(newPassword);
+                await user.save();
+
+                this.setFlash("forgot_password_success", "Le nouveau mot de passe vous a été envoyé par mail!");
+            }
+            this.redirect(this.req.header('Referer'));
+            return;
+        }
+
+        this.render("security/forgot_password.html.twig", {forgotPasswordForm});
     }
 
     logout = async () => {

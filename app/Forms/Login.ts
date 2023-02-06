@@ -8,7 +8,6 @@ export default function Login() {
 			submit: "Se connecter",
 			actionName: "login",
 			msgError: "Connexion échouée",
-			formClass: "form-btn",
 			submitClass: "btn"
 		},
 		fields: {

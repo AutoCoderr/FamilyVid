@@ -5,4 +5,5 @@
 {% block body %}
     <h1>Se connecter :</h1>
     {% include 'Modals/forms.html.twig' with {'form': formLogin} %}
+    <a class="btn" href="{{ path('security_forgot_password') }}">Mot de passe oublié</a>
 {% endblock %}

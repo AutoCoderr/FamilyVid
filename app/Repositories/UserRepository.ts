@@ -53,6 +53,15 @@ export default class UserRepository extends RepositoryManager {
         });
     }
 
+    static findOneByEmail(email) {
+        return super.findOneByParams({
+            where: {
+                email: email,
+                active: true
+            }
+        })
+    }
+
     static findOne(id) {
         return super.findOne(id,FamilyModel);
     }
