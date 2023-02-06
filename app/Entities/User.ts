@@ -2,7 +2,7 @@ import Helpers from "../Core/Helpers";
 import EntityManager from "../Core/EntityManager";
 import UserModel from "../Models/User";
 import Family from "./Family";
-import AccountConfirmation from "../Entities/AccountConfirmation";
+import Confirmation from "./Confirmation";
 
 export default class User extends EntityManager {
 

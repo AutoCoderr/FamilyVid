@@ -1,12 +1,13 @@
 import EntityManager from "../Core/EntityManager";
 import User from "./User";
-import AccountConfirmationModel from "../Models/AccountConfirmation";
+import AccountConfirmationModel from "../Models/Confirmation";
 
-export default class AccountConfirmation extends EntityManager {
+export default class Confirmation extends EntityManager {
 
     Model = AccountConfirmationModel;
 
     token: null|string = null;
+    type: null|string = null; // account or password
 
     User: null|User = null;
 
@@ -17,6 +18,13 @@ export default class AccountConfirmation extends EntityManager {
     }
     setToken(token: string) {
         this.token = token;
+    }
+
+    getType() {
+        return this.type;
+    }
+    setType(type: string) {
+        this.type = type;
     }
 
     setUser(user: User) {

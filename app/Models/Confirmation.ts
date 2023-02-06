@@ -6,16 +6,16 @@ import User from "./User";
 import Family from "./Family";
 const {DB_PREFIX} = env;
 
-export interface IAccountConfirmation {
+export interface IConfirmation {
     token: string;
 }
 
-export default class AccountConfirmation extends Model {
+export default class Confirmation extends Model {
     public id!: number;
     public token!: string;
 }
 
-AccountConfirmation.init(
+Confirmation.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -26,13 +26,16 @@ AccountConfirmation.init(
         token: {
             type: DataTypes.STRING(20),
             defaultValue: false
+        },
+        type: {
+            type: DataTypes.STRING(8) // account or password
         }
     },
     {
-        tableName: DB_PREFIX+"accountconfirmation",
+        tableName: DB_PREFIX+"confirmation",
         sequelize, // passing the `sequelize` instance is required
     }
 );
 
-AccountConfirmation.belongsTo(User, {onDelete: 'CASCADE'});
-User.hasOne(AccountConfirmation, {onDelete: 'CASCADE'});
+Confirmation.belongsTo(User, {onDelete: 'CASCADE'});
+User.hasOne(Confirmation, {onDelete: 'CASCADE'});

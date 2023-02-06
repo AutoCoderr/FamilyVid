@@ -5,10 +5,11 @@ import Validator from "../Core/Validator";
 import Login from "../Forms/Login";
 import UserRepository from "../Repositories/UserRepository";
 import MailService from "../Services/MailService";
-import AccountConfirmationRepository from "../Repositories/AccountConfirmationRepository";
-import AccountConfirmation from "../Entities/AccountConfirmation";
+import ConfirmationRepository from "../Repositories/ConfirmationRepository";
+import Confirmation from "../Entities/Confirmation";
 import ForgotPassword from "../Forms/ForgotPassword";
 import Helpers from "../Core/Helpers";
+import ChangeUserPassword from "../Forms/ChangeUserPassword";
 
 export default class SecurityController extends Controller {
 
@@ -46,11 +47,12 @@ export default class SecurityController extends Controller {
         this.render("security/register.html.twig", {formRegister});
     }
 
-    confirm = async () => {
+    confirm_account = async () => {
         const {token} = this.req.params;
-        const confirmation: AccountConfirmation = await AccountConfirmationRepository.findOneByToken(token);
+        const confirmation: Confirmation = await ConfirmationRepository.findOneByTokenForAccount(token);
         if (confirmation == null) {
-            this.render("security/confirmation.html.twig", {success: false});
+            this.setFlash("failed", "Confirmation échouée");
+            this.redirectToRoute("index");
             return;
         }
         const user = <User>confirmation.getUser();
@@ -64,7 +66,7 @@ export default class SecurityController extends Controller {
             await anotherUser.delete();
         }
 
-        this.render("security/confirmation.html.twig", {success: true, user});
+        this.render("security/account_confirmation.html.twig", {user});
     }
 
     login = async () => {
@@ -104,31 +106,55 @@ export default class SecurityController extends Controller {
             if (await validator.isValid()) {
                 const datas = this.getDatas();
 
-                const user: User = await UserRepository.findOneByEmail(datas.email);
+                const user: User = await UserRepository.findOneByEmailAndActive(datas.email);
                 if (user == null) {
                     validator.setFlashErrors("Aucun utilisateur ne correspond à cette adresse mail");
                     this.redirect(this.req.header('Referer'));
                     return;
                 }
 
-                const newPassword = Helpers.generateRandomString(20);
-
-                if (!await MailService.sendNewPasswordMail(user,newPassword)) {
-                    validator.setFlashErrors("Envoie du mail contenant le nouveau mot de passe échoué");
+                if (!await MailService.sendPasswordChangeMail(user,this.req.protocol,this.req.headers.host)) {
+                    validator.setFlashErrors("Envoie du mail contenant le lien de changement de mot de passe échoué");
                     this.redirect(this.req.header('Referer'));
                     return;
                 }
 
-                user.setPassword(newPassword);
-                await user.save();
-
-                this.setFlash("forgot_password_success", "Le nouveau mot de passe vous a été envoyé par mail!");
+                this.setFlash("forgot_password_success", "Le lien de changement de mot de passe vous a été envoyé par mail!");
             }
             this.redirect(this.req.header('Referer'));
             return;
         }
 
         this.render("security/forgot_password.html.twig", {forgotPasswordForm});
+    }
+
+    new_password = async () => {
+        const {token} = this.req.params;
+
+        const confirmation: Confirmation = await ConfirmationRepository.findOneByTokenForPassword(token);
+        if (confirmation == null) {
+            this.setFlash("failed", "Vous ne pouvez pas changer votre mot de passe ici");
+            this.redirectToRoute("index");
+            return;
+        }
+        const changeUserPasswordForm = ChangeUserPassword(token);
+        const changeUserPasswordValidator = new Validator(this.req,changeUserPasswordForm);
+        if (changeUserPasswordValidator.isSubmitted()) {
+            if (await changeUserPasswordValidator.isValid()) {
+                const datas = this.getDatas();
+                const user: User = <User>confirmation.getUser();
+                user.setPassword(datas.password);
+                await user.save();
+                await confirmation.delete();
+
+                this.setFlash("success", "Votre mot de passe a été changé avec succès! Vous pouvez vous connecter");
+                this.redirectToRoute("index");
+            } else {
+                this.redirect(this.req.header('Referer'));
+            }
+            return;
+        }
+        this.render("security/new_password.html.twig", {changeUserPasswordForm})
     }
 
     logout = async () => {
