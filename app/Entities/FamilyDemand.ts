@@ -7,6 +7,10 @@ export default class FamilyDemand extends EntityManager {
 
     Model = FamilyDemandModel;
 
+    entityTypes = {
+        Applicant: User.name
+    }
+
     visible: null|boolean = null;
 
     User: null|User = null;
@@ -29,9 +33,6 @@ export default class FamilyDemand extends EntityManager {
         this.UserId = user.getId();
     }
     getUser() {
-        if (!(this.User instanceof User) && this.User != null) {
-            this.User = (new User()).hydrate(this.User);
-        }
         return this.User;
     }
 
@@ -40,9 +41,6 @@ export default class FamilyDemand extends EntityManager {
         this.ApplicantId = applicant.getId();
     }
     getApplicant() {
-        if (!(this.Applicant instanceof User) && this.Applicant != null) {
-            this.Applicant = (new User()).hydrate(this.Applicant);
-        }
         return this.Applicant;
     }
 
@@ -51,9 +49,6 @@ export default class FamilyDemand extends EntityManager {
         this.FamilyId = family.getId();
     }
     getFamily() {
-        if (!(this.Family instanceof Family) && this.Family != null) {
-            this.Family = (new Family()).hydrate(this.Family);
-        }
         return this.Family;
     }
 
