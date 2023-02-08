@@ -114,12 +114,27 @@ export default class FamilyController extends Controller {
                 let user: User = await UserRepository.findOne(datas.user);
                 let family: Family = await FamilyRepository.findOne(datas.family);
 
-                for (const eachFamily of <Array<Family>>applicant.getFamilies()) {
-                    if (eachFamily.getId() == family.getId()) {
-                        this.setFlash("family_demand_faileds",["Vous vous trouvez déjà dans la famille "+family.getName()]);
-                        this.redirect(this.req.header('Referer'));
-                        return;
+                if ((<Array<Family>>applicant.getFamilies()).map(family => family.getId()).includes(family.getId())) {
+                    this.setFlash("family_demand_faileds", ["Vous vous trouvez déjà dans la famille " + family.getName()]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
+                }
+                let found = false
+                for (const userFamily of <Array<Family>>user.getFamilies()) {
+                    if (userFamily.getId() == family.getId()) {
+                        found = true;
+                        if (!userFamily.getVisible()) {
+                            this.setFlash("family_demand_faileds", ["L'utilisateur "+user.getFirstname()+" "+user.getLastname()+" n'apparait pas comme étant dans la famille "+family.getName()]);
+                            this.redirect(this.req.header('Referer'));
+                            return;
+                        }
+                        break;
                     }
+                }
+                if (!found) {
+                    this.setFlash("family_demand_faileds", ["L'utilisateur "+user.getFirstname()+" "+user.getLastname()+" n'apparait pas comme étant dans la famille "+family.getName()]);
+                    this.redirect(this.req.header('Referer'));
+                    return;
                 }
 
                 let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user,datas.family);

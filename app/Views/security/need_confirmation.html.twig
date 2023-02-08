@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation{% endblock %}
+
+{% block body %}
+    <h1>Confirmation par mail</h1>
+    <p>Vous devez valider le mail de confirmation venant de vous être envoyé.</p>
+    <br/>
+    <p>Une fois fait vous pourrez vous connecter</p>
+    <a class="btn" href="{{ path('security_login') }}">Connexion</a>
+{% endblock %}

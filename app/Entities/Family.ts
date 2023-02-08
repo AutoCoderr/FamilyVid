@@ -7,6 +7,11 @@ export default class Family extends EntityManager {
 
     Model = FamilyModel;
 
+    entityTypes = {
+        Users: User.name,
+        Sections: Section.name
+    }
+
     name: null|string = null;
     slug: null|string = null
 
@@ -41,13 +46,6 @@ export default class Family extends EntityManager {
     }
 
     getUsers() {
-        if (this.Users instanceof Array) {
-            for (let i=0;i<this.Users.length;i++) {
-                if (!(this.Users[i] instanceof User)) {
-                    this.Users[i] = (new User()).hydrate(this.Users[i]);
-                }
-            }
-        }
         return this.Users;
     }
 
@@ -63,12 +61,7 @@ export default class Family extends EntityManager {
 
     getSections() {
         if (this.Sections instanceof Array) {
-            for (let i=0;i<this.Sections.length;i++) {
-                if (!(this.Sections[i] instanceof Section)) {
-                    this.Sections[i] = (new Section()).hydrate(this.Sections[i]);
-                }
-            }
-            this.Sections.sort((A,B) => {
+            this.Sections.sort((A, B) => {
                 return (<string>A.getName()).toLowerCase() > (<string>B.getName()).toLowerCase() ? 1 : -1;
             });
         }

@@ -7,11 +7,16 @@ export default class User extends EntityManager {
 
     Model = UserModel;
 
+    entityTypes = {
+        Families: Family.name
+    }
+
     email: null|string = null;
     firstname: null|string = null;
     lastname: null|string = null;
     roles: null|string = null;
     password: null|string = null;
+    active: null|boolean = null;
 
     Families: null|Array<Family> = [];
 
@@ -66,6 +71,13 @@ export default class User extends EntityManager {
     }
     getPassword() {
         return this.password;
+    }
+
+    setActive(active: boolean) {
+        this.active = active;
+    }
+    getActive() {
+        return this.active;
     }
 
     getFamilies() {
