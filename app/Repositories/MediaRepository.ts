@@ -16,7 +16,7 @@ export default class MediaRepository extends RepositoryManager {
     static findOneBySlug(slug) {
         return super.findOneByParams({
             where: { slug: slug },
-            include: [SectionModel,CommentModel]
+            include: SectionModel
         })
     }
 
