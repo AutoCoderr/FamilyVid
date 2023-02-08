@@ -7,11 +7,13 @@ const {DB_PREFIX} = env;
 
 export interface ISection {
     name: string;
+    slug: string;
 }
 
 export default class Section extends Model {
     public id!: number;
     public name!: string;
+    public slug!: string;
 }
 
 Section.init(

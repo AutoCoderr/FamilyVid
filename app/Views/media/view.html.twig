@@ -17,4 +17,15 @@
             <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
         </video>
     {% endif %}
+    <div class="comments">
+        {% if comments|length > 0 %}
+            <ul>
+                {% for comment in comments %}
+                    <li>{{ comment.User.firstname }} {{ comment.User.lastname }} : {{ comment.content }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h2>Il n'y a aucun commentaire</h2>
+        {% endif %}
+    </div>
 {% endblock %}

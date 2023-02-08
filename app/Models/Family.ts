@@ -8,11 +8,13 @@ const {DB_PREFIX} = env;
 
 export interface IFamily {
     name: string;
+    slug: string;
 }
 
 export default class Family extends Model {
     public id!: number;
     public name!: string;
+    public slug!: string;
 }
 
 Family.init(
