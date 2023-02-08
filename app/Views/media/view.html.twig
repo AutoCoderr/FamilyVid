@@ -18,6 +18,11 @@
         </video>
     {% endif %}
     <div class="comments">
+        {% if flash.comment_success is defined %}
+            <p style="color: green">{{ flash.comment_success }}</p>
+        {% endif %}
+        <h2>Créez un commentaire</h2>
+        {% include "Modals/forms.html.twig" with {'form': commentForm} %}
         {% if comments|length > 0 %}
             <ul>
                 {% for comment in comments %}

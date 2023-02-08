@@ -34,8 +34,8 @@ Comment.init(
     }
 );
 
-Comment.belongsTo(Media, {as: "Media", foreignKey: "MediaId"});
-Media.hasMany(Comment, {foreignKey: "MediaId"});
+Comment.belongsTo(Media, {as: "Media", foreignKey: "MediaId", onDelete: 'CASCADE'});
+Media.hasMany(Comment, {foreignKey: "MediaId", onDelete: 'CASCADE'});
 
 Comment.belongsTo(User);
 User.hasMany(Comment);

@@ -19,7 +19,9 @@
 
 		{% if field.type != "hidden" %}
 			<tr><td>
-			<label>{{ field.label }} :</label></td><td>
+			{% if field.label is defined %}
+				<label>{{ field.label }} :</label></td><td>
+			{% endif %}
 		{% endif %}
 
 		{% if field.type == 'select' %}
@@ -40,6 +42,18 @@
 					</option>
 				{% endfor %}
 			</select>
+		{% elseif field.type == "textarea" %}
+			<textarea
+				name="{{ name }}"
+				{% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
+				{% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
+				{% if field.class is defined %}class="{{ field.class }}"{% endif %}
+				{% if field.required is defined and field.required %} required='required'{% endif %}
+				>{% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+					{{ flash.datas[form.config.actionName][name] }}
+				{% elseif field.value is defined %}
+					{{ field.value }}
+				{% endif %}</textarea>
 		{% else %}
 			<input
 					type="{{ field.type }}"
