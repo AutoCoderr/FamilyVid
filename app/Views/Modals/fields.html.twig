@@ -1,0 +1,82 @@
+<table>
+
+    {% for name in form.fields|keys %}
+
+        {% set field = form.fields[name] %}
+
+        {% if field.type != "hidden" %}
+            <tr><td>
+            {% if field.label is defined %}
+                <label>{{ field.label }} :</label></td><td>
+            {% endif %}
+        {% endif %}
+
+        {% if field.type == 'select' %}
+            <select
+                    name="{{ name }}"
+                    {% if field.required is defined and field.required %} required='required'{% endif %}
+            >
+                <option value="0">Choisissez</option>
+                {% for value in field.options|keys %}
+                    <option
+                            value="{{ value }}"
+                            {% if (field.value is defined and field.value == value) or
+                                (flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 and flash.datas[form.config.actionName][name] == value)  %}
+                                selected
+                            {% endif %}
+                    >
+                        {{ field.options[value] }}
+                    </option>
+                {% endfor %}
+            </select>
+        {% elseif field.type == "textarea" %}
+            <textarea
+                    name="{{ name }}"
+                    {% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
+                    {% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
+                    {% if field.class is defined %}class="{{ field.class }}"{% endif %}
+                    {% if field.required is defined and field.required %} required='required'{% endif %}
+				>{% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+					{{ flash.datas[form.config.actionName][name] }}
+				{% elseif field.value is defined %}
+                    {{ field.value }}
+                {% endif %}</textarea>
+        {% else %}
+            <input
+                    type="{{ field.type }}"
+                    name="{{ name }}"
+                    {% if flash.datas[form.config.actionName] is defined and flash.datas[form.config.actionName]|keys|length > 0 %}
+                        value="{{ flash.datas[form.config.actionName][name] }}"
+                    {% elseif field.value is defined %}
+                        {% if field.type == "checkbox" %}
+                            {{ field.value ? "checked" : "" }}
+                        {% else %}
+                            value="{{ field.value }}"
+                        {% endif %}
+                    {% endif %}
+                    {% if field.minLength is defined %}minLength="{{ field.minLength }}"{% endif %}
+                    {% if field.maxLength is defined %}maxLength="{{ field.maxLength }}"{% endif %}
+                    {% if field.class is defined %}class="{{ field.class }}"{% endif %}
+                    {% if field.required is defined and field.required %} required='required'{% endif %}
+                    {% if field.type == "file" and field.mimes is defined %}
+                        accept="{{ field.mimes }}"
+                    {% endif %}
+            />
+        {% endif %}
+
+        {% if field.type != "hidden" %}
+            </td></tr>
+        {% endif %}
+
+    {% endfor %}
+</table>
+{% if session.token is defined %}
+    <input name="token" type="hidden" value="{{ session.token }}">
+{% endif %}
+<input name="actionName" type="hidden" value="{{ form.config.actionName }}"/>
+<input
+        {% if form.config.submitClass is defined %}
+            class="{{ form.config.submitClass }}"
+        {% endif %}
+        type="submit"
+        value="{{ form.config.submit }}"/>

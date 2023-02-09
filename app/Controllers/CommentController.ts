@@ -4,6 +4,7 @@ import CommentForm from "../Forms/Comment";
 import Validator from "../Core/Validator";
 import User from "../Entities/User";
 import Comment from "../Entities/Comment";
+import CommentDelete from "../Forms/CommentDelete";
 
 export default class CommentController extends Controller {
     create = async () => {
@@ -32,5 +33,34 @@ export default class CommentController extends Controller {
 
             this.redirect(this.req.header('Referer'));
         }
+    }
+
+    delete = async () => {
+        const datas = this.getDatas();
+        if (datas.comment == undefined) {
+            this.res.json({status: "failed", errors: ["Commentaire non renseigné"]});
+            return;
+        }
+
+        const commentDeleteForm = CommentDelete(datas.comment);
+        const validator = new Validator(this.req,commentDeleteForm);
+        if (validator.isSubmitted()) {
+            if (await validator.isValid()) {
+                const comment: Comment = validator.getDatas().comment;
+
+                if (comment.getUserId() != this.req.session.user.id) {
+                    this.res.json({status: "failed", errors: ["Vous n'êtes pas l'auteur de ce commentaire"]});
+                    return;
+                }
+
+                await comment.delete();
+                this.res.json({status: "success", id: comment.getId()})
+            } else {
+                this.res.json({status: "failed", errors: validator.getFlashErrors()});
+                delete this.req.session.flash;
+            }
+            return;
+        }
+        this.res.json({status: "failed", errors: ["Formulaire non soumis"]});
     }
 }

@@ -13,6 +13,7 @@ import FileUploadService from "../Services/FileUploadService";
 import Comment from "../Entities/Comment";
 import CommentForm from "../Forms/Comment";
 import CommentRepository from "../Repositories/CommentRepository";
+import CommentDelete from "../Forms/CommentDelete";
 
 export default class MediaController extends Controller {
 
@@ -162,9 +163,15 @@ export default class MediaController extends Controller {
             const comments: Array<Comment> = await CommentRepository.findAllByMediaId(media.getId());
 
             const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
+
+            let commentDeleteForms: any = {};
+            for (const comment of comments) {
+                commentDeleteForms[<number>comment.getId()] = CommentDelete(comment.getId());
+            }
+
             this.generateToken();
 
-            this.render("media/view.html.twig", {comments,commentForm,media,section,family});
+            this.render("media/view.html.twig", {comments,commentForm,commentDeleteForms,media,section,family});
         }
     }
 

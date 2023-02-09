@@ -1,0 +1,29 @@
+<form
+		id="form_{{ form.config.actionName }}"
+		action="{{ form.config.action }}"
+		method="{{ form.config.method }}"
+		{% if form.config.formClass is defined %}
+			class="{{ form.config.formClass }}"
+		{% endif %}
+		{% if form.config.formData %}
+			encType="multipart/form-data"
+		{% endif %}
+>
+	{% include 'Modals/fields.html.twig' %}
+</form>
+
+
+<script>
+	document.getElementById("form_{{ form.config.actionName }}").addEventListener("submit", function(e) {
+		e.preventDefault();
+		{% if form.config.confirmOnSumit is defined %}
+			if (!confirm(`{{ form.config.confirmOnSumit }}`)) return;
+		{% endif %}
+		const formData = new FormData(this);
+		fetch(this.action, {
+			method: this.method,
+			body: formData
+		}).then(res => res.json())
+		.then(json => { {{ callback }}(json) } );
+	});
+</script>

@@ -1,13 +1,13 @@
 import Helpers from "../Core/Helpers";
 
-export default function DenyDemand(familySlug,sectionSlug,mediaSlug) {
+export default function Comment(familySlug,sectionSlug,mediaSlug) {
     return {
         config: {
             action: Helpers.getPath("comment_create", {familySlug,sectionSlug,mediaSlug}),
             method: "POST",
             submit: "Ajouter",
             actionName: "create_comment",
-            msgError: "Création du commentaire échoué",
+            msgError: "Création du commentaire échouée",
             submitClass: "btn"
         },
         fields: {

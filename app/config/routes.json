@@ -168,11 +168,15 @@
   },
   "CommentController": {
     "prefix": "comment_",
-    "prefix_route": "/family/:familySlug/sections/:sectionSlug/medias/:mediaSlug/comment",
+    "prefix_route": "/comment",
 
     "routes": {
       "create": {
-        "route": "/create",
+        "route": "/:familySlug/:sectionSlug/:mediaSlug/create",
+        "method": "POST"
+      },
+      "delete": {
+        "route": "/delete",
         "method": "POST"
       }
     }

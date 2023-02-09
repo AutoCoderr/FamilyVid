@@ -44,4 +44,8 @@ export default class Comment extends EntityManager {
         return this.User;
     }
 
+    getUserId() {
+        return this.UserId;
+    }
+
 }

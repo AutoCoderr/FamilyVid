@@ -7,6 +7,10 @@
         "roles": "connected"
       },
       {
+        "path": "^/comment",
+        "roles": "connected"
+      },
+      {
         "path": "^/user",
         "roles": "connected"
       }
