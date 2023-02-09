@@ -29,11 +29,14 @@ img, video {
 
 .header {
     margin-bottom: 10px;
-    position: relative;
+    width: 50%;
+    text-align: left;;
 }
 
 .body {
-    position: relative;
+    width: 50%;
+    text-align: left;;
+    word-wrap: break-word;
 }
 
 .comment {
@@ -43,6 +46,20 @@ img, video {
 
 .actions {
     position: absolute;
-    right: 20px;
+    right: 50px;
     top: -10px;
+}
+
+.btn-form-action {
+    padding: 1px 3px;
+    border-radius: unset;
+}
+
+.edit-comment-form {
+    display: none;
+}
+
+.btn img {
+    width: 15px;
+    height: 20px;
 }

@@ -39,10 +39,19 @@
                             <hr>
                         {% endif %}
                         <div class="header">
-                            De {{ comment.User.firstname }} {{ comment.User.lastname }}
-                            à {{ comment.createdAt|date("Y-m-d H:i:s") }}
+                            <div class="infos">
+                                De {{ comment.User.firstname }} {{ comment.User.lastname }}
+                                à {{ comment.createdAt|date("Y-m-d H:i:s") }}
+                                {% if comment.updated %}
+                                    (modifié)
+                                {% endif %}
+                            </div>
+
                             {% if comment.User.id == session.user.id %}
                                 <div class="actions">
+                                    <a class="btn btn-form-action" href="javascript:displayEdit({{ comment.id }})">
+                                        <img src="/images/editer.svg">
+                                    </a>
                                     {% include "Modals/forms_async.html.twig" with {'form': commentDeleteForms[comment.id], 'callback': 'comment_deleted'} %}
                                 </div>
                             {% endif %}
@@ -50,6 +59,7 @@
                         <div class="body">
                             {{ comment.content }}
                         </div>
+                        {% include "Modals/forms_async.html.twig" with {'form': commentEditForms[comment.id], 'checkBefore': 'beforeEdit', 'callback': 'comment_edited' } %}
                     </li>
                     {% set nb = nb+1 %}
                 {% endfor %}
