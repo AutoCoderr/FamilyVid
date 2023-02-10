@@ -28,8 +28,12 @@ export default class Controller {
         this.res.redirect(permanently ? 301 : 302, url);
     }
 
-    canAccess(): boolean {
-        const security = JSON.parse(fs.readFileSync(__dirname+"/../config/security.json"));
+    async canAccess(): Promise<boolean> {
+        if (Helpers.security == null) {
+            Helpers.security = JSON.parse(await fs.readFile(__dirname + "/../config/security.json"));
+        }
+
+        const security = Helpers.security;
 
         for (const permission of security.permissions) {
             const regex = new RegExp(permission.path);
