@@ -8,7 +8,7 @@ export default function DeleteMedia(familySlug,sectionSlug,mediaSlug) {
             submit: "Supprimer",
             actionName: "delete_media",
             msgError: "Suppression échouée",
-            confirmOnSumit: "Êtes vous sûre de vouloir supprimer cette photo/vidéo? Il n'y a pas de corbeille",
+            confirmOnSubmit: "Êtes vous sûre de vouloir supprimer cette photo/vidéo? Il n'y a pas de corbeille",
             formClass: "form-btn",
             submitClass: "btn"
         },

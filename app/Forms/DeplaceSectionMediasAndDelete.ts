@@ -16,7 +16,7 @@ export default async function DeplaceSectionMediasAndDelete(family: Family, sect
             submit: "Déplacer et supprimer",
             actionName: "deplace_section_medias_and_delete",
             msgError: "Déplacement échoué",
-            confirmOnSumit: "Toutes les photos/vidéos seront déplacés vers la nouvelle rubrique, et celle ci sera supprimée",
+            confirmOnSubmit: "Toutes les photos/vidéos seront déplacés vers la nouvelle rubrique, et celle ci sera supprimée",
             formClass: "form-btn",
             submitClass: "btn"
         },

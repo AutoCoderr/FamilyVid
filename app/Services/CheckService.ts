@@ -11,7 +11,7 @@ export default class CheckService {
     static checkFamily(family: Family, controller: Controller, json = false) {
         if (family == null) {
             if (json) {
-                controller.res.json({error: "Cette famille n'existe pas"});
+                controller.res.json({status: "failed", errors: ["Cette famille n'existe pas"]});
             } else {
                 controller.setFlash("failed", "Cette famille n'existe pas");
                 controller.redirectToRoute("index");
@@ -28,7 +28,7 @@ export default class CheckService {
         }
         if (!found) {
             if (json) {
-                controller.res.json({error: "Vous ne faites pas partie de cette famille"});
+                controller.res.json({status: "failed", errors: ["Vous ne faites pas partie de cette famille"]});
             } else {
                 controller.setFlash("failed", "Vous ne faites pas partie de cette famille");
                 controller.redirectToRoute("index");
@@ -42,7 +42,7 @@ export default class CheckService {
         const section: null|Section = await SectionRepository.findOneBySlug(sectionSlug);
         if (section == null) {
             if (json) {
-                controller.res.json({error: "Cette rubrique n'existe pas"})
+                controller.res.json({status: "failed", errors: ["Cette rubrique n'existe pas"]})
             } else {
                 controller.setFlash("section_failed", "Cette rubrique n'existe pas");
                 controller.redirectToRoute("section_index", {familySlug});
@@ -58,7 +58,7 @@ export default class CheckService {
         const media: null|Media = await MediaRepository.findOneBySlug(mediaSlug);
         if (media == null) {
             if(json) {
-                controller.res.json({error: "Cette photo/vidéo n'existe pas"});
+                controller.res.json({status: "failed", errors: ["Cette photo/vidéo n'existe pas"]});
             } else {
                 controller.setFlash("media_failed", "Cette photo/vidéo n'existe pas");
                 controller.redirectToRoute("media_index", {familySlug, sectionSlug})

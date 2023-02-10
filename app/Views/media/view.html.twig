@@ -6,7 +6,12 @@
     <link rel="stylesheet" href="/css/media_view.css">
 {% endblock %}
 {% block javascripts %}
-    <script async src="/js/comment.js"></script>
+    <script src="/js/comment.js"></script>
+    <script>
+        firstname = "{{ session.user.firstname }}";
+        lastname = "{{ session.user.lastname }}";
+    </script>
+    {% include "Modals/form_listener.html.twig" %}
 {% endblock %}
 
 {% block body %}
@@ -28,7 +33,7 @@
         {% endif %}
         <h2>Créez un commentaire</h2>
 
-        {% include "Modals/forms.html.twig" with {'form': commentForm} %}
+        {% include "Modals/forms_async.html.twig" with {'form': commentForm, 'checkBefore': 'can_create', 'callback': 'comment_created'} %}
 
         {% if comments|length > 0 %}
             <ul id="comments">
@@ -40,16 +45,16 @@
                         {% endif %}
                         <div class="header">
                             <div class="infos">
-                                De {{ comment.User.firstname }} {{ comment.User.lastname }}
-                                à {{ comment.createdAt|date("Y-m-d H:i:s") }}
+                                De <span class="author_name">{{ comment.User.firstname }} {{ comment.User.lastname }}</span>
+                                à <span class="comment_date">{{ comment.createdAt|date("Y-m-d H:i:s") }}</span>
                                 {% if comment.updated %}
-                                    (modifié)
+                                    <span class="comment_updated">(modifié)</span>
                                 {% endif %}
                             </div>
 
                             {% if comment.User.id == session.user.id %}
                                 <div class="actions">
-                                    <a class="btn btn-form-action" href="javascript:displayEdit({{ comment.id }})">
+                                    <a class="btn btn-form-action edit_button" href="javascript:displayEdit({{ comment.id }})">
                                         <img src="/images/editer.svg">
                                     </a>
                                     {% include "Modals/forms_async.html.twig" with {'form': commentDeleteForms[comment.id], 'callback': 'comment_deleted'} %}
@@ -59,7 +64,7 @@
                         <div class="body">
                             {{ comment.content }}
                         </div>
-                        {% include "Modals/forms_async.html.twig" with {'form': commentEditForms[comment.id], 'checkBefore': 'beforeEdit', 'callback': 'comment_edited' } %}
+                        {% include "Modals/forms_async.html.twig" with {'form': commentEditForms[comment.id], 'checkBefore': 'can_edit', 'callback': 'comment_edited' } %}
                     </li>
                     {% set nb = nb+1 %}
                 {% endfor %}
@@ -68,4 +73,22 @@
             <h2>Il n'y a aucun commentaire</h2>
         {% endif %}
     </div>
+    <li class="comment" id="comment_prototype">
+        <div class="header">
+            <div class="infos">
+                De <span class="author_name">XXX XXX</span>
+                à <span class="comment_date">XXXXXXX</span>
+            </div>
+            <div class="actions">
+                <a class="btn btn-form-action edit_button" href="#">
+                    <img src="/images/editer.svg">
+                </a>
+                {% include "Modals/forms_async.html.twig" with {'form': commentDeleteFormPrototype, 'callback': 'comment_deleted'} %}
+            </div>
+        </div>
+        <div class="body">
+            XXXX XXXX XXXXXXXXXXX XXXX
+        </div>
+        {% include "Modals/forms_async.html.twig" with {'form': commentEditFormPrototype, 'checkBefore': 'can_edit', 'callback': 'comment_edited' } %}
+    </li>
 {% endblock %}

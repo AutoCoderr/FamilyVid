@@ -8,7 +8,7 @@ export default function DeleteSection(familySlug,sectionSlug) {
             submit: "Supprimer",
             actionName: "delete_section",
             msgError: "Suppression échouée",
-            confirmOnSumit: "Êtes vous sûre de vouloir supprimer cette rubrique? Il n'y a pas de corbeille",
+            confirmOnSubmit: "Êtes vous sûre de vouloir supprimer cette rubrique? Il n'y a pas de corbeille",
             formClass: "form-btn",
             submitClass: "btn"
         },
