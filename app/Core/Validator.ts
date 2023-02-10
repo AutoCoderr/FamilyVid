@@ -19,6 +19,7 @@ export default class Validator {
 	isSubmitted() {
 		return (this.datas.actionName == this.form.config.actionName);
 	}
+
 	async isValid() {
 		delete this.datas.actionName;
 		this.fillCheckboxs();
@@ -146,7 +147,7 @@ export default class Validator {
 	}
 
 	checkFile(field,file) {
-		return !(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)
+		return (!(field.mimes instanceof Array) || field.mimes.includes(file.mimetype)) && file.size <= field.max_size;
 	}
 
 	thereIsASpecialChar(str) {
@@ -211,6 +212,14 @@ export default class Validator {
 		}
 		if (typeof(this.req.session.fields) == "undefined") {
 			this.req.session.flash.datas = {};
+		}
+
+		const allowedTypes = ["string", "number"];
+		for (const key in this.datas) {
+			const data = this.datas[key];
+			if (!allowedTypes.includes(typeof(data))) {
+				delete this.datas[key];
+			}
 		}
 
 		this.req.session.flash.errors[this.form.config.actionName] = errors;

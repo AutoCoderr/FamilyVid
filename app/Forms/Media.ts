@@ -1,4 +1,5 @@
 import Helpers from "../Core/Helpers";
+import env from "../Core/env";
 
 export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 	return {
@@ -29,9 +30,10 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 				file: {
 					type: "file",
 					mimes: ['video/mp4','video/ogg','video/x-msvideo','image/png','image/jpeg','image/bmp'],
+					max_size: env.UPLOAD_SIZE_LIMIT,
 					label: "Envoyez votre photo/vidéo",
 					required: true,
-					msgError: "Vous devez envoyer un fichier image ou vidéo"
+					msgError: "Vous devez envoyer un fichier image ou vidéo, qui fasse moins de 500 mo"
 				}
 			} : {})
 		}

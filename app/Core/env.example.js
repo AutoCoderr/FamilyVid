@@ -15,5 +15,8 @@ module.exports = {
   SMTP_SECURE: true, // Is SMTP secure
   SMTP_USER: "user@gmail.com", // Username for SMTP server
   SMTP_PASSWORD: "password", // Password for SMTP server
-  MAIL_NAME: "A name"
+  MAIL_NAME: "A name",
+
+
+  UPLOAD_SIZE_LIMIT: 500 * 1024 * 1024, // File upload limited to 500 mo
 };
