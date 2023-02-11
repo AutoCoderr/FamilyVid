@@ -10,6 +10,11 @@ import Helpers from "../Core/Helpers";
 import DeleteMedia from "../Forms/DeleteMedia";
 import DeplaceMedia from "../Forms/DeplaceMedia";
 import FileUploadService from "../Services/FileUploadService";
+import Comment from "../Entities/Comment";
+import CommentForm from "../Forms/Comment";
+import CommentRepository from "../Repositories/CommentRepository";
+import CommentDelete from "../Forms/CommentDelete";
+import CommentEdit from "../Forms/CommentEdit";
 
 export default class MediaController extends Controller {
 
@@ -156,8 +161,33 @@ export default class MediaController extends Controller {
 
         if (mediaSectionAndFamily) {
             const {media, section, family} = mediaSectionAndFamily;
+            const comments: Array<Comment> = await CommentRepository.findAllByMediaId(media.getId());
 
-            this.render("media/view.html.twig", {media,section,family});
+            const commentForm = CommentForm(familySlug,sectionSlug,mediaSlug);
+
+            let commentDeleteForms: any = {};
+            let commentEditForms: any = {};
+            for (const comment of comments) {
+                commentDeleteForms[<number>comment.getId()] = CommentDelete(comment.getId());
+                commentEditForms[<number>comment.getId()] = CommentEdit(comment.getId());
+            }
+
+            const commentDeleteFormPrototype = CommentDelete(0);
+            const commentEditFormPrototype = CommentEdit(0);
+
+            this.generateToken();
+
+            this.render("media/view.html.twig", {
+                comments,
+                commentForm,
+                commentDeleteForms,
+                commentDeleteFormPrototype,
+                commentEditForms,
+                commentEditFormPrototype,
+                media,
+                section,
+                family
+            });
         }
     }
 

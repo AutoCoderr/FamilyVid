@@ -110,9 +110,10 @@ export default class FamilyController extends Controller {
         let validator = new Validator(this.req,familyDemandForm);
         if (validator.isSubmitted()) {
             if (await validator.isValid()) {
+                datas = validator.getDatas();
                 let applicant: User = await <Promise<User>>this.getUser();
-                let user: User = await UserRepository.findOne(datas.user);
-                let family: Family = await FamilyRepository.findOne(datas.family);
+                let user: User = datas.user;
+                let family: Family = datas.family;
 
                 if ((<Array<Family>>applicant.getFamilies()).map(family => family.getId()).includes(family.getId())) {
                     this.setFlash("family_demand_faileds", ["Vous vous trouvez déjà dans la famille " + family.getName()]);
@@ -137,7 +138,7 @@ export default class FamilyController extends Controller {
                     return;
                 }
 
-                let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),datas.user,datas.family);
+                let demand = await FamilyDemandRepository.findOneByApplicantIdUserIdAndFamilyId(applicant.getId(),user.getId(),family.getId());
                 if (demand != null) {
                     this.setFlash("family_demand_faileds",["Vous avez déjà demandé à "+user.getFirstname()+" "+user.getLastname()+" de vous faire rentrer dans la famille "+family.getName()]);
                     this.redirect(this.req.header('Referer'));
@@ -148,7 +149,7 @@ export default class FamilyController extends Controller {
                 familyDemand.setApplicant(applicant);
                 familyDemand.setFamily(family);
                 familyDemand.setUser(user);
-                familyDemand.setVisible(datas.visible != undefined);
+                familyDemand.setVisible(datas.visible);
                 await familyDemand.save();
 
                 this.setFlash("family_demand_success","Votre demande a été envoyée!");

@@ -1,11 +1,17 @@
+import Helpers from "./Helpers";
+
 const fs = require("fs-extra");
 
+let controllers: any = null;
+
 export default async function Router(app) {
-    const controllers = JSON.parse(fs.readFileSync(__dirname+"/../config/routes.json"));
+
+    controllers = JSON.parse(await fs.readFile(__dirname + "/../config/routes.json"));
+    Helpers.controllers = controllers;
 
     for (const controllerName in controllers) {
         const controllerPath = __dirname+"/../Controllers/"+controllerName+".js";
-        if (fs.existsSync(controllerPath) && !fs.statSync(controllerPath).isDirectory()) {
+        if (await fs.exists(controllerPath) && !(await fs.stat(controllerPath)).isDirectory()) {
             const C = require(controllerPath).default;
             const controller = new C(null,null);
 
@@ -37,9 +43,9 @@ export default async function Router(app) {
                     }
 
                     for (const method of methods) {
-                        app[method](prefix_route+config.route , (req,res) => {
+                        app[method](prefix_route+config.route , async (req,res) => {
                             const controller = new C(req,res);
-                            if (controller.canAccess()) {
+                            if (await controller.canAccess()) {
                                 controller[action]().catch(e => {
                                     res.send("ERROR 500");
                                     throw e;
