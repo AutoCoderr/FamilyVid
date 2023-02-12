@@ -151,7 +151,7 @@ export default class Validator {
 	}
 
 	thereIsASpecialChar(str) {
-		const specialChars = "?.*$_-#&<>";
+		const specialChars = "!~\"'()`?/.^*@$%_-#&<>§:;,";
 		for (let i=0;i<specialChars.length;i++) {
 			if (str !== str.replace(specialChars[i],"")) {
 				return true;
