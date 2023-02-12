@@ -8,7 +8,7 @@ import Family from "../Entities/Family";
 
 export default class FileUploadService {
     static mediaTypeByMimeType = {
-        video: ['video/mp4','video/ogg','video/x-msvideo'],
+        video: ['video/mp4','video/ogg','video/webm'],
         picture: ['image/png','image/jpeg','image/bmp']
     }
 
