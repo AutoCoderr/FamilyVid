@@ -29,7 +29,7 @@ export default class UserRepository extends RepositoryManager {
         })
     }
 
-    static findAllBySearchExceptOne(id, search = '') {
+    static findAllBySearch(search = '') {
         search = "%"+search+"%";
         return super.findAllByParams({
             where: {
@@ -44,7 +44,6 @@ export default class UserRepository extends RepositoryManager {
                         email: { [Op.iLike]: search }
                     }
                 ],
-                id: {[Op.ne]: id},
                 active: true
             },
             order: ["email"],

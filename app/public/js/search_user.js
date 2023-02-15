@@ -1,5 +1,6 @@
 let allUser;
 let familySlug;
+let userId;
 
 function searchUsers(search) {
     const data = {search};
@@ -25,22 +26,27 @@ function generateUserList(users) {
 
             const tdFirstname = document.createElement("td");
             tdFirstname.innerText = user.firstname;
-            tr.appendChild(tdFirstname)
+            tr.appendChild(tdFirstname);
 
             const tdLastname = document.createElement("td");
             tdLastname.innerText = user.lastname;
-            tr.appendChild(tdLastname)
+            tr.appendChild(tdLastname);
 
             const tdEmail = document.createElement("td");
-            tdEmail.innerText = user.email;
-            tr.appendChild(tdEmail)
+            tdEmail.innerText = user.email+(userId === user.id ? " (vous)" : "");
+            tr.appendChild(tdEmail);
 
             if (allUser) {
                 const tdButton = document.createElement("td");
                 const AButton = document.createElement("a");
                 AButton.classList.add("btn")
-                AButton.href = "/family/list/" + user.id;
-                AButton.innerText = "Voir ses familles (" + user.nbFamily + ")";
+                if (userId === user.id) {
+                    AButton.href = "/family/list/";
+                    AButton.innerText = "Voir mes familles (" + user.nbFamily + ")";
+                } else {
+                    AButton.href = "/family/list/" + user.id;
+                    AButton.innerText = "Voir ses familles (" + user.nbFamily + ")";
+                }
 
                 tdButton.appendChild(AButton)
                 tr.appendChild(tdButton);
