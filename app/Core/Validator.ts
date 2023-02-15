@@ -59,6 +59,9 @@ export default class Validator {
 				errors.push(("Champs '"+name+"' vide!"));
 				continue;
 			}
+			if ((!field.required || typeof(field.required) == "undefined") && this.datas[name] === "") {
+				continue;
+			}
 
 			if (this.datas[name].length < field.minLength && this.datas[name].length > field.maxLength) {
 				errors.push(field.msgError);

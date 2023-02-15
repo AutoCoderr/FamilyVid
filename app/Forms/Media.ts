@@ -24,6 +24,8 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 				type: "text",
 				label: "Son nom (*Si non renseigné, correspondra au nom du fichier)",
 				required: false,
+				maxLength: 50,
+				minLength: 2,
 				msgError: "Le nom doit faire de 2 à 50 caractères"
 			},
 			date: {
@@ -42,7 +44,15 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 					required: true,
 					msgError: "Le vidéo n'est pas au bon format, ou fait plus de 1.5 giga octets"
 				}
-			} : {})
+			} : {}),
+			tags: {
+				type: "textarea",
+				label: "Mots clés (optionel)",
+				maxLength: 140,
+				minLength: 2,
+				required: false,
+				msgError: "La liste des mot clé doit faire entre 2 et 140 caractères"
+			}
 		}
 	}
 };
