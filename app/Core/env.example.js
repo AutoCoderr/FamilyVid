@@ -8,6 +8,9 @@ module.exports = {
   DB_DRIVER: "postgres", // Driver of database
   UPLOAD_DIR: "Medias", // Folder to store medias
 
+  SALT_NB: 50, // Nb salts for hash
+  SALT: "abcd", // Salt for hash
+
   // Mailer part
 
   SMTP_HOST: "smtp.gmail.com", // Host of SMTP server

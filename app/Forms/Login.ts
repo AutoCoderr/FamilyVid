@@ -23,6 +23,7 @@ export default function Login() {
 				type: "password",
 				label: "Votre mot de passe",
 				required: true,
+				canDisplay: true,
 				msgError: "Format de mot de passe incorrect",
 				checkValid: false
 			}
