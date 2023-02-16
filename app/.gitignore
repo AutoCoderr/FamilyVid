@@ -10,4 +10,6 @@
 !/Core/env.example.js
 /Medias/*
 !/Medias/.gitkeep
+/ssl/*
+!/ssl/.gitkeep
 /node_modules
