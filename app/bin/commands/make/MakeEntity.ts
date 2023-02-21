@@ -1,10 +1,4 @@
-
-
-module.exports = function () {
-
-}
-
-module.exports = class MakeEntity {
+export default class MakeEntity {
     static commandName = "make:entity";
 
     static action() {

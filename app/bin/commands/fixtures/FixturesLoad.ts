@@ -1,6 +1,7 @@
 const fs = require("fs-extra");
+import fs from 'fs-extra';
 
-module.exports = class FixtureLoad {
+export default class FixtureLoad {
     static commandName = "fixtures:load";
 
     static async action() {

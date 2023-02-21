@@ -1,4 +1,4 @@
-module.exports = class FixtureHelp {
+export default class FixtureHelp {
     static commandName = "fixtures";
 
     static action() {
