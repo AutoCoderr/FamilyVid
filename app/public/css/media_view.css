@@ -2,13 +2,6 @@ img, video {
     width: 50%;
 }
 
-#comment_container textarea {
-    width: 400px;
-    height: 100px;
-    border-radius: 25px;
-    padding: 10px;
-}
-
 #comments {
     margin-top: 25px;
     background-color: #FFD278;

@@ -11,7 +11,17 @@ let globalSearch;
 
 function searchMedias() {
     const data = {search,sortBy,toDisplay,sort};
-    return fetch(globalSearch ? "/family/"+familySlug+"/sections/global/search" : "/family/"+familySlug+"/sections/"+sectionSlug+"/medias/search", {
+    let url;
+    if (globalSearch) {
+        if (familySlug) {
+            url = "/family/"+familySlug+"/sections/global/search";
+        } else {
+            url = "/global/search";
+        }
+    } else {
+        url = "/family/"+familySlug+"/sections/"+sectionSlug+"/medias/search"
+    }
+    return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,10 +54,24 @@ function generateMediaList(medias) {
             tr.appendChild(tdType);
 
             if (globalSearch) {
+                if (familySlug === undefined) {
+                    const tdFamily = document.createElement("td");
+                    const linkFamily = document.createElement("a");
+
+                    linkFamily.href = "/family/" + media.familySlug + "/sections/";
+                    linkFamily.innerText = media.familyName;
+                    tdFamily.appendChild(linkFamily);
+                    tr.appendChild(tdFamily);
+                }
+
                 const tdSection = document.createElement("td");
                 const linkSection = document.createElement("a");
 
-                linkSection.href = "/family/"+familySlug+"/sections/"+media.sectionSlug+"/medias/";
+                if (familySlug) {
+                    linkSection.href = "/family/" + familySlug + "/sections/" + media.sectionSlug + "/medias/";
+                } else {
+                    linkSection.href = "/family" + media.familySlug + "/sections/" + media.sectionSlug + "/medias/"
+                }
                 linkSection.innerText = media.sectionName;
                 tdSection.appendChild(linkSection);
                 tr.appendChild(tdSection);

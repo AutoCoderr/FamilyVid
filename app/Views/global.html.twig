@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche globale{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/media_index.css">
+{% endblock %}
+{% block javascripts %}
+    <script src="/js/media_search.js"></script>
+    <script>
+        globalSearch = true;
+    </script>
+{% endblock %}
+
+{% block body %}
+    <a class="btn back-btn" href="{{ path('index') }}">Accueil</a>
+    <h1>Recherche globale</h1>
+
+    {% if medias|length > 0 %}
+        <div id="search-headband">
+            <div>
+                <label for="sortBy_filter">Trier par</label>
+                <select id="sortBy_filter">
+                    <option value="date">Date</option>
+                    <option value="name">Nom</option>
+                </select>
+            </div>
+            <div>
+                <label for="toDisplay_filter">Afficher</label>
+                <select id="toDisplay_filter">
+                    <option value="all">Tous</option>
+                    <option value="video">Les vidéos</option>
+                    <option value="picture">Les photos</option>
+                </select>
+            </div>
+            <div>
+                <label for="sort_filter">Trier dans l'ordre</label>
+                <select id="sort_filter">
+                    <option value="ASC">Croissant</option>
+                    <option value="DESC">Décroissant</option>
+                </select>
+            </div>
+        </div>
+        <input type="text" placeholder="Tapez un mot clé..." id="input_search">
+        <h2>Les photos/videos :</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Famille</th>
+                    <th>Rubrique</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for media in medias %}
+                <tr>
+                    <td>{{ media.name }}</td>
+                    <td>{{ media.date|date('Y-m-d') }}</td>
+                    <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
+                    <td><a href="{{ path('section_index', {'familySlug': media.familySlug}) }}">{{ media.familyName }}</a></td>
+                    <td><a href="{{ path('media_index', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug}) }}">{{ media.sectionName }}</a></td>
+                    <td>
+                        <a class="btn" href="{{ path('media_view', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}">Voir</a>
+                        <a class="btn" href="{{ path('media_edit', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h2>Il semblerait qu'il n'y ait aucune photo/video accessible</h2>
+    {% endif %}
+{% endblock %}

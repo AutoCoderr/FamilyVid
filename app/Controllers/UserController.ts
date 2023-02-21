@@ -9,7 +9,7 @@ import ChangeUserPassword from "../Forms/ChangeUserPassword";
 
 export default class UserController extends Controller {
     all = async () => {
-        let users = await UserRepository.findAllBySearchExceptOne(this.req.session.user.id);
+        let users = await UserRepository.findAllBySearch();
 
         users = await Helpers.serializeEntityArray(users);
 
@@ -66,7 +66,7 @@ export default class UserController extends Controller {
 
     search = async () => {
         const {search} = this.req.body;
-        let users: any = await UserRepository.findAllBySearchExceptOne(this.req.session.user.id, search);
+        let users: any = await UserRepository.findAllBySearch(search);
         users = await Helpers.serializeEntityArray(users);
         users = users.map(user => {
            return {

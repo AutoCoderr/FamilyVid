@@ -70,11 +70,19 @@ table .btn {
     margin: 0;
 }
 
+textarea {
+    width: 400px;
+    height: 100px;
+    border-radius: 25px;
+    padding: 10px;
+}
+
 .form-btn {
     display: inline-block;
 }
 
-.btn {
+.btn, form input[type=button] {
+    cursor: pointer;
     padding: 5px 25px;
     background-color: #C3AB00;
     border-radius: 30px;
@@ -87,7 +95,7 @@ table .btn {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.btn:hover {
+.btn:hover, form input[type=button]:hover {
     background-color: #9B8801;
     text-decoration: none;
     color: black;
@@ -102,5 +110,5 @@ table .btn {
 .right-top-buttons  {
     position: absolute;
     top: 70px;
-    right: 10%;
+    left: 60%;
 }
