@@ -1,7 +1,9 @@
-export default class FixtureHelp {
+import Command from "../../../Core/Command";
+
+export default class FixtureHelp extends Command {
     static commandName = "fixtures";
 
-    static action() {
+    static async action(_) {
         console.log("Possibles options :");
         console.log("\t- fixtures:load");
     }
