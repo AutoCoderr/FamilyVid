@@ -15,11 +15,11 @@ export default class Command {
         return true;
     }
 
-    static start(argv) {
+    static async start(argv) {
         let args = this.parse(argv);
         args = this.computeArgs(args,this.argsModel);
         if (args) {
-            this.action(args);
+            await this.action(args);
         }
     }
 

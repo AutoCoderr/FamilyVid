@@ -1,4 +1,6 @@
 import Command from "../../../Core/Command";
+import User from "../../../Entities/User";
+import UserRepository from "../../../Repositories/UserRepository";
 
 export default class UserCreate extends Command {
     static commandName = "user:create";
@@ -12,7 +14,28 @@ export default class UserCreate extends Command {
     };
 
     static async action(args: {email: string, firstname: string, lastname: string, password: string}) {
-        console.log(args);
+        const {email,firstname,lastname,password} = args;
+        const foundUsers: Array<User> = await UserRepository.findAllByEmailAndActiveOrNot(email);
+        if (foundUsers.find(user => user.getActive())) {
+            console.log("Un utilisateur avec l'adresse mail '"+email+"' existe déjà");
+            return;
+        }
+
+        await Promise.all(
+            foundUsers.map(user => user.delete())
+        );
+
+        const newUser = new User();
+        newUser.setEmail(email);
+        newUser.setFirstname(firstname);
+        newUser.setLastname(lastname);
+        newUser.setPassword(password);
+        newUser.setActive(true);
+        newUser.addRole("USER");
+
+        await newUser.save();
+
+        console.log("Utilisateur créé avec succès!");
     }
 
     static help() {
