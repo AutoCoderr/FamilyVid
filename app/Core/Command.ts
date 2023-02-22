@@ -1,7 +1,7 @@
 export default class Command {
     static commandName: string;
 
-    static match(specifiedName) {
+    static match(specifiedName): boolean {
         const splittedSpecifiedName = specifiedName.split(":");
         const splittedCommandName = this.commandName.split(":");
         if (splittedSpecifiedName.length != splittedCommandName.length) {
@@ -15,73 +15,95 @@ export default class Command {
         return true;
     }
 
+    static start(argv) {
+        let args = this.parse(argv);
+        args = this.computeArgs(args,this.argsModel);
+        if (args) {
+            this.action(args);
+        }
+    }
+
+    static computeArgs(args,model) {
+        let out: any = {};
+        let fails: Array<any> = []
+        for (const attr in model) {
+            let found = false;
+            for (let field of model[attr].fields) {
+                if (args[field] != undefined && (typeof(args[field]) == model[attr].type || model[attr].type == "string")) {
+                    out[attr] = args[field];
+                    found = true;
+                    break;
+                } else if (args[field] != undefined && (typeof(args[field]) != model[attr].type)) {
+                    console.log(field+" ("+model[attr].type+") : type donné incorrect");
+                }
+            }
+            if (!found && (model[attr].required == undefined || model[attr].required)) fails.push(model[attr]);
+        }
+        if (fails.length > 0) {
+            console.log("\nArguments manquants ou invalides :");
+            for (const fail of fails) {
+                console.log("      "+fail.fields.join(", ")+" : "+fail.description+"  |  (Type attendu : "+fail.type+")");
+            }
+            console.log("\n");
+            this.help();
+            return false;
+        }
+        return out;
+    }
+
     static parse(argv) {
         if (argv.length < 4) {
             return {};
         }
         let argsObject = {};
-        const args = argv.slice(3).join(" ");
-
-        for (let i=0;i<args.length;i++) {
-            if (args[i] == "-") {
-                let attr = "";
-                if (args[i]+args[i+1] == "--")
-                    i += 2;
-                else
-                    i += 1;
-
-                while (i < args.length && args[i] != " ") {
-                    attr += args[i];
-                    i += 1;
-                }
-                while (i < args.length && args[i] == " ") {
-                    i += 1;
-                }
-                if (args[i] != "-") {
-                    if (i < args.length && (args[i] == "'" || args[i] == '"')) {
-                        let quote = args[i];
-                        let value = "";
-                        i += 1;
-                        while (i < args.length && args[i] != quote) {
-                            value += args[i];
-                            i += 1;
-                        }
-                        argsObject[attr] = value != "" ? value : true;
-                    } else {
-                        let value = "";
-                        while (i < args.length && args[i] != " ") {
-                            value += args[i];
-                            i += 1;
-                        }
-                        argsObject[attr] = value != "" ? value : true;
-                    }
-                } else {
+        let attr: null|string = null;
+        for (let i=3;i<argv.length;i++) {
+            if (argv[i][0] == "-") {
+                if (attr != null) {
                     argsObject[attr] = true;
                 }
-            } else if (args[i] != " ") {
-                let value = "";
-                if (i < args.length && (args[i] == "'" || args[i] == '"')) {
-                    let quote = args[i];
-                    i += 1;
-                    while (i < args.length && args[i] != quote) {
-                        value += args[i];
-                        i += 1;
-                    }
+                attr = argv[i];
+            } else {
+                if (attr != null) {
+                    let value = argv[i];
+                    if (isNumber(value))
+                        value = parseInt(value);
+                    else if (value == "true" || value == "false")
+                        value = value == "true";
+
+                    argsObject[attr] = value;
+                    attr = null;
                 } else {
-                    while (i < args.length && args[i] != " ") {
-                        value += args[i];
-                        i += 1;
+                    let value = argv[i];
+                    if (isNumber(value))
+                        value = parseInt(value);
+                    else if (value == "true" || value == "false")
+                        value = value == "true";
+
+                    let j = 0;
+                    while (typeof(argsObject[j]) != "undefined") {
+                        j += 1;
                     }
+                    argsObject[j] = value;
                 }
-                let j = 0;
-                while (typeof(argsObject[j]) != "undefined") {
-                    j += 1;
-                }
-                argsObject[j] = value;
             }
         }
+        if (attr != null) {
+            argsObject[attr] = true;
+            attr = null;
+        }
+
         return argsObject;
     }
 
-    static async action(args) {}
+    static argsModel = {};
+
+    static async action(_) {}
+
+    static help(){}
+}
+
+function isNumber(num: number|string) {
+    return typeof(num) == "number" ||
+        (parseInt(num).toString() == num && num != "NaN");
 }
