@@ -26,23 +26,47 @@ export default class Command {
     static computeArgs(args,model) {
         let out: any = {};
         let fails: Array<any> = []
+        let argsWithoutKeyDefined = false;
         for (const attr in model) {
-            let found = false;
-            for (let field of model[attr].fields) {
-                if (args[field] != undefined && (typeof(args[field]) == model[attr].type || model[attr].type == "string")) {
-                    out[attr] = args[field];
-                    found = true;
-                    break;
-                } else if (args[field] != undefined && (typeof(args[field]) != model[attr].type)) {
-                    console.log(field+" ("+model[attr].type+") : type donné incorrect");
+            if (attr[0] != "$") {
+                let found = false;
+                for (let field of model[attr].fields) {
+                    if (args[field] != undefined &&
+                        (
+                            typeof(args[field]) == model[attr].type ||
+                            (
+                                model[attr].type == "string" &&
+                                typeof(args[field]) == "number"
+                            )
+                        )
+                    ) {
+                        out[attr] = args[field];
+                        found = true;
+                        break;
+                    } else if (args[field] != undefined && (typeof (args[field]) != model[attr].type)) {
+                        console.log(field + " (" + model[attr].type + ") : type donné incorrect");
+                    }
+                }
+                if (!found && (model[attr].required == undefined || model[attr].required)) fails.push(model[attr]);
+            } else if (attr == "$argsWithoutKey" && !argsWithoutKeyDefined) {
+                argsWithoutKeyDefined = true;
+                const argsWithoutKey = model[attr];
+                for (let i=0;i<argsWithoutKey.length;i++) {
+                    if (args[i] == undefined || typeof(args[i]) != argsWithoutKey[i].type) {
+                        if (args[i] != undefined) {
+                            console.log(argsWithoutKey[i].field + " (" + argsWithoutKey[i].type + ") : type donné incorrect");
+                        }
+                        fails.push(argsWithoutKey[i]);
+                    } else {
+                        out[argsWithoutKey[i].field] = args[i];
+                    }
                 }
             }
-            if (!found && (model[attr].required == undefined || model[attr].required)) fails.push(model[attr]);
         }
         if (fails.length > 0) {
             console.log("\nArguments manquants ou invalides :");
             for (const fail of fails) {
-                console.log("      "+fail.fields.join(", ")+" : "+fail.description+"  |  (Type attendu : "+fail.type+")");
+                console.log("      " + (fail.fields instanceof Array ? fail.fields.join(", ") : fail.field) + " : " + fail.description + " | (type attendu : " + fail.type + ")");
             }
             console.log("\n");
             this.help();
