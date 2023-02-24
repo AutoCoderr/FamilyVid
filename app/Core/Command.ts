@@ -1,5 +1,8 @@
+import readline from "readline";
+
 export default class Command {
     static commandName: string;
+    static description: string;
 
     static match(specifiedName): boolean {
         const splittedSpecifiedName = specifiedName.split(":");
@@ -118,6 +121,28 @@ export default class Command {
         }
 
         return argsObject;
+    }
+
+    static async validQuestion(ask: string, responses: Array<string>, insensitive = true) {
+        let res = await this.question(ask);
+        if (insensitive) {
+            responses = responses.map(response => response.toLowerCase());
+            res = res.toLowerCase();
+        }
+        return responses.includes(res);
+    }
+
+    static question(ask): Promise<string> {
+        return new Promise(resolve => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            rl.question(ask, answer => {
+                resolve(answer);
+                rl.close();
+            });
+        });
     }
 
     static argsModel = {};

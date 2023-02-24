@@ -3,6 +3,7 @@ import CreateUserService from "../../../Services/CreateUserService";
 
 export default class UserCreate extends Command {
     static commandName = "user:create";
+    static description = "Créer un utilisateur";
 
     static argsModel = {
         email: {fields: ["--email","-e"], type:"string", description: "L'adresse mail"},
