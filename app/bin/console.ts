@@ -34,11 +34,11 @@ if (commandName != "") {
 	})();
 }
 
-async function getAllCommands(path, commands: Array<typeof Command> = [], p= 0) {
+async function getAllCommands(path, commands: Array<typeof Command> = []) {
 	const filesAndFolders = await fs.readdir(path);
 	for (const fileOrFolder of filesAndFolders) {
 		if (await fs.stat(path + fileOrFolder).then(stat => stat.isDirectory())) {
-			await getAllCommands(path + fileOrFolder + "/",commands,p+1);
+			await getAllCommands(path + fileOrFolder + "/",commands);
 		} else if (fileOrFolder.endsWith(".js")) {
 			const ACommand: typeof Command = require(path + fileOrFolder).default;
 			commands.push(ACommand);
