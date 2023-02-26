@@ -20,11 +20,11 @@ export default class UserRepository extends RepositoryManager {
         });
     }
 
-    static findAllByEmailAndNotActive(email) {
+    static findAllByEmailAndActiveOrNot(email,active: null|boolean = null) {
         return super.findAllByParams({
             where: {
                 email,
-                active: false
+                ...(active != null ? {active} : {})
             }
         })
     }

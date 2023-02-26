@@ -61,7 +61,7 @@ export default class SecurityController extends Controller {
 
         await confirmation.delete();
 
-        const otherUsers: Array<User> = await UserRepository.findAllByEmailAndNotActive(user.getEmail());
+        const otherUsers: Array<User> = await UserRepository.findAllByEmailAndActiveOrNot(user.getEmail(),false);
         for (const anotherUser of otherUsers) {
             await anotherUser.delete();
         }

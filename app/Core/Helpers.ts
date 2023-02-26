@@ -1,6 +1,7 @@
 import env from './env';
 import crypto from 'crypto';
 import EntityManager from "./EntityManager";
+import fs from 'fs-extra';
 
 export default class Helpers {
     static controllers: any = null;
@@ -42,6 +43,10 @@ export default class Helpers {
     static ucFirst = str => str.charAt(0).toUpperCase()+str.slice(1);
 
     static getPath(pathName, params = {}) {
+        if (this.controllers == null) {
+            this.controllers = JSON.parse(fs.readFileSync(__dirname + "/../config/routes.json"));
+        }
+
         const controllers = this.controllers;
         const regexReplacer = new RegExp(":[a-zA-Z0-9_]+");
         const replacer = (match,index,content) => {

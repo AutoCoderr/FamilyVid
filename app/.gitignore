@@ -6,6 +6,7 @@
 /Forms/*.js
 /Services/*.js
 /Fixtures/*.js
+/bin/**/*.js
 /Core/*.js
 !/Core/env.example.js
 /Medias/*
