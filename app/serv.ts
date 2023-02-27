@@ -3,7 +3,8 @@ import Helpers from "./Core/Helpers";
 import env from "./Core/env";
 import http from "http";
 import https from "https";
-import fs from 'fs-extra';
+import fs from "fs-extra";
+import setTZ from "set-tz";
 
 const Twig = require("twig");
 const {twig} = Twig;
@@ -11,6 +12,8 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
+
+setTZ(env.TIMEZONE);
 
 Twig.extendFunction('path', (pathName, params = {}) =>
     Helpers.getPath(pathName, params)
