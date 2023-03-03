@@ -18,13 +18,16 @@
     <a class="btn back-btn" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">Retour</a>
     <h1>{{ media.name }}</h1>
 
-    {% if media.type == "picture" %}
-        <img src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}"/>
-    {% elseif media.type == "video" %}
-        <video controls>
-            <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
-        </video>
-    {% endif %}
+    <div id="media">
+        {% if media.type == "picture" %}
+            <img src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}"/>
+        {% elseif media.type == "video" %}
+            <video controls>
+                <source src="{{ path('media_read', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">
+            </video>
+        {% endif %}
+        <div id="nb_views">{{ media.nbViews }} vues</div>
+    </div>
 
 
     <div id="comment_container">

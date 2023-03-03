@@ -180,6 +180,9 @@ export default class MediaController extends Controller {
 
             this.generateToken();
 
+            media.setNbViews(<number>media.getNbViews()+1);
+            await media.save();
+
             this.render("media/view.html.twig", {
                 comments,
                 commentForm,
