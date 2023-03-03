@@ -25,6 +25,7 @@ export default class MediaRepository extends RepositoryManager {
             sectionsId = [sectionsId];
         }
         const searchDate = search.replace(/\//g,"-");
+        const keyWords = search.split(" ").map(word => "%"+word+"%");
         search = "%"+search+"%";
         let date: Date = new Date(searchDate);
         let endDate;
@@ -48,14 +49,18 @@ export default class MediaRepository extends RepositoryManager {
                     {
                         name: {[Op.iLike]: search}
                     },
-                    {
-                        tags: {[Op.iLike]: search}
-                    },
                         (!isNaN(date.getTime()) &&
                             {
                                 date: {[Op.between]: [date,endDate]}
                             }
-                        )
+                        ),
+                    {
+                        [Op.and]: keyWords.map(keyWord => {
+                           return {
+                               tags: {[Op.iLike]: keyWord}
+                           }
+                        })
+                    }
                 ],
                 SectionId: {[Op.in]: sectionsId},
                 ...(toDisplay != "all" ? {type: toDisplay} : {})
