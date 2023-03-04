@@ -48,7 +48,7 @@ function comment_created(res,form) {
 
         const date = new Date();
         const currentDateText =
-            date.getFullYear() + "-" + addMissingZero(date.getMonth() + 1) + "-" + addMissingZero(date.getDate()) + " " +
+            addMissingZero(date.getDate())+ "/" + addMissingZero(date.getMonth() + 1) + "/" + date.getFullYear() + " " +
             addMissingZero(date.getHours()) + ":" + addMissingZero(date.getMinutes()) + ":" + addMissingZero(date.getSeconds());
 
         let container = document.getElementById("comment_prototype");
