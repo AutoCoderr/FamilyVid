@@ -4,6 +4,7 @@ import CommentModel from "../Models/Comment";
 import MediaModel from "../Models/Media";
 import Media from "../Entities/Media";
 import {col, fn, Op} from "sequelize";
+import Section from "../Entities/Section";
 
 export default class MediaRepository extends RepositoryManager {
     static model = MediaModel;
@@ -18,6 +19,67 @@ export default class MediaRepository extends RepositoryManager {
             where: { slug: slug },
             include: SectionModel
         })
+    }
+
+    static async findNextMedia(media: Media) {
+        const out = await super.findAllByParams({
+            where: {
+                [Op.or]: [
+                    {
+                        date: {[Op.gt]: media.getDate()}
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                date: {[Op.gte]: media.getDate()}
+                            },
+                            {
+                                id: {[Op.gt]: media.getId()}
+                            }
+                        ]
+                    }
+                ] ,
+                id: { [Op.ne]: media.getId() },
+                SectionId: (<Section>media.getSection()).getId()
+            },
+            order: [
+                ["date","ASC"],
+                ["id","ASC"]
+            ],
+            limit: 1
+        });
+        return out.length == 1 ? out[0] : null;
+    }
+
+    static async findPreviousMedia(media: Media) {
+        const out = await super.findAllByParams({
+            where: {
+                [Op.or]: [
+                    {
+                        date: {[Op.lt]: media.getDate()}
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                date: {[Op.lte]: media.getDate()}
+                            },
+                            {
+                                id: {[Op.lt]: media.getId()}
+                            }
+                        ]
+                    }
+                    ] ,
+
+                id: { [Op.ne]: media.getId() },
+                SectionId: (<Section>media.getSection()).getId()
+            },
+            order: [
+                ["date","DESC"],
+                ["id","DESC"]
+            ],
+            limit: 1
+        });
+        return out.length == 1 ? out[0] : null;
     }
 
     static findAllBySectionIdAndSearchFilters(sectionsId: Array<number>|number,search,sort,sortBy,toDisplay){

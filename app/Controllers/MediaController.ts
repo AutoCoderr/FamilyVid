@@ -183,7 +183,12 @@ export default class MediaController extends Controller {
             media.setNbViews(<number>media.getNbViews()+1);
             await media.save();
 
+            const previousMedia = await MediaRepository.findPreviousMedia(media);
+            const nextMedia = await MediaRepository.findNextMedia(media);
+
             this.render("media/view.html.twig", {
+                previousMedia,
+                nextMedia,
                 comments,
                 commentForm,
                 commentDeleteForms,
