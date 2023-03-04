@@ -65,7 +65,7 @@
             {% for media in section.Medias %}
                 <tr>
                     <td>{{ media.name }}</td>
-                    <td>{{ media.date|date('Y-m-d') }}</td>
+                    <td>{{ media.date|date('d/m/Y') }}</td>
                     <td>{{ media.type == "video" ? "Vidéo": "Photo" }}</td>
                     <td>
                         <a class="btn" href="{{ path('media_view', {'familySlug': section.Family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Voir</a>
