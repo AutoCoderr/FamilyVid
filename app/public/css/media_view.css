@@ -19,8 +19,12 @@ h1 {
     margin-bottom: 0;
 }
 
+.back-btn {
+   left: 10%;
+}
+
 .title_prev_next {
-    width: 30%;
+    width: 50%;
     display: table;
     flex-direction: row;
     margin-bottom: 30px;
@@ -39,7 +43,7 @@ h1 {
 .path {
     position: absolute;
     top: 70px;
-    right: 15%;
+    right: 10%;
     background-color: #DFD278;
     padding: 5px;
     margin: 10px;
