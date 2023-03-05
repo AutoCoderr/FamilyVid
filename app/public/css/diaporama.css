@@ -1,0 +1,30 @@
+#image {
+    position: relative;
+    width: 60%;
+}
+
+#image img {
+    width: 100%;
+}
+
+#settings_diaporama {
+    margin-bottom: 20px;
+    display: table;
+    flex-direction: row;
+}
+
+#settings_diaporama div {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.btn-diapo {
+    padding: 0;
+}
+
+.btn img {
+    width: 40px;
+    height: 40px;
+}
