@@ -16,8 +16,14 @@
                     id: {{ section.id }},
                     name: "{{ section.name }}"
                 });
+                sectionNameById[{{ section.id }}] = "{{ section.name }}";
             {% endfor %}
         {% endfor %}
+
+        {% for family in allUserFamilies %}
+            familieNamesById[{{ family.id }}] = "{{ family.name }}";
+        {% endfor %}
+
         {% if media is not null %}
             currentMedia = {
                 id: {{ media.id }},
@@ -28,9 +34,11 @@
                 familySlug: "{{ media.familySlug }}"
             };
         {% endif %}
+
         {% if section is not null %}
             currentSectionId = {{ section.id }};
         {% endif %}
+
         {% if family is not null %}
             currentFamilyId = {{ family.id }};
         {% endif %}
@@ -42,7 +50,7 @@
         Diaporama sur
         {% if family %}
             {% if section %}
-                la section {{ section.name }}
+                la rubrique {{ section.name }}
             {% else %}
                 la famille {{ family.name }}
             {% endif %}
@@ -55,8 +63,8 @@
 
     </p>
 
-    <div id="settings_diaporama">
-        <div id="select_family_section">
+    <div id="control">
+        <div id="selects">
             <label for="family">
                 La famille :
                 <select id="family">
@@ -76,7 +84,7 @@
                 <select id="section">
                     {% if family is null %}
                         <option value="0">Choisissez d'abord une famille</option>
-                    {% else %}
+                    {% elseif sectionsByFamily[family.id]|length > 0 %}
                         <option value="0">Toutes les rubriques</option>
                         {% for eachSection in sectionsByFamily[family.id] %}
                             <option
@@ -86,6 +94,8 @@
                                     {% endif %}
                             >{{ eachSection.name }}</option>
                         {% endfor %}
+                    {% else %}
+                        <option value="0">Aucune rubrique</option>
                     {% endif %}
                 </select>
             </label>
@@ -95,6 +105,19 @@
                     <option value="chronologic" selected>Chronologique</option>
                     <option value="random">Aléatoire</option>
                 </select>
+            </label>
+            <label>
+                En boucle :
+                <input id="to_loop" type="checkbox" checked/>
+            </label>
+            <label>
+                délai :
+                <select id="delay">
+                    {% for i in range(1,10) %}
+                        <option value="{{ i }}" {% if i == 3 %}selected{% endif %}>{{ i }}</option>
+                    {% endfor %}
+                </select>
+                secondes
             </label>
         </div>
 

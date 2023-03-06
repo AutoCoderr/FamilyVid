@@ -1,23 +1,24 @@
 #image {
     position: relative;
-    width: 60%;
+    height: 100%;
 }
 
 #image img {
-    width: 100%;
+    height: 70%;
 }
 
-#settings_diaporama {
+#control {
     margin-bottom: 20px;
-    display: table;
-    flex-direction: row;
 }
 
-#settings_diaporama div {
-    display: table-cell;
+#control div {
     vertical-align: middle;
     padding-left: 30px;
     padding-right: 30px;
+}
+#control #selects label {
+    display: inline-block;
+    margin: 10px;
 }
 
 .btn-diapo {
