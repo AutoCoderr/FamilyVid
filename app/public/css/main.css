@@ -112,3 +112,8 @@ textarea {
     top: 70px;
     left: 60%;
 }
+
+.date {
+    margin-bottom: 5px;
+    font-weight: bold;
+}

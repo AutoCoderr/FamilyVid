@@ -47,14 +47,18 @@ export default class DiaporamaController extends Controller {
             } else if (section && (<Section>media.getSection()).getId() != section.getId()) {
                 return this.returnFailedError("La photo spécifiée n'existe pas dans la rubrique "+section.getName());
             }
-            const mediaFamilySlug = (<Family>allUserFamilies.find(family => family.getId() == (<Section>(<Media>media).getSection()).getFamilyId())).getSlug();
+            const mediaFamily = (<Family>allUserFamilies.find(family => family.getId() == (<Section>(<Media>media).getSection()).getFamilyId()));
+            const mediaFamilySlug = mediaFamily.getSlug();
+            const mediaFamilyName = mediaFamily.getName();
             media = {
                 id: media.getId(),
                 name: media.getName(),
                 date: media.getDate(),
                 slug: media.getSlug(),
                 sectionSlug: media.getSection().getSlug(),
-                familySlug: mediaFamilySlug
+                familySlug: mediaFamilySlug,
+                sectionName: media.getSection().getName(),
+                familyName: mediaFamilyName
             }
         }
 
@@ -121,7 +125,9 @@ export default class DiaporamaController extends Controller {
                 date: Helpers.formatDate(<Date>picture.getDate()),
                 slug: picture.getSlug(),
                 sectionSlug: (<Section>picture.getSection()).getSlug(),
-                familySlug: familyBySection[<number>(<Section>picture.getSection()).getId()].getSlug()
+                familySlug: familyBySection[<number>(<Section>picture.getSection()).getId()].getSlug(),
+                sectionName: (<Section>picture.getSection()).getName(),
+                familyName: familyBySection[<number>(<Section>picture.getSection()).getId()].getName()
             };
         })
 

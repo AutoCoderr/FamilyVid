@@ -7,8 +7,8 @@
     height: 70%;
 }
 
-#control {
-    margin-bottom: 20px;
+h2 {
+    margin-top: 0;
 }
 
 #control div {
@@ -19,6 +19,18 @@
 #control #selects label {
     display: inline-block;
     margin: 10px;
+}
+
+#image .path, #image .date {
+    display: block;
+}
+
+.path {
+    background-color: #DFD278;
+    padding: 5px;
+    margin: 10px auto;
+    border-radius: 30px;
+    width: 50%;
 }
 
 .btn-diapo {

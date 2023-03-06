@@ -26,12 +26,7 @@
 
         {% if media is not null %}
             currentMedia = {
-                id: {{ media.id }},
-                name: "{{ media.name }}",
-                date: "{{ media.date|date('d/m/Y') }}",
-                slug: "{{ media.slug }}",
-                sectionSlug: "{{ media.sectionSlug }}",
-                familySlug: "{{ media.familySlug }}"
+                id: {{ media.id }}
             };
         {% endif %}
 
@@ -126,9 +121,28 @@
         </div>
     </div>
 
-    <div id="image">
+    <div id="image" {% if media is null %}style="display: none;"{% endif %}>
         {% if media is not null %}
-            <img src="{{ path('media_read', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}">
+            <h2>{{ media.name }}</h2>
+            <span class="path">
+                <a class="family" title="Famille {{ media.familyName }}" href="{{ path('section_index', {'familySlug': media.familySlug}) }}">{{ media.familyName }}</a>
+                <span>></span>
+                <a class="section" title="Rubrique {{ media.sectionName }}" href="{{ path('media_index', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug}) }}">{{ media.sectionName }}</a>
+            </span>
+            <span class="date">
+                {{ media.date|date("d/m/Y") }}
+            </span>
+            <img src="{{ path('media_read', {'familySlug': media.familySlug, 'sectionSlug': media.sectionSlug, 'mediaSlug': media.slug}) }}"/>
+        {% else %}
+            <h2></h2>
+            <span class="path">
+                <a class="family" title="" href="#"></a>
+                <span>></span>
+                <a class="section" title="" href="#"></a>
+            </span>
+            <span class="date">
+            </span>
+            <img src=""/>
         {% endif %}
     </div>
 {% endblock %}
