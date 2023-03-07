@@ -6,6 +6,8 @@ import Media from "../Entities/Media";
 import MediaRepository from "../Repositories/MediaRepository";
 import Helpers from "../Core/Helpers";
 import SectionRepository from "../Repositories/SectionRepository";
+import FamilyRepository from "../Repositories/FamilyRepository";
+import CheckService from "../Services/CheckService";
 
 export default class FrontController extends Controller {
     index = async () => {

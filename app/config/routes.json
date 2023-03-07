@@ -47,7 +47,20 @@
         "route": "/global/search",
         "method": "POST"
       }
+    }
+  },
+  "DiaporamaController": {
+    "prefix": "diaporama_",
+    "prefix_route": "/diaporama",
 
+    "routes": {
+      "show": {
+        "route": "/"
+      },
+      "search": {
+        "route": "/search",
+        "method": "POST"
+      }
     }
   },
   "FamilyController": {
