@@ -55,13 +55,14 @@ function diapo() {
     loopInterval = setInterval(() => {
         if (order === "random") {
             mediaToNotRedisplayRandom.push(currentMediaIndex);
-            if (mediaToNotRedisplayRandom.length === medias.length/2) {
-                delete mediaToNotRedisplayRandom.splice(0,1);
+            if (mediaToNotRedisplayRandom.length > medias.length/2) {
+                mediaToNotRedisplayRandom.splice(0,1);
             }
             let newMediaIndex = rand(0,medias.length-1);
             while (mediaToNotRedisplayRandom.includes(newMediaIndex)) {
                 newMediaIndex = rand(0,medias.length-1);
             }
+            console.log(mediaToNotRedisplayRandom);
             currentMediaIndex = newMediaIndex;
         } else {
             if (currentMediaIndex < medias.length-1) {
