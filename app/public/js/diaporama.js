@@ -14,6 +14,8 @@ let medias = null;
 
 let loopInterval = null;
 
+let mediaToNotRedisplayRandom = [];
+
 let playing = false;
 
 function downloadMediasList() {
@@ -30,50 +32,49 @@ function downloadMediasList() {
     }).then(res => res.json());
 }
 
-function diapo() {
-    if (order === "random") {
-        currentMediaIndex = rand(0,medias.length-1);
-        if (currentMedia != null) {
-            while (currentMedia.id === medias[currentMediaIndex].id) {
-                currentMediaIndex = rand(0,medias.length-1);
-            }
+function generateCurrentMediaIndex() {
+    if (currentMedia == null) {
+        if (order === "random") {
+            currentMediaIndex = rand(0,medias.length-1);
+        } else {
+            currentMediaIndex = 0;
         }
     } else {
-        currentMediaIndex = 0;
-        if (currentMedia != null) {
-            for (let i=0;i<medias.length;i++) {
-                if (medias[i].id === currentMedia.id) {
-                    currentMediaIndex = i < medias.length-1 ? i+1 : 0;
-                }
+        for (let i=0;i<medias.length;i++) {
+            if (medias[i].id === currentMedia.id) {
+                currentMediaIndex = i;
             }
         }
     }
-
-    playing = true;
-    setTimeout(() => {
-        diapoLoop();
-        loopInterval = setInterval(diapoLoop, delay*1000);
-    }, currentMedia == null ? 0 : delay*1000);
 }
 
-function diapoLoop() {
+function diapo() {
+    playing = true;
     currentMedia = medias[currentMediaIndex];
     displayCurrentMedia();
-    if (order === "random") {
-        let newMediaIndex = rand(0,medias.length-1);
-        while (newMediaIndex === currentMediaIndex) {
-            newMediaIndex = rand(0,medias.length-1);
-        }
-        currentMediaIndex = newMediaIndex;
-    } else {
-        if (currentMediaIndex < medias.length-1) {
-            currentMediaIndex += 1;
-        } else if (toLoop) {
-            currentMediaIndex = 0;
+    loopInterval = setInterval(() => {
+        if (order === "random") {
+            mediaToNotRedisplayRandom.push(currentMediaIndex);
+            if (mediaToNotRedisplayRandom.length === medias.length/2) {
+                delete mediaToNotRedisplayRandom.splice(0,1);
+            }
+            let newMediaIndex = rand(0,medias.length-1);
+            while (mediaToNotRedisplayRandom.includes(newMediaIndex)) {
+                newMediaIndex = rand(0,medias.length-1);
+            }
+            currentMediaIndex = newMediaIndex;
         } else {
-            document.getElementById("play_stop_button").click();
+            if (currentMediaIndex < medias.length-1) {
+                currentMediaIndex += 1;
+            } else if (toLoop) {
+                currentMediaIndex = 0;
+            } else {
+                document.getElementById("play_stop_button").click();
+            }
         }
-    }
+        currentMedia = medias[currentMediaIndex];
+        displayCurrentMedia();
+    }, delay*1000);
 }
 
 function displayCurrentMedia() {
@@ -116,6 +117,7 @@ function hidePrevNextButtons() {
 }
 
 async function getMedias() {
+    mediaToNotRedisplayRandom = [];
     const res = await downloadMediasList();
     if (res.status === "success") {
         if (order === "chronologic") {
@@ -123,6 +125,7 @@ async function getMedias() {
         }
         medias = res.pictures;
         document.getElementById("error").innerText = "";
+        generateCurrentMediaIndex();
         return true;
     }
     medias = null;
@@ -131,7 +134,7 @@ async function getMedias() {
     return false;
 }
 
-window.addEventListener("DOMContentLoaded", (event) => {
+window.addEventListener("DOMContentLoaded", (_) => {
     getMedias();
 
     document.getElementById("play_stop_button").addEventListener("click", async function() {
@@ -146,26 +149,23 @@ window.addEventListener("DOMContentLoaded", (event) => {
             }
             playing = false;
             clearInterval(loopInterval);
+            loopInterval = null;
             this.querySelector("img").src = "/images/play.png";
         }
     });
 
     document.getElementById("btn_prev").addEventListener("click", function () {
-        if (order !== "chronologic" || playing) return;
-        if (currentMedia == null) {
-            currentMediaIndex = 0;
-        } else {
-            currentMediaIndex = (currentMediaIndex === 0 || currentMediaIndex == null) ? medias.length - 1 : currentMediaIndex - 1;
+        if (order !== "chronologic" || playing || medias == null) return;
+        if (currentMedia != null) {
+            currentMediaIndex = (currentMediaIndex === 0) ? medias.length - 1 : currentMediaIndex - 1;
         }
         currentMedia = medias[currentMediaIndex];
         displayCurrentMedia();
     });
 
     document.getElementById("btn_next").addEventListener("click", function () {
-        if (order !== "chronologic" || playing) return;
-        if (currentMedia == null) {
-            currentMediaIndex = 0;
-        } else {
+        if (order !== "chronologic" || playing || medias == null) return;
+        if (currentMedia != null) {
             currentMediaIndex = currentMediaIndex === medias.length - 1 ? 0 : currentMediaIndex + 1;
         }
         currentMedia = medias[currentMediaIndex];
@@ -177,6 +177,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         if (order === "chronologic" && medias != null && !playing) {
             displayPrevNextButtons();
         } else {
+            if (order === "random" && currentMedia == null) {
+                generateCurrentMediaIndex();
+            }
             hidePrevNextButtons();
         }
     });
