@@ -3,6 +3,7 @@ import { sequelize } from "../Core/DB";
 
 import env from "../Core/env.js";
 import Section from "./Section";
+import User from "./User";
 const {DB_PREFIX} = env;
 
 export interface IMedia {
@@ -65,6 +66,8 @@ Media.init(
         sequelize, // passing the `sequelize` instance is required
     }
 );
+Media.belongsTo(User);
+User.hasMany(Media);
 
 Media.belongsTo(Section, {onDelete: 'CASCADE'});
 Section.hasMany(Media, {as: 'Medias', onDelete: 'CASCADE'});
