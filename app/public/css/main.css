@@ -110,5 +110,10 @@ textarea {
 .right-top-buttons  {
     position: absolute;
     top: 70px;
-    left: 60%;
+    right: 2%;
+}
+
+.date {
+    margin-bottom: 5px;
+    font-weight: bold;
 }

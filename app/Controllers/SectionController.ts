@@ -203,7 +203,7 @@ export default class SectionController extends Controller {
             medias = medias.map(media => {
                 return {
                     name: media.getName(),
-                    date: Helpers.formatDate(<Date>media.getDate()),
+                    date: media.getDate(),
                     type: media.getType(),
                     slug: media.getSlug(),
                     sectionSlug: media.getSection().getSlug(),

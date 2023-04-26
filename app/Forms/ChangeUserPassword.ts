@@ -28,7 +28,13 @@ export default function ChangeUserPassword(confirmation_token = null) {
                 minLength: 8,
                 required: true,
                 canDisplay: true,
-                msgError: "Format de mot de passe incorrect"
+                msgError: "Format de mot de passe incorrect",
+                description: "Doit respecter une certaine compléxité :<br/>"+
+                    "- Au moins 10 caractères<br/>"+
+                    "- Au moins une majuscule<br/>"+
+                    "- Au moins une miniscule<br/>"+
+                    "- Au moins un chiffre<br/>"+
+                    "- Au moins un caractère spécial (!~\"'()`?/.^*@$%_-#&<>§:;,)"
             },
             passwordConfirm: {
                 type: "password",

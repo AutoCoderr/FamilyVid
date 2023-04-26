@@ -1,0 +1,47 @@
+#image {
+    position: relative;
+    height: 100%;
+}
+
+#image img {
+    height: 70%;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+#control div {
+    vertical-align: middle;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+#control #selects label {
+    display: inline-block;
+    margin: 10px;
+}
+
+#image .path, #image .date {
+    display: block;
+}
+
+.path {
+    background-color: #DFD278;
+    padding: 5px;
+    margin: 10px auto;
+    border-radius: 30px;
+    width: 50%;
+}
+
+.btn-diapo {
+    padding: 0;
+}
+
+.btn img {
+    width: 40px;
+    height: 40px;
+}
+
+#btn_prev, #btn_next {
+    display: none;
+}

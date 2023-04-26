@@ -1,5 +1,53 @@
-img, video {
+#media {
+    position: relative;
     width: 50%;
+}
+
+#media video, #media img {
+    width: 100%;
+}
+
+#nb_views {
+    position: absolute;
+    right: 20px;
+    bottom: -27px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+.back-btn {
+   left: 10%;
+}
+
+.title_prev_next {
+    width: 50%;
+    display: table;
+    flex-direction: row;
+    margin-bottom: 30px;
+}
+.title_prev_next div {
+    display: table-cell;
+    vertical-align: middle;
+    width: 185px;
+}
+
+.path {
+    position: absolute;
+    top: 70px;
+    right: 2%;
+    background-color: #DFD278;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 30px;
+}
+
+.path a {
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #comments {
