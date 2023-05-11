@@ -19,7 +19,6 @@
             <tr>
                 <th>Prénom</th>
                 <th>Nom</th>
-                <th>Email</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,8 +26,7 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.firstname }}</td>
-                    <td>{{ user.lastname }}</td>
-                    <td>{{ user.email }} {% if user.id == session.user.id %}(vous){% endif %}</td>
+                    <td>{{ user.lastname }}{% if user.id == session.user.id %}(vous){% endif %}</td>
                     {% if user.id == session.user.id %}
                         <td><a class="btn" href="{{ path('family_list_mines', {'userId': user.id}) }}">Voir mes familles ({{ user.Families|length }})</a></td>
                     {% else %}
