@@ -56,13 +56,12 @@ export default class User extends EntityManager {
     setRoles(roles: Array<string>) {
         this.roles = JSON.stringify(roles);
     }
-    removeRole(role: string) {
+    removeRole(roleToRemove: string) {
         if (this.roles != null) {
-            const roles = JSON.parse(this.roles);
-            if (roles.includes(role)) {
-                roles.splice(roles.indexOf(role),1);
-            }
-            this.roles = JSON.stringify(roles);
+            this.roles = JSON.stringify(
+                JSON.parse(this.roles)
+                    .filter(role => role != roleToRemove)
+            );
         }
     }
     getRoles() {

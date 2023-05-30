@@ -43,11 +43,6 @@ export default class Section extends EntityManager {
     }
 
     getMedias() {
-        if (this.Medias instanceof Array) {
-            this.Medias.sort((A,B) => {
-                return (<Date>A.getDate()).getTime() - (<Date>B.getDate()).getTime()
-            });
-        }
         return this.Medias;
     }
 
