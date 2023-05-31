@@ -39,16 +39,14 @@ export default class MediaController extends Controller {
             const validator = new Validator(this.req,mediaForm);
 
             if (validator.isSubmitted()) {
-                if (await validator.isValid()) {
+                if (await validator.isValid(false)) {
                     if(await FileUploadService.uploadMedia(this.getDatas(),section,await this.getUser())) {
-                        this.setFlash("media_success", "Photo/video ajoutée avec succès!");
-                        this.redirectToRoute("media_index", {familySlug,sectionSlug});
+                        this.res.json({status: "success"});
                     } else {
-                        validator.setFlashErrors("Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier");
-                        this.redirect(this.req.header('Referer'));
+                        this.res.json({status: "failed", errors: ["Echec de mise en ligne de la photo/video. Regardez peut être le nom du fichier"]});
                     }
                 } else {
-                    this.redirect(this.req.header('Referer'));
+                    this.res.json({status: "failed", errors: validator.getErrors()});
                 }
             } else {
                 this.generateToken();

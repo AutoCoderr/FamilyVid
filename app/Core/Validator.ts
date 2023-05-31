@@ -5,6 +5,7 @@ export default class Validator {
 	datas;
 	form;
 	req;
+	errors;
 
 	constructor(req,form) {
 		this.datas = Helpers.getDatas(req);
@@ -16,17 +17,23 @@ export default class Validator {
 		return this.datas;
 	}
 
+	getErrors() {
+		return this.errors;
+	}
+
 	isSubmitted() {
 		return (this.datas.actionName == this.form.config.actionName);
 	}
 
-	async isValid() {
+	async isValid(saveErrorsInFlash = true) {
 		delete this.datas.actionName;
 		this.fillCheckboxs();
 		const errors = await this.checkFields();
 		if (errors.length == 0) return true;
 
-		this.setFlashErrors(errors);
+		if (saveErrorsInFlash)
+			this.setFlashErrors(errors);
+		this.errors = errors
 		return false;
 	}
 
