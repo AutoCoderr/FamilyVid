@@ -1,0 +1,21 @@
+.background-picture {
+    position: absolute;
+    width: 20%;
+}
+
+.background-picture img {
+    width: 100%;
+    height: auto;
+    max-height: 50%;
+    filter: blur(2px);
+}
+
+.pictureA {
+    top: 60px;
+    left: 0;
+}
+
+.pictureB {
+    bottom: 0;
+    right: 0;
+}
