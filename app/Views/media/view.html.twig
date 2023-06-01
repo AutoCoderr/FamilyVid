@@ -33,9 +33,12 @@
 
         <div>
         {% if nextMedia %}
-                <a class="btn" href="{{ path('media_view', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': nextMedia.slug}) }}">Suivant</a>
+            <a class="btn" href="{{ path('media_view', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': nextMedia.slug}) }}">Suivant</a>
         {% endif %}
         </div>
+    </div>
+    <div>
+        <a class="btn" href="{{ path('media_edit', {'familySlug': family.slug, 'sectionSlug': section.slug, 'mediaSlug': media.slug}) }}">Modifier</a>
     </div>
 
     {% if media.type == "picture" %}

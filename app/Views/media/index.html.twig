@@ -47,7 +47,7 @@
                 <label for="sort_filter">Trier dans l'ordre</label>
                 <select id="sort_filter">
                     <option value="ASC">Croissant</option>
-                    <option value="DESC">Décroissant</option>
+                    <option value="DESC" selected="selected">Décroissant</option>
                 </select>
             </div>
         </div>
@@ -80,6 +80,6 @@
         <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer</a>
     {% else %}
         <h2>Il semblerait qu'il n'y ait pas de photo/video dans cette rubrique</h2>
-        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créer en une!</a>
+        <a class="btn" href="{{ path('media_new', {'familySlug': section.Family.slug, 'sectionSlug': section.slug}) }}">Créez en!</a>
     {% endif %}
 {% endblock %}

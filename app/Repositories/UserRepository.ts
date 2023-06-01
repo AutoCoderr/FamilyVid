@@ -5,6 +5,8 @@ import User from "../Entities/User";
 import RepositoryManager from "../Core/RepositoryManager";
 import Helpers from "../Core/Helpers";
 import FamilyModel from "../Models/Family";
+import MediaModel from "../Models/Media";
+import SectionModel from "../Models/Section";
 
 export default class UserRepository extends RepositoryManager {
     static model = UserModel;
@@ -59,6 +61,19 @@ export default class UserRepository extends RepositoryManager {
                 active: true
             }
         })
+    }
+
+    static findOneWithSectionsAndMedias(id) {
+        return super.findOne(id,[
+            {
+                model: FamilyModel,
+                include: [
+                    {
+                        model: SectionModel,
+                        include: [{model: MediaModel, as: "Medias"}]
+                    }]
+            }]
+        );
     }
 
     static findOne(id) {

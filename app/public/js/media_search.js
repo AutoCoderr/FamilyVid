@@ -2,7 +2,7 @@ let search = "";
 
 let sortBy = "date"; // 'date' or 'name'
 let toDisplay = "all" // 'all', 'video', or 'picture'
-let sort = "ASC"; // 'ASC' or 'DESC'
+let sort = "DESC"; // 'ASC' or 'DESC'
 
 let familySlug;
 let sectionSlug;
