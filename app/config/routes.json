@@ -180,6 +180,10 @@
       "read": {
         "route": "/:mediaSlug"
       },
+      "rotate": {
+        "route": "/:mediaSlug/rotate",
+        "method": "POST"
+      },
       "search": {
         "route": "/search",
         "method": "POST"

@@ -1,6 +1,25 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/background-images.css">
+{% endblock %}
+
 {% block body %}
+    {% if pictureA is not null %}
+        <a class="background-picture pictureA" target="_blank" href="{{ path('media_view', {'familySlug': pictureA.familySlug, 'sectionSlug': pictureA.sectionSlug, 'mediaSlug': pictureA.slug}) }}">
+            <img
+                    src="{{ path('media_read', {'familySlug': pictureA.familySlug, 'sectionSlug': pictureA.sectionSlug, 'mediaSlug': pictureA.slug}) }}"
+            />
+        </a>
+    {% endif %}
+    {% if pictureB is not null %}
+        <a class="background-picture pictureB" target="_blank" href="{{ path('media_view', {'familySlug': pictureB.familySlug, 'sectionSlug': pictureB.sectionSlug, 'mediaSlug': pictureB.slug}) }}">
+            <img
+                    src="{{ path('media_read', {'familySlug': pictureB.familySlug, 'sectionSlug': pictureB.sectionSlug, 'mediaSlug': pictureB.slug}) }}"
+            />
+        </a>
+    {% endif %}
+
     {% if session.user %}
         <div class="right-top-buttons">
             <a class="btn" href="{{ path('global') }}">Rechercher une photo/vidéo</a>

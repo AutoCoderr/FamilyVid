@@ -15,7 +15,6 @@ export default function Media(familySlug,sectionSlug, mediaSlug = null) {
 			submit: mediaSlug == null ? "Ajouter" : "Modifier",
 			actionName: mediaSlug == null ? "create_media" : "edit_media",
 			msgError: "Erreur lors de "+(mediaSlug == null ? "l'ajout" : "la modification")+" du media",
-			formClass: "form-btn",
 			submitClass: "btn",
 			formData: true
 		},

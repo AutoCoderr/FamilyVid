@@ -2,9 +2,18 @@
 
 {% block title %}Ajout de photo/vidéo{% endblock %}
 
-{% block body %}
-    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionSlug': sectionSlug}) }}">Retour</a>
-    <h1>Ajout de photo/vidéo</h1>
+{% block javascripts %}
+    <script src="/js/media_multifile_upload.js"></script>
+{% endblock %}
 
-    {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
+{% block body %}
+    <div style="display: none" id="form-prototype">
+        {% include 'Modals/forms.html.twig' with {'form': mediaForm} %}
+    </div>
+    <a class="btn back-btn" href="{{ path('media_index', {'familySlug': familySlug, 'sectionSlug': sectionSlug}) }}">Retour</a>
+    <h1>Ajout des photos/vidéos</h1>
+    <div id="forms">
+    </div>
+    <a class="btn" id="more_file_button">Plus de fichiers</a>
+    <a class="btn" id="validate_upload_button">Valider</a>
 {% endblock %}
