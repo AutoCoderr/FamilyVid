@@ -28,53 +28,6 @@ export default class Controller {
         this.res.redirect(permanently ? 301 : 302, url);
     }
 
-    async canAccess(): Promise<boolean> {
-        if (Helpers.security == null) {
-            Helpers.security = JSON.parse(await fs.readFile(__dirname + "/../config/security.json"));
-        }
-
-        const security = Helpers.security;
-
-        for (const permission of security.permissions) {
-            const regex = new RegExp(permission.path);
-
-            if (typeof(permission.methods) == "string") permission.methods = [permission.methods];
-
-            if (regex.test(this.req.originalUrl) &&
-                (
-                    typeof(permission.methods) == "undefined" ||
-                    permission.methods.includes(this.req.method)
-                ) &&
-                typeof(permission.roles) != "undefined") {
-
-
-                if (typeof(permission.roles) == "string") {
-                    permission.roles = [permission.roles];
-                }
-
-                if (typeof(this.req.session.user) == "undefined" ||
-                    (
-                        typeof(this.req.session.user) != "undefined" &&
-                        permission.roles[0] != "connected" &&
-                        (
-                            typeof(this.req.session.user.roles) == "undefined" ||
-                            permission.roles.filter(role => this.req.session.user.roles.includes(role)).length == 0
-                        )
-                    )
-                ) {
-
-                    if (typeof(this.req.session.user) == "undefined") {
-                        this.redirectToRoute(security.redirect_not_connected);
-                    } else {
-                        this.redirectToRoute(security.redirect_not_permission);
-                    }
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     async getUser(sectionsAndFamilies = false): Promise<null|User> {
         if (typeof(this.req.session.user) == "undefined") return null;
         return sectionsAndFamilies ?
