@@ -2,61 +2,64 @@ import Helpers from "./Helpers";
 
 const fs = require("fs-extra");
 
-let controllers: any = null;
+const routesPath = __dirname+"/../config/routes";
 
-export default async function Router(app) {
+export default async function Router(app,subFolder = "/") {
 
-    controllers = JSON.parse(await fs.readFile(__dirname + "/../config/routes.json"));
-    Helpers.controllers = controllers;
+    const controllersJson = await fs.readdir(routesPath+subFolder)
+    if (subFolder == "/")
+        Helpers.controllers = {};
 
-    for (const controllerName in controllers) {
-        const controllerPath = __dirname+"/../Controllers/"+controllerName+".js";
-        if (await fs.exists(controllerPath) && !(await fs.stat(controllerPath)).isDirectory()) {
-            const C = require(controllerPath).default;
-            const controller = new C(null,null);
+    for (const controllerJson of controllersJson) {
+        const controllerJsonPath = routesPath+subFolder+controllerJson;
+        if (controllerJson.endsWith(".json") && !(await fs.stat(controllerJsonPath)).isDirectory()) {
+            const controllerName = controllerJson.split(".").slice(0, -1).join(".");
+            const controllerPath = __dirname + "/../Controllers"+subFolder+"/" + controllerName + ".js";
+            if (await fs.exists(controllerPath) && !(await fs.stat(controllerPath)).isDirectory()) {
+                const C = require(controllerPath).default;
+                const controller = new C(null, null);
 
-            const controllerConfig = controllers[controllerName];
-            let prefix_route = "";
-            if (typeof(controllerConfig.prefix_route) != "undefined") {
-                prefix_route = controllerConfig.prefix_route;
-            }
+                const controllerConfig = JSON.parse(await fs.readFile(controllerJsonPath));
+                Helpers.controllers[controllerName] = controllerConfig;
 
-            for (const routeName in controllerConfig.routes) {
-                const config = controllerConfig.routes[routeName];
-                let action = routeName;
-                if (typeof(controller[config.action]) != "undefined") {
-                    action = config.action;
-                }
+                const prefix_route = controllerConfig.prefix_route ?? "";
 
-                if (typeof(controller[action]) != "undefined") {
-                    let methods: string|Array<string> = ["get"];
-                    if (config.methods != undefined) {
-                        methods = config.methods;
-                    } else if(config.method != undefined) {
-                        methods = config.method;
-                    }
-                    if (typeof(methods) === "string") {
-                        methods = [methods];
-                    }
-                    if (methods instanceof Array) {
-                        methods = methods.map(method => method.toLowerCase());
-                    }
+                for (const routeName in controllerConfig.routes) {
+                    const config = controllerConfig.routes[routeName];
+                    const action = controller[config.action] ?? routeName;
 
-                    for (const method of methods) {
-                        app[method](prefix_route+config.route , async (req,res) => {
-                            const controller = new C(req,res);
-                            controller[action]().catch(e => {
-                                res.send("ERROR 500");
-                                throw e;
+                    if (typeof (controller[action]) != "undefined") {
+                        let methods: string | Array<string> = ["get"];
+                        if (config.methods != undefined) {
+                            methods = config.methods;
+                        } else if (config.method != undefined) {
+                            methods = config.method;
+                        }
+                        if (typeof (methods) === "string") {
+                            methods = [methods];
+                        }
+                        if (methods instanceof Array) {
+                            methods = methods.map(method => method.toLowerCase());
+                        }
+
+                        for (const method of methods) {
+                            app[method](prefix_route + config.route, async (req, res) => {
+                                const controller = new C(req, res);
+                                controller[action]().catch(e => {
+                                    res.send("ERROR 500");
+                                    throw e;
+                                });
                             });
-                        });
+                        }
+                    } else {
+                        console.log("the '" + controllerConfig.prefix + routeName + "' route in not correctly configured");
                     }
-                } else {
-                    console.log("the '"+controllerConfig.prefix+routeName+"' route in not correctly configured");
                 }
+            } else {
+                console.log("the '" + controllerName + "' controller in not correctly configured");
             }
-        } else {
-            console.log("the '"+controllerName+"' controller in not correctly configured");
+        } else if (!controllerJson.endsWith(".json") && (await fs.stat(controllerJsonPath)).isDirectory()) {
+            await Router(app,subFolder+controllerJson+"/");
         }
     }
 }

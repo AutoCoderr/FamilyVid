@@ -1,0 +1,34 @@
+{
+  "prefix": "security_",
+
+  "routes": {
+
+    "register": {
+      "route": "/register",
+      "methods": ["GET","POST"]
+    },
+
+    "login": {
+      "route": "/login",
+      "methods": ["GET","POST"]
+    },
+
+    "logout": {
+      "route": "/logout"
+    },
+
+    "confirm_account": {
+      "route": "/confirm_account/:token"
+    },
+
+    "forgot_password": {
+      "route": "/forgot_password",
+      "methods": ["GET","POST"]
+    },
+
+    "new_password": {
+      "route": "/new_password/:token",
+      "methods": ["GET","POST"]
+    }
+  }
+}

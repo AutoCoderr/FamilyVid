@@ -1,0 +1,54 @@
+{
+  "prefix": "family_",
+  "prefix_route": "/family",
+
+  "routes":{
+
+    "new": {
+      "route": "/new",
+      "methods": ["GET","POST"]
+    },
+
+    "list": {
+      "route": "/list/:userId"
+    },
+
+    "list_mines": {
+      "route": "/list"
+    },
+
+    "change_display": {
+      "route": "/:slug/change_display",
+      "method": "POST"
+    },
+
+    "demand": {
+      "route": "/demand/send",
+      "methods": "POST"
+    },
+
+    "demands": {
+      "route": "/demands"
+    },
+
+    "accept_demand": {
+      "route": "/:id/demand/accept",
+      "method": "POST"
+    },
+
+    "deny_demand": {
+      "route": "/:id/demand/deny",
+      "method": "POST"
+    },
+
+    "members": {
+      "route": "/:slug/members"
+    },
+
+    "members_search": {
+      "route": "/:slug/members/search",
+      "method": "POST"
+    }
+
+  }
+}
