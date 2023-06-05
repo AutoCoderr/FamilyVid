@@ -1,4 +1,5 @@
 import Helpers from "../Core/Helpers";
+import User from "../Entities/User";
 
 export default function Register() {
 	return {
@@ -9,7 +10,8 @@ export default function Register() {
 			actionName: "register",
 			msgError: "Erreur lors de l'inscription",
 			formClass: "form-btn",
-			submitClass: "btn"
+			submitClass: "btn",
+			entity: User
 		},
 		fields: {
 			firstname: {
@@ -58,6 +60,16 @@ export default function Register() {
 				required: true,
 				canDisplay: true,
 				msgError: "Les mots de passe ne correspondent pas"
+			},
+			active: {
+				type: "param",
+				value: false,
+				required: true
+			},
+			roles: {
+				type: "param",
+				value: ['USER'],
+				required: true
 			}
 		}
 	}

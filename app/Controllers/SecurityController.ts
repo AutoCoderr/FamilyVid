@@ -19,16 +19,9 @@ export default class SecurityController extends Controller {
 
         if (validator.isSubmitted()) {
             if (await validator.isValid()) {
-                const datas = this.getDatas();
 
-                let user = new User();
-                user.setFirstname(datas.firstname);
-                user.setLastname(datas.lastname);
-                user.setEmail(datas.email);
-                user.addRole('USER');
-                user.setPassword(datas.password);
-                user.setActive(false);
-                await user.save();
+                await validator.save();
+                const user = <User>validator.entity
 
                 if (!await MailService.sendConfirmationMail(user,this.req.protocol,this.req.headers.host)) {
                     await user.delete();
@@ -104,7 +97,7 @@ export default class SecurityController extends Controller {
 
         if (validator.isSubmitted()) {
             if (await validator.isValid()) {
-                const datas = this.getDatas();
+                const datas = validator.getDatas();
 
                 const user: User = await UserRepository.findOneByEmailAndActive(datas.email);
                 if (user == null) {

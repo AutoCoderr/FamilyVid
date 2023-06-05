@@ -108,6 +108,17 @@ export default class Helpers {
         return ""
     }
 
+    static async getEntityFromForm(form): Promise<false|EntityManager|null> {
+        if (form.config.entity == undefined || !this.isNumber(form.config.id))
+            return form.config.entityInstance ?? null;
+        const repository = require("../Repositories/"+form.config.entity.name+"Repository").default;
+        const entity = await repository.findOne(parseInt(form.config.id));
+        if (entity == null) {
+            return false;
+        }
+        return entity;
+    }
+
     static hydrateForm(entity: EntityManager, form) {
         for (const name in form.fields) {
             if (typeof(entity["get"+this.ucFirst(name)]) == "function") {
@@ -125,6 +136,15 @@ export default class Helpers {
 
     static rand(a,b) {
         return a+Math.floor(Math.random()*(b-a+1));
+    }
+
+    static isNumber(num) {
+        return typeof(num) == "number" ||
+            (
+                typeof(num) == "string" && (
+                    parseInt(num).toString() == num && num != "NaN"
+                )
+            )
     }
 
     static generateRandomString(nb, forbiddenChars: Array<string> = []) {

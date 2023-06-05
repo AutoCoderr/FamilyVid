@@ -34,16 +34,10 @@ export default class EntityManager {
                 slug = Helpers.replaceAll(slug,toReplace,replace);
             }
         }
-        let nb = 1; // @ts-ignore
-        let found = await this.Model.findOne({
-            where: {
-                slug: slug+(nb > 1 ? "-"+nb : ""),
-                ...(this.id != null ? { id: {[Op.ne]: this.id} } : {}),
-                ...params
-            }
-        });
-        while (found != null) {
-            nb += 1; // @ts-ignore
+        let nb = 0;
+        let found;
+        do {
+            nb += 1;// @ts-ignore
             found = await this.Model.findOne({
                 where: {
                     slug: slug+(nb > 1 ? "-"+nb : ""),
@@ -51,7 +45,8 @@ export default class EntityManager {
                     ...params
                 }
             });
-        }
+        } while (found != null);
+
         this['slug'] = slug+(nb > 1 ? "-"+nb : "");
     }
 

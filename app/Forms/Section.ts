@@ -1,16 +1,19 @@
 import Helpers from "../Core/Helpers";
 import Family from "../Entities/Family";
+import SectionEntity from "../Entities/Section";
 
-export default function Section(family: Family, sectionSlug = null) {
+export default function Section(family: Family, section: null|SectionEntity = null) {
     return {
         config: {
-            action:  sectionSlug == null ? Helpers.getPath("section_new", {familySlug: family.getSlug()}) : Helpers.getPath("section_edit", {familySlug: family.getSlug(),sectionSlug}),
+            action:  section == null ? Helpers.getPath("section_new", {familySlug: family.getSlug()}) : Helpers.getPath("section_edit", {familySlug: family.getSlug(),sectionSlug: section.getSlug()}),
             method: "POST",
-            submit: sectionSlug == null ? "Créer" : "Modifier",
-            actionName: sectionSlug == null ? "section_create" : "section_edit",
-            msgError: "Echec de "+(sectionSlug == null ? "la création" : "l'édition")+" de la rubrique",
+            submit: section == null ? "Créer" : "Modifier",
+            actionName: section == null ? "section_create" : "section_edit",
+            msgError: "Echec de "+(section == null ? "la création" : "l'édition")+" de la rubrique",
             formClass: "form-btn",
-            submitClass: "btn"
+            submitClass: "btn",
+            entity: SectionEntity,
+            ...(section != null ? {entityInstance: section} : {})
         },
         fields: {
             name: {
@@ -26,7 +29,16 @@ export default function Section(family: Family, sectionSlug = null) {
                     msgError: "Une rubrique porte déjà ce nom dans cette famille",
                     where: { FamilyId: family.getId() }
                 }
-            }
+            },
+            ...(section == null ?
+                {
+                    family: {
+                        type: "param",
+                        value: family,
+                        entity: Family,
+                        required: true
+                    }
+                } : {})
         }
     }
 };
