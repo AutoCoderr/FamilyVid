@@ -97,7 +97,8 @@ export default class Validator {
 
 			let unsatisfiedField;
 			if (field.depend_on instanceof Array && (unsatisfiedField = field.depend_on.find(depend_on => !alreadyCheckeds[depend_on]))) {
-				errors.push("'"+name+"' field depend on '"+unsatisfiedField+"' field, but it's not accessible");
+				if (alreadyCheckeds[unsatisfiedField] == undefined)
+					errors.push("'"+name+"' field depends on '"+unsatisfiedField+"' field, but it's not accessible");
 				continue;
 			}
 
