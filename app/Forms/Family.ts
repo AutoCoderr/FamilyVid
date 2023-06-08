@@ -1,4 +1,5 @@
 import Helpers from "../Core/Helpers";
+import FamilyEntity from "../Entities/Family";
 
 export default function Family() {
     return {
@@ -9,7 +10,8 @@ export default function Family() {
             actionName: "family_create",
             msgError: "Echec de la création de famille",
             formClass: "form-btn",
-            submitClass: "btn"
+            submitClass: "btn",
+            entity: FamilyEntity
         },
         fields: {
             name: {

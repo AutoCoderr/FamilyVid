@@ -4,7 +4,7 @@ import Comment from "../Entities/Comment";
 export default function CommentDelete(commentId) {
     return {
         config: {
-            action: Helpers.getPath("comment_delete"),
+            action: Helpers.getPath("comment_delete", {commentId}),
             method: "POST",
             submit: "X",
             actionName: "delete_comment_"+commentId,
@@ -12,14 +12,9 @@ export default function CommentDelete(commentId) {
             msgError: "Suppression du commentaire échouée",
             submitClass: "btn btn-form-action",
             formClass: "form-btn delete-comment-form",
-        },
-        fields: {
-            comment: {
-                type: "hidden",
-                required: true,
-                value: commentId,
-                entity: Comment.name
-            }
+            entity: Comment,
+            id: commentId,
+            entityNotFoundError: "Ce commentaire n'existe pas"
         }
     }
 }

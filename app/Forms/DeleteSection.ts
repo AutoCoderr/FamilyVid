@@ -11,8 +11,6 @@ export default function DeleteSection(familySlug,sectionSlug) {
             confirmOnSubmit: "Êtes vous sûre de vouloir supprimer cette rubrique? Il n'y a pas de corbeille",
             formClass: "form-btn",
             submitClass: "btn"
-        },
-        fields: {
         }
     }
 }
