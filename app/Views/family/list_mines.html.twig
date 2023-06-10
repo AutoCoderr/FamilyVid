@@ -3,10 +3,10 @@
 {% block title %}Mes familles{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/family_list.css">
+    <link rel="stylesheet" href="/css/family_form.css">
 {% endblock %}
 {% block javascripts %}
-    <script async src="/js/family_list.js"></script>
+    <script async src="/js/family_form.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -22,11 +22,11 @@
     {% if session.user.Families|length > 0 %}
     <ul>
         {% for family in session.user.Families %}
-            <li class="family" id="family-{{ family.id }}">
+            <li>
                 <span>{{ family.name }}</span>
                 <a class="btn" href="{{ path('section_index', {'familySlug': family.slug}) }}">Voir</a>
-                <a class="btn" href="javascript:displayDemandForm({{ family.id }})">Modifier</a>
-                <div>
+                <a class="btn" href="javascript:displayDemandForm('family-{{ family.id }}')">Modifier</a>
+                <div class="family-form" id="family-{{ family.id }}">
                     {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
                 </div>
             </li>
@@ -35,6 +35,6 @@
     {% else %}
         <h2>Cet utilisateur n'a aucune famille visible</h2>
     {% endif %}
-    <a class="btn" href="{{ path('user_all') }}">Rejoindre</a>
+    <a class="btn" href="{{ path('family_index') }}">Rejoindre</a>
     <a class="btn" href="{{ path('family_new') }}">Créer</a>
 {% endblock %}

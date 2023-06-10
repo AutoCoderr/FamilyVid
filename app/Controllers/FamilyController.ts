@@ -15,6 +15,20 @@ import FamilyChangeDisplay from "../Forms/FamilyChangeDisplay";
 import Helpers from "../Core/Helpers";
 
 export default class FamilyController extends Controller {
+    index = async () => {
+        this.render("family/index.html.twig");
+    }
+
+    search = async () => {
+        const { search } = this.req.body;
+        if (search == undefined || search === "") {
+            return this.res.json([]);
+        }
+        const user = await <Promise<User>> this.getUser();
+        const familyIds = <Array<number>>(<Array<Family>>user.getFamilies()).map(family => family.getId());
+        this.res.send(await FamilyRepository.findAllWithVisibleUsers(search,familyIds));
+    }
+
     new = async () => {
         let formFamily = FamilyForm();
         let validator = new Validator(this.req,formFamily);
@@ -44,15 +58,25 @@ export default class FamilyController extends Controller {
         let userId = this.req.params.userId;
         let user = await UserRepository.findOne(userId);
 
+        const connectedUser = await <Promise<User>>this.getUser();
+
         user = await user.serialize();
-        user.Families = user.Families.filter((family) => family.visible);
+        user.Families = user.Families
+            .map(family => ({
+                ...family,
+                alreadyMember: (<Array<Family>>connectedUser.getFamilies()).some(eachFamily => eachFamily.getId() == family.id)
+            }))
+            .filter(
+                (family) => family.visible || family.alreadyMember
+            );
 
         let forms = {};
         for (let family of user.Families) {
-            forms[family.id] = FamilyDemandForm(this.req.session.user.id,user.id,family.id);
+            if (!family.alreadyMember)
+                forms[family.id] = FamilyDemandForm(this.req.session.user.id,user.id,family.id);
         }
         this.generateToken();
-        this.render("family/list.html.twig", {user, forms})
+        this.render("family/list.html.twig", {user, forms, referer: this.req.header('Referer')})
     }
 
     list_mines = async () => {
@@ -79,7 +103,7 @@ export default class FamilyController extends Controller {
             if (validator.isSubmitted()) {
                 if (await validator.isValid(false)) {
                     await validator.save();
-                    this.setFlash("change_display_family_success", "La famille "+family.getName()+" sera "+(validator.getDatas().visible != undefined ? "visible" : "invisible")+" pour les autres");
+                    this.setFlash("change_display_family_success", "La famille "+family.getName()+" sera "+(validator.getDatas().visible ? "visible" : "invisible")+" pour les autres");
                 } else {
                     this.setFlash("change_display_family_failed", validator.getErrors()[0]);
                 }
@@ -99,9 +123,9 @@ export default class FamilyController extends Controller {
 
                 await validator.save();
 
-                this.setFlash("family_demand_success","Votre demande a été envoyée!");
+                this.setFlash("success","Votre demande a été envoyée!");
             } else {
-                this.setFlash("family_demand_faileds", this.req.session.flash.errors[familyDemandForm.config.actionName]);
+                this.setFlash("faileds", this.req.session.flash.errors[familyDemandForm.config.actionName]);
                 delete this.req.session.flash.errors[familyDemandForm.config.actionName];
             }
         }
@@ -190,36 +214,57 @@ export default class FamilyController extends Controller {
     members = async () => {
         const {slug} = this.req.params;
 
-        let family: Family = await FamilyRepository.findOneBySlug(slug)
-
-        if(CheckService.checkFamily(family,this)) {
-            this.render("family/members.html.twig", {family});
+        let family: null|Family = await FamilyRepository.findOneBySlug(slug);
+        if (family == null) {
+            this.setFlash("failed","Cette famille n'existe pas");
+            this.redirectToRoute("index");
+            return;
         }
+
+        const user = await <Promise<User>>this.getUser();
+        const familyIdsWhereUserIsMember: Array<number> = (<Array<Family>>user.getFamilies()).map(family => <number>family.getId());
+
+        const userIsMember = familyIdsWhereUserIsMember.includes(<number>family.getId());
+
+        const members = await UserRepository.findAllVisibleUsersBySearchAndFamily("",<number>family.getId(),familyIdsWhereUserIsMember,userIsMember);
+
+        let formPrototype: null|any = null;
+        let forms: null|any = null
+        if (!userIsMember) {
+            formPrototype = FamilyDemandForm(this.req.session.user.id, 0, (<Family>family).getId());
+            forms = members.reduce((acc: any, member: any) => ({
+                    ...acc,
+                    [member.id]: FamilyDemandForm(this.req.session.user.id, member.id, (<Family>family).getId())
+                })
+                , {});
+        }
+
+        this.render("family/members.html.twig", {
+            userIsMember,
+            members,
+            family,
+            forms,
+            formPrototype
+        });
     }
 
     members_search = async () => {
         const {slug} = this.req.params;
 
-        let family: Family = await FamilyRepository.findOneBySlug(slug);
-
-        if(CheckService.checkFamily(family,this, true)) {
-            const {search} = this.req.body;
-            let users = (<Array<User>>family.getUsers())
-                .filter(user => { // filter to get users which match with the search
-                    return search == "" ||
-                    (<string>user.getFirstname()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getFirstname()).toLowerCase() ||
-                    (<string>user.getLastname()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getLastname()).toLowerCase() ||
-                    (<string>user.getEmail()).toLowerCase().replace(search.toLowerCase(),"") != (<string>user.getEmail()).toLowerCase()
-            })
-                .map(user => {
-                    return {
-                        id: user.getId(),
-                        firstname: user.getFirstname(),
-                        lastname: user.getLastname(),
-                        email: user.getEmail()
-                    }
-            });
-            this.res.json(users);
+        let family: null|Family = await FamilyRepository.findOneBySlug(slug);
+        if (family == null) {
+            return this.res.sendStatus(404);
         }
+
+        const user = await <Promise<User>>this.getUser();
+        const familyIdsWhereUserIsMember: Array<number> = (<Array<Family>>user.getFamilies()).map(family => <number>family.getId());
+
+        const {search} = this.req.body;
+
+        const members = await UserRepository.findAllVisibleUsersBySearchAndFamily(search ?? "",<number>family.getId(),familyIdsWhereUserIsMember);
+
+        this.res.json(members);
     }
+
+
 }

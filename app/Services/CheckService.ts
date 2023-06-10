@@ -30,6 +30,7 @@ export default class CheckService {
             controller.setFlash("failed", "Vous ne faites pas partie de cette famille");
             controller.redirectToRoute("index");
         }
+
         return false;
     }
 
@@ -52,7 +53,7 @@ export default class CheckService {
     static async checkMediaAndFamily(familySlug: string, sectionSlug: string, mediaSlug: string, controller: Controller, json = false) {
         const media: null|Media = await MediaRepository.findOneBySlug(mediaSlug);
         if (media == null) {
-            if(json) {
+            if (json) {
                 controller.res.json({status: "failed", errors: ["Cette photo/vidéo n'existe pas"]});
             } else {
                 controller.setFlash("media_failed", "Cette photo/vidéo n'existe pas");

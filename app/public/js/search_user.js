@@ -1,10 +1,10 @@
-let allUser;
 let familySlug;
 let userId;
+let userIsMember;
 
 function searchUsers(search) {
     const data = {search};
-    return fetch(allUser ? "/user/search": "/family/"+familySlug+"/members/search", {
+    return fetch("/family/"+familySlug+"/members/search", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -32,25 +32,46 @@ function generateUserList(users) {
             tdLastname.innerText = user.lastname;
             tr.appendChild(tdLastname);
 
-            const tdEmail = document.createElement("td");
-            tdEmail.innerText = user.email+(userId === user.id ? " (vous)" : "");
-            tr.appendChild(tdEmail);
-
-            if (allUser) {
-                const tdButton = document.createElement("td");
-                const AButton = document.createElement("a");
-                AButton.classList.add("btn")
-                if (userId === user.id) {
-                    AButton.href = "/family/list/";
-                    AButton.innerText = "Voir mes familles (" + user.nbFamily + ")";
-                } else {
-                    AButton.href = "/family/list/" + user.id;
-                    AButton.innerText = "Voir ses familles (" + user.nbFamily + ")";
-                }
-
-                tdButton.appendChild(AButton)
-                tr.appendChild(tdButton);
+            if (userIsMember) {
+                const tdEmail = document.createElement("td");
+                tdEmail.innerText = user.email + (userId === user.id ? " (vous)" : "");
+                tr.appendChild(tdEmail);
             }
+
+            const tdButtons = document.createElement("td");
+            const seeFamiliesButton = document.createElement("a");
+            seeFamiliesButton.classList.add("btn")
+            if (userId === user.id) {
+                seeFamiliesButton.href = "/family/list/";
+                seeFamiliesButton.innerText = "Voir mes familles (" + user.nbfamilies + ")";
+            } else {
+                seeFamiliesButton.href = "/family/list/" + user.id;
+                seeFamiliesButton.innerText = "Voir ses familles (" + user.nbfamilies + ")";
+            }
+
+            tdButtons.appendChild(seeFamiliesButton);
+
+            if (!userIsMember) {
+                const joinFamilyButton = document.createElement("a");
+                joinFamilyButton.classList.add("btn");
+                joinFamilyButton.addEventListener("click", () => {
+                    displayDemandForm('family-demand-'+user.id);
+                });
+                joinFamilyButton.innerText = "Demander à rejoindre";
+
+                tdButtons.appendChild(joinFamilyButton);
+
+                const formDemand = document.getElementById("form-demand-prototype").cloneNode(true);
+                formDemand.setAttribute('id', 'family-demand-'+user.id);
+                formDemand.classList.add("family-form");
+
+                const form = formDemand.querySelector("form");
+                form.user.value = user.id;
+
+                tdButtons.appendChild(formDemand);
+            }
+
+            tr.appendChild(tdButtons);
 
             tbody.appendChild(tr);
         }
@@ -66,6 +87,7 @@ function generateUserList(users) {
 
 
 window.addEventListener("DOMContentLoaded", (event) => {
+    document.getElementById("input_search").focus();
     document.getElementById("input_search").addEventListener("input", async function() {
         generateUserList(await searchUsers(this.value));
     });

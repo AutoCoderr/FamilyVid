@@ -5,6 +5,8 @@ export default class Migration {
     static path = __dirname+"/../Models";
 
     static async migrate() {
+        await sequelize.query("CREATE EXTENSION UNACCENT");
+
         fs.readdirSync(this.path)
             .filter(file => file.endsWith(".js"))
             .map(file => require(this.path+"/"+file).default);

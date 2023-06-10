@@ -3,35 +3,42 @@
 {% block title %}Familles de {{ user.firstname }} {{ user.lastname }}{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/family_list.css">
+    <link rel="stylesheet" href="/css/family_form.css">
 {% endblock %}
 {% block javascripts %}
-    <script async src="/js/family_list.js"></script>
+    <script async src="/js/family_form.js"></script>
 {% endblock %}
 
 {% block body %}
-    <a class="btn back-btn" href="{{ path('user_all') }}">Retour</a>
+    <a class="btn back-btn" href="{{ referer }}">Retour</a>
     <h1>Familles de {{ user.firstname }} {{ user.lastname }}</h1>
 
-    {% if flash.family_demand_faileds is defined %}
+    {% if flash.faileds is defined %}
         <ul>
-            {% for error in flash.family_demand_faileds %}
+            {% for error in flash.faileds %}
                 <li style="color: red;">{{ error }}</li>
             {% endfor %}
         </ul>
     {% endif %}
-    {% if flash.family_demand_success is defined %}
-        <p style="color: green">{{ flash.family_demand_success }}</p>
+    {% if flash.success is defined %}
+        <p style="color: green">{{ flash.success }}</p>
     {% endif %}
 
     {% if user.Families|length > 0 %}
     <ul>
         {% for family in user.Families %}
-            <li class="family" id="family-{{ family.id }}">
-                <span>{{ family.name }}</span><a class="btn" href="javascript:displayDemandForm({{ family.id }})">Demander à rejoindre</a>
-                <div>
-                    {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
-                </div>
+            <li>
+                <span>{{ family.name }}</span>
+                {% if not family.alreadyMember %}
+                    <a class="btn" href="javascript:displayDemandForm('family-demand-{{ family.id }}')">Demander à rejoindre</a>
+                    <div class="family-form" id="family-demand-{{ family.id }}">
+                        {% include 'Modals/forms.html.twig' with {'form': forms[family.id]} %}
+                    </div>
+                {% else %}
+                    <span style="width: 215px; display: inline-block;">
+                        Déjà rejoint
+                    </span>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
