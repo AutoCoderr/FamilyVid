@@ -44,7 +44,8 @@ export default class Helpers {
 
     static getPath(pathName, params = {}) {
         if (this.controllers == null) {
-            this.controllers = JSON.parse(fs.readFileSync(__dirname + "/../config/routes.json"));
+            console.log("Nothing route found for "+pathName);
+            return "#nothing";
         }
 
         const controllers = this.controllers;
@@ -61,23 +62,14 @@ export default class Helpers {
         for (const controllerName in controllers) {
             const controllerSettings = controllers[controllerName];
             const {routes} = controllerSettings;
-            let prefix = "";
-            if (typeof(controllerSettings.prefix) != "undefined") {
-                prefix = controllerSettings.prefix;
-            }
-
-            let prefix_route = "";
-            if (typeof(controllerSettings.prefix_route) != "undefined") {
-                prefix_route = controllerSettings.prefix_route;
-            }
+            const prefix = controllerSettings.prefix ?? "";
+            const prefix_route = controllerSettings.prefix_route ?? "";
 
             if (pathName.length >= prefix.length && pathName.substring(0,prefix.length) == prefix &&
                 routes[pathName.substring(prefix.length)] != undefined) {
                 let route = prefix_route+routes[pathName.substring(prefix.length)].route;
 
-                while (route != route.replace(regexReplacer,replacer)) {
-                    route = route.replace(regexReplacer,replacer);
-                }
+                while (route != (route = route.replace(regexReplacer,replacer))) {}
 
                 return route;
             }
@@ -86,8 +78,8 @@ export default class Helpers {
         return "#nothing";
     }
 
-    static serializeEntityArray(entities: Array<any>) {
-        return Promise.all(entities.map(exemplaire => exemplaire.serialize()));
+    static serializeEntityArray(entities: Array<EntityManager>) {
+        return Promise.all(entities.map(entity => entity.serialize()));
     }
 
     static addMissingZero(num: string|number, nb = 2) {
@@ -108,6 +100,17 @@ export default class Helpers {
         return ""
     }
 
+    static async getEntityFromForm(form): Promise<false|EntityManager|null> {
+        if (form.config.entity == undefined || !this.isNumber(form.config.id))
+            return form.config.entityInstance ?? null;
+        const repository = require("../Repositories/"+form.config.entity.name+"Repository").default;
+        const entity = await repository.findOne(parseInt(form.config.id));
+        if (entity == null) {
+            return false;
+        }
+        return entity;
+    }
+
     static hydrateForm(entity: EntityManager, form) {
         for (const name in form.fields) {
             if (typeof(entity["get"+this.ucFirst(name)]) == "function") {
@@ -125,6 +128,15 @@ export default class Helpers {
 
     static rand(a,b) {
         return a+Math.floor(Math.random()*(b-a+1));
+    }
+
+    static isNumber(num) {
+        return typeof(num) == "number" ||
+            (
+                typeof(num) == "string" && (
+                    parseInt(num).toString() == num && num != "NaN"
+                )
+            )
     }
 
     static generateRandomString(nb, forbiddenChars: Array<string> = []) {

@@ -20,16 +20,33 @@ export default class RepositoryManager {
         return this.findAllByParams({...(include != null ? {include} : {})});
     }
 
-    static async findAllByParams(params): Promise<any> {// @ts-ignore
+    static async findAllByParams(params, useEntity = true): Promise<any> {// @ts-ignore
         const elems = await this.model.findAll(params);
         for (let i=0;i<elems.length;i++) {// @ts-ignore
-            elems[i] = new this.entity().hydrate(elems[i]);
+            elems[i] = useEntity ? new this.entity().hydrate(elems[i]) : this.getDataValuesRec(elems[i]);
         }
         return elems;
     }
 
-    static async findOneByParams(params): Promise<any> {// @ts-ignore
-        const foundElem = await this.model.findOne(params); // @ts-ignore
-        return foundElem != null ? new this.entity().hydrate(foundElem) : null;
+    static async findOneByParams(params, useEntity = true): Promise<any> {// @ts-ignore
+        const foundElem = await this.model.findOne(params);
+        return foundElem != null ?
+            useEntity ? // @ts-ignore
+                new this.entity().hydrate(foundElem) : // @ts-ignore
+                this.getDataValuesRec(foundElem) :
+            null;
+    }
+
+    static getDataValuesRec(data) {
+        return data.dataValues ?
+            Object.keys(data.dataValues).reduce((acc,key) => ({
+                ...acc,
+                [key]: data.dataValues[key] instanceof Array ?
+                    data.dataValues[key].map(elem => this.getDataValuesRec(elem)) :
+                    data.dataValues[key].datavalues ?
+                        this.getDataValuesRec(data.dataValues[key].datavalues) :
+                        data.dataValues[key]
+            }), {}) :
+            data;
     }
 }

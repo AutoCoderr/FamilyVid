@@ -1,0 +1,36 @@
+{
+  "prefix": "media_",
+  "prefix_route": "/family/:familySlug/sections/:sectionSlug/medias",
+
+  "routes": {
+    "index": {
+      "route": "/"
+    },
+    "new": {
+      "route": "/new",
+      "methods": ["GET","POST"]
+    },
+    "edit": {
+      "route": "/:mediaSlug/edit",
+      "methods": ["GET","POST"]
+    },
+    "delete": {
+      "route": "/:mediaSlug/delete",
+      "method": "POST"
+    },
+    "view": {
+      "route": "/:mediaSlug/view"
+    },
+    "read": {
+      "route": "/:mediaSlug"
+    },
+    "rotate": {
+      "route": "/:mediaSlug/rotate",
+      "method": "POST"
+    },
+    "search": {
+      "route": "/search",
+      "method": "POST"
+    }
+  }
+}

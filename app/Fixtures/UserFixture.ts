@@ -26,7 +26,7 @@ export default class UserFixture {
                 break;
             }
         }
-        for (let i=1;i<=20;i++) {
+        for (let i=1;i<=3000;i++) {
             const user = new User();
             user.setFirstname("test"+i);
             user.setLastname("test"+i);
@@ -40,7 +40,7 @@ export default class UserFixture {
             const nbFamilies = Helpers.rand(1,2);
             for (let j=0;j<nbFamilies;j++) {
                 const family = families[Helpers.rand(0,families.length-1)];
-                await user.addFamily(family);
+                await user.addFamily(family, Helpers.rand(0,1) == 0);
             }
         }
     }

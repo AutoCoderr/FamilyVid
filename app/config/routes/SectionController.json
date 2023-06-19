@@ -1,0 +1,37 @@
+{
+  "prefix": "section_",
+  "prefix_route": "/family/:familySlug/sections",
+
+  "routes": {
+    "index": {
+      "route": "/"
+    },
+    "new": {
+      "route": "/new",
+      "methods": ["GET","POST"]
+    },
+    "edit": {
+      "route": "/:sectionSlug/edit",
+      "methods": ["GET","POST"]
+    },
+    "delete": {
+      "route": "/:sectionSlug/delete",
+      "method": "POST"
+    },
+    "delete_with_media": {
+      "route": "/:sectionSlug/delete/medias",
+      "methods": ["GET","POST"]
+    },
+    "search": {
+      "route": "/search",
+      "method": "POST"
+    },
+    "global": {
+      "route": "/global"
+    },
+    "global_search": {
+      "route": "/global/search",
+      "method": "POST"
+    }
+  }
+}

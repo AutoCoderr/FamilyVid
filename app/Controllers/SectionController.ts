@@ -17,7 +17,7 @@ import FileUploadService from "../Services/FileUploadService";
 export default class SectionController extends Controller {
     index = async () => {
         const {familySlug} = this.req.params;
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug,true,true);
 
         if (CheckService.checkFamily(family,this)) {
             this.render("section/index.html.twig", {family});
@@ -80,8 +80,7 @@ export default class SectionController extends Controller {
 
                 if (validatorDeplaceMedias.isSubmitted()) {
                     if (await validatorDeplaceMedias.isValid()) {
-                        const datas = this.getDatas();
-                        const newSection: Section = await SectionRepository.findOne(datas.section);
+                        const newSection: Section = validatorDeplaceMedias.getDatas().section;
 
                         if (!await FileUploadService.moveAllMedia(section,newSection)) {
                             validatorDeplaceMedias.setFlashErrors(["Déplacement des photos/videos de la rubrique échoué"]);
@@ -117,14 +116,16 @@ export default class SectionController extends Controller {
         if (sectionAndFamily) {
             const {family,section} = sectionAndFamily;
 
-            const sectionForm = SectionForm(family, sectionSlug);
+            const sectionForm = SectionForm(family, section);
             const validator = new Validator(this.req,sectionForm);
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
+                    const oldSlug = <string>(<Section>validator.entity).getSlug();
 
-                    await FileUploadService.renameSection(family,section,datas.name);
+                    await validator.save();
+
+                    await FileUploadService.renameSection(family,<Section>validator.entity,oldSlug);
 
                     this.setFlash("section_success", "Rubrique éditée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
@@ -144,7 +145,7 @@ export default class SectionController extends Controller {
 
     new = async () => {
         const {familySlug} = this.req.params;
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true);
 
         if (CheckService.checkFamily(family,this)) {
             const sectionForm = SectionForm(family);
@@ -152,14 +153,9 @@ export default class SectionController extends Controller {
 
             if (validator.isSubmitted()) {
                 if (await validator.isValid()) {
-                    const datas = this.getDatas();
 
-                    const section = new Section();
-                    section.setName(datas.name);
-                    await section.setSlugFrom("name");
-                    section.setFamily(family);
+                    await validator.save();
 
-                    await section.save();
                     this.setFlash("section_success", "Rubrique créée avec succès!");
                     this.redirectToRoute("section_index", {familySlug});
                 } else {
@@ -176,16 +172,14 @@ export default class SectionController extends Controller {
         const {search} = this.req.body;
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true);
 
         if (CheckService.checkFamily(family,this,true)) {
             let sections = await SectionRepository.findAllByFamilyAndSearch(family.getId(),search);
-            sections = sections.map(section => {
-                return {
+            sections = sections.map(section => ({
                     slug: section.getSlug(),
                     name: section.getName()
-                }
-            });
+                }));
             this.res.json(sections);
         }
     }
@@ -193,7 +187,7 @@ export default class SectionController extends Controller {
     global = async () => {
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug,true,true);
 
         if (CheckService.checkFamily(family,this)) {
             const sectionsId = <Array<number>>(<Array<Section>>family.getSections()).map(section =>
@@ -217,7 +211,7 @@ export default class SectionController extends Controller {
     global_search = async () => {
         const {familySlug} = this.req.params;
 
-        const family: Family = await FamilyRepository.findOneBySlug(familySlug);
+        const family: Family = await FamilyRepository.findOneBySlug(familySlug, true, true);
 
         if (CheckService.checkFamily(family,this,true)) {
             const {search,sort,sortBy,toDisplay} = this.req.body;

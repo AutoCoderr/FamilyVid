@@ -1,0 +1,11 @@
+{
+  "prefix": "user_",
+  "prefix_route": "/user",
+
+  "routes": {
+    "me": {
+      "route": "/me",
+      "methods": ["GET","POST"]
+    }
+  }
+}

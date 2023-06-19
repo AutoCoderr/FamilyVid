@@ -23,6 +23,8 @@ export default class User extends EntityManager {
     Families: null|Array<Family> = [];
     Comments: null|Array<Comment> = [];
 
+    visible: null|boolean = null;
+
 
     setEmail(email: string) {
         this.email = email;
@@ -108,6 +110,20 @@ export default class User extends EntityManager {
             });
         }
         return this.Comments
+    }
+
+    getVisible() { // @ts-ignore
+        if (this.visible == null && this.ModelInstance != null && this.ModelInstance.dataValues.User_Families != undefined) { // @ts-ignore
+            this.visible = this.ModelInstance.dataValues.User_Families.dataValues.visible;
+        }
+        return this.visible;
+    }
+
+    async setVisible(visible) { // @ts-ignore
+        if (this.ModelInstance != null && this.ModelInstance.dataValues.User_Families != undefined) { // @ts-ignore
+            this.ModelInstance.dataValues.User_Families.visible = visible; // @ts-ignore
+            await this.ModelInstance.dataValues.User_Families.save()
+        }
     }
 
 }
