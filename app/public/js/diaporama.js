@@ -84,6 +84,9 @@ function displayCurrentMedia() {
     const h2Title = imageContainer.querySelector("h2");
     h2Title.innerText = currentMedia.name;
 
+    const author_name = imageContainer.querySelector(".author_name");
+    author_name.innerText = "Auteur : "+currentMedia.author;
+
     const path = imageContainer.querySelector(".path");
 
     const familySpan = path.querySelector(".family");

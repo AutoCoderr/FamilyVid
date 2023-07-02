@@ -50,8 +50,8 @@ export default class CheckService {
         return this.checkFamily(family,controller, json) ? {family,section} : false;
     }
 
-    static async checkMediaAndFamily(familySlug: string, sectionSlug: string, mediaSlug: string, controller: Controller, json = false) {
-        const media: null|Media = await MediaRepository.findOneBySlug(mediaSlug);
+    static async checkMediaAndFamily(familySlug: string, sectionSlug: string, mediaSlug: string, controller: Controller, json = false, withUser = false) {
+        const media: null|Media = await MediaRepository.findOneBySlug(mediaSlug,withUser);
         if (media == null) {
             if (json) {
                 controller.res.json({status: "failed", errors: ["Cette photo/vidéo n'existe pas"]});
