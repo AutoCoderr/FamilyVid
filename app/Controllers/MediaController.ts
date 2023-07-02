@@ -155,7 +155,7 @@ export default class MediaController extends Controller {
     view = async () => {
         const {familySlug,sectionSlug,mediaSlug} = this.req.params;
 
-        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this);
+        const mediaSectionAndFamily = await CheckService.checkMediaAndFamily(familySlug,sectionSlug,mediaSlug,this,false,true);
 
         if (mediaSectionAndFamily) {
             const {media, section, family} = mediaSectionAndFamily;

@@ -16,7 +16,14 @@
 
 {% block body %}
     <a class="btn back-btn" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">Retour à la liste</a>
-    <span class="path">
+    <span class="display_top_right">
+        Auteur: {% if media.User is not null %}
+            {{ media.User.firstname }} {{ media.User.lastname }}
+        {% else %}
+            Inconnu
+        {% endif %}
+    </span>
+    <span class="display_top_right path">
         <a title="Famille {{ family.name }}" href="{{ path('section_index', {'familySlug': family.slug}) }}">{{ family.name }}</a>
         <span>></span>
         <a title="Section {{ section.name }}" href="{{ path('media_index', {'familySlug': family.slug, 'sectionSlug': section.slug}) }}">{{ section.name }}</a>
